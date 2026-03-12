@@ -18,6 +18,8 @@ class User extends Authenticatable
         'nom',
         'prenom',
         'telephone',
+        'type',
+        'otp',
         'email',
         'adresse',
         'profil',

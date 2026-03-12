@@ -40,33 +40,28 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-rounded btn-primary">
-                                    <span class="btn-icon-left text-primary">
-                                        <i class="fa fa-download"></i>
-                                    </span>
-                                    CSV
-                                </button>
-                                <button type="button" class="btn btn-rounded btn-info">
-                                    <span class="btn-icon-left text-info">
-                                        <i class="fa fa-download"></i>
-                                    </span>
+                                <a href="{{ route('export.violences.excel') }}" class="btn btn-rounded btn-info">
+                                    <span class="btn-icon-left text-info"><i class="fa fa-download"></i></span>
                                     Excel
-                                </button>
-                                <button type="button" class="btn btn-rounded btn-secondary">
+                                </a>
+
+                                <a href="{{ route('export.violences.csv') }}" class="btn btn-rounded btn-primary">
+                                    <span class="btn-icon-left text-primary"><i class="fa fa-download"></i></span>
+                                    CSV
+                                </a>
+                                <a href="{{ route('export.violences.pdf') }}" class="btn btn-rounded btn-secondary">
                                     <span class="btn-icon-left text-secondary">
-                                        <i class="fa fa-share-alt color-secondary"></i>
+                                        <i class="fa fa-file-pdf-o"></i>
                                     </span>
                                     Pdf
-                                </button>
+                                </a>
                             </div>
-                            <form method="GET" action="{{ route('view.violences') }}" class="form-group  ">
+                            <form method="GET" action="{{ route('view.violences') }}">
                                 <div class="row">
-
-                                    <!-- Filtre par nationalité -->
-                                    <div class="col-md-6">
-                                        <div class="input-group   input-primary">
+                                    <div class="col-md-5">
+                                        <div class="input-group input-primary">
                                             <select name="nationalite" class="form-control" onchange="this.form.submit()">
-                                                <option value="">-- Tous les pays --</option>
+                                                <option value="">-- Toutes les nationalités --</option>
                                                 @foreach ($nationalites as $pays)
                                                     <option value="{{ $pays }}"
                                                         {{ request('nationalite') == $pays ? 'selected' : '' }}>
@@ -74,18 +69,25 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            <span class="input-group-text">Nationalité</span>
-                                        </div>
-                                    </div>
-                                    <!-- Recherche par code -->
-                                    <div class="col-md-6">
-                                        <div class="input-group   input-primary">
-                                            <input type="text" class="form-control" placeholder="Entrer le code"
-                                                name="searchTerm" value="{{ request('searchTerm') }}">
                                             <div class="input-group-append">
-                                                <span class="input-group-text">Rechercher</span>
+                                                <span class="input-group-text">Nationalité</span>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="input-group input-primary">
+                                            <input type="text" class="form-control" placeholder="Entrer le code..."
+                                                name="searchTerm" value="{{ request('searchTerm') }}">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-info" type="submit">Rechercher</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        @if (request('nationalite') || request('searchTerm'))
+                                            <a href="{{ route('view.violences') }}"
+                                                class="btn btn-danger btn-block">Effacer</a>
+                                        @endif
                                     </div>
                                 </div>
                             </form>
@@ -100,92 +102,86 @@
                                         <th>Code</th>
                                         <th>Nationalité</th>
                                         <th>Status</th>
-                                        <th>Contact</th>
-                                        <th>Occupation</th>
-                                        <th>Age</th>
                                         <th>Sexe</th>
-                                        <th>Résidence</th>
-                                        <th>Date survenance</th>
-                                        <th>Lieu survenance</th>
-                                        <th>Situation</th>
-                                        <th>Auteurs</th>
                                         <th>Nature</th>
                                         <th>Collecte</th>
-                                        <th>Description</th>
-                                        <th>Mesure OBC</th>
-                                        <th>Risque victime</th>
-                                        <th>Attente victime</th>
-                                        <th>Fichiers 1</th>
-                                        <th>Fichiers 2</th>
-                                        <th>Fichiers 3</th>
+                                        <th class="text-nowrap">Date survenance</th>
+                                        <th>Fichiers</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
-                                    @foreach ($violences as $index => $violence)
+                                    @forelse ($violences as $violence)
                                         <tr>
                                             <td>
                                                 <div class="btn-group">
-                                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                                    <button type="button" class="btn btn-info btn-xs dropdown-toggle"
                                                         data-toggle="dropdown">
                                                         Actions
                                                     </button>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item  view-details"
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a class="dropdown-item view-details" href="javascript:void(0)"
                                                             data-violences='{{ json_encode($violence) }}'
-                                                            data-toggle="modal" data-target="#infosleModal"
-                                                            title="voir les infos petite section"><i class="icon-eye"></i>
-                                                            Voir</a>
+                                                            data-toggle="modal" data-target="#infosleModal">
+                                                            <i class="fa fa-eye mr-2"></i> Voir
+                                                        </a>
 
                                                         <a href="{{ route('edit.violences', $violence->id) }}"
                                                             class="dropdown-item">
-                                                            Modifier
+                                                            <i class="fa fa-edit mr-2"></i> Modifier
                                                         </a>
-                                                        <a class="dropdown-item" href="#">Supprimer</a>
+
+                                                        <div class="dropdown-divider"></div>
+
+                                                        <form action="{{ route('delete.violences', $violence->id) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Supprimer ce cas de violence ?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="dropdown-item text-danger">
+                                                                <i class="fa fa-trash mr-2"></i> Supprimer
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $violence->code }}</td>
+                                            <td><strong>{{ $loop->iteration + ($violences->currentPage() - 1) * $violences->perPage() }}</strong>
+                                            </td>
+                                            <td class="text-nowrap">{{ $violence->code }}</td>
                                             <td>{{ $violence->nationalite }}</td>
-                                            <td>{{ $violence->status }}</td>
-                                            <td>{{ $violence->contact }}</td>
-                                            <td>{{ $violence->occupation }}</td>
-                                            <td>{{ $violence->age }}</td>
+                                            <td><span class="badge badge-light">{{ $violence->status }}</span></td>
                                             <td>{{ $violence->sexe }}</td>
-                                            <td>{{ $violence->residence }}</td>
-                                            <td>{{ $violence->datesurvenue }}</td>
-                                            <td>{{ $violence->lieusurvenue }}</td>
-                                            <td>{{ $violence->situation }}</td>
-                                            <td>{{ $violence->auteurs }}</td>
-                                            <td>{{ $violence->nature->nom ?? '' }}</td>
-                                            <td>{{ $violence->collecte->nom ?? '' }}</td>
-                                            <td>{{ $violence->description_cas }}</td>
-                                            <td>{{ $violence->mesure_obc }}</td>
-                                            <td>{{ $violence->risque_victime }}</td>
-                                            <td>{{ $violence->attente_victime }}</td>
                                             <td>
-                                                @if ($violence->fichier1)
-                                                    <a href="{{ asset('storage/' . $violence->fichier1) }}"
-                                                        target="_blank">Voir</a>
-                                                @endif
+                                                {{ $violence->nature->nom ?? 'N/A' }}
                                             </td>
+                                            <td>{{ $violence->collecte->nom ?? 'N/A' }}</td>
+                                            <td class="text-nowrap">
+                                                {{ \Carbon\Carbon::parse($violence->datesurvenue)->format('d/m/Y') }}</td>
                                             <td>
-                                                @if ($violence->fichier2)
-                                                    <a href="{{ asset('storage/' . $violence->fichier2) }}"
-                                                        target="_blank">Voir</a>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($violence->fichier3)
-                                                    <a href="{{ asset('storage/' . $violence->fichier3) }}"
-                                                        target="_blank">Voir</a>
-                                                @endif
+                                                <div class="d-flex">
+                                                    @for ($i = 1; $i <= 3; $i++)
+                                                        @php $f = "fichier".$i; @endphp
+                                                        @if ($violence->$f)
+                                                            <a href="{{ asset('storage/' . $violence->$f) }}"
+                                                                target="_blank" class="btn btn-xs btn-info mr-1"
+                                                                title="Fichier {{ $i }}">
+                                                                <i class="fa fa-file"></i>
+                                                            </a>
+                                                        @endif
+                                                    @endfor
+                                                </div>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="10" class="text-center">Aucun enregistrement trouvé.</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div class="mt-3">
+                            {{ $violences->appends(request()->input())->links() }}
                         </div>
                     </div>
                 </div>
@@ -213,25 +209,25 @@
                     <div class="row">
                         <div class="col-md-4  ">
                             <strong>Code:</strong>
-                            <p id="code"></p>
+                            <span class="badge badge-outline-primary" id="code"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Nationalité:</strong>
-                            <p id="nationalite"></p>
+                            <span class="badge badge-outline-primary" id="nationalite"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Status:</strong>
-                            <p id="status"></p>
+                            <soan class="badge badge-outline-primary" id="status"></span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4  ">
                             <strong>Contact:</strong>
-                            <p id="contact"></p>
+                            <span class="badge badge-outline-primary" id="contact"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Occupation:</strong>
-                            <p id="occupation"></p>
+                            <p class="badge badge-outline-primary" id="occupation"></p>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Age:</strong>
@@ -350,15 +346,16 @@
                             .attente_victime;
 
                         // Gérer les fichiers
-                      ['fichier1', 'fichier2', 'fichier3'].forEach(fichier => {
-    let elem = document.getElementById(fichier);
-    if (violences[fichier]) {
-        // Ajout de "violences/" dans le chemin si la base de données ne contient que le nom du fichier
-        elem.innerHTML = `<a href="/storage/violences/${violences[fichier]}" target="_blank">Voir</a>`;
-    } else {
-        elem.textContent = 'Aucun fichier';
-    }
-});
+                        ['fichier1', 'fichier2', 'fichier3'].forEach(fichier => {
+                            let elem = document.getElementById(fichier);
+                            if (violences[fichier]) {
+                                // Ajout de "violences/" dans le chemin si la base de données ne contient que le nom du fichier
+                                elem.innerHTML =
+                                    `<a href="/storage/violences/${violences[fichier]}" target="_blank">Voir</a>`;
+                            } else {
+                                elem.textContent = 'Aucun fichier';
+                            }
+                        });
 
                         var modal = new bootstrap.Modal(document.getElementById('infosleModal'));
                         modal.show();
@@ -366,5 +363,4 @@
                 });
             });
         </script>
-
     @endsection

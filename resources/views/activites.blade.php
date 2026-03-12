@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
     <div class="container-fluid">
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
@@ -22,8 +21,7 @@
                     <div class="card-body">
                         <form class="form-group">
                             <div class="input-group mb-3 input-primary">
-                                <input type="text" class="form-control" placeholder="Entrer la recherche"
-                                    name="search">
+                                <input type="text" class="form-control" placeholder="Entrer la recherche" name="search">
                                 <div class="input-group-append">
                                     <span class="input-group-text">Rechercher</span>
                                 </div>
@@ -43,35 +41,63 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr >
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-info dropdown-toggle"
-                                                    data-toggle="dropdown">
-                                                    Actions
-                                                </button>
-
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="javascript:void(0)"
-                                                        >
-                                                        Supprimer
-                                                    </a>
+                                    @forelse($activites as $activite)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>
+                                                <strong>{{ $activite->user->nom ?? 'Utilisateur inconnu' }}</strong>
+                                            </td>
+                                            <td>
+                                                @php
+                                                    $badgeClass = match ($activite->action_type) {
+                                                        'Création' => 'badge-success',
+                                                        'Modification' => 'badge-warning',
+                                                        'Suppression' => 'badge-danger',
+                                                        default => 'badge-info',
+                                                    };
+                                                @endphp
+                                                <span class="badge {{ $badgeClass }}">
+                                                    {{ $activite->action_type }}
+                                                </span>
+                                            </td>
+                                            <td><span class="text-muted">{{ $activite->table_name }}</span></td>
+                                            <td style="max-width: 300px;">
+                                                <div class="text-wrap">
+                                                    {{ $act->description }}
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr *ngIf="filteredActivites.length === 0">
-                                        <td colspan="7" class="text-center">Aucune activité trouvée</td>
-                                    </tr>
+                                            </td>
+                                            <td>{{ $activite->created_at->format('d/m/Y H:i') }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-dark dropdown-toggle"
+                                                        data-toggle="dropdown">
+                                                        Actions
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <form action="{{ route('delete.activite', $activite->id) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Supprimer cet historique ?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="dropdown-item text-danger">Supprimer</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="text-center">Aucune activité enregistrée pour le
+                                                moment.</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
+
+                            <div class="d-flex justify-content-center">
+                                {{ $activites->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -81,5 +107,4 @@
             <p>Copyright © Designed &amp; Developed by <a href="/login" target="_blank">Univers Solutions</a> 2026</p>
         </small>
     </div>
-
 @endsection

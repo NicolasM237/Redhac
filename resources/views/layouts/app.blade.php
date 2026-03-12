@@ -80,7 +80,7 @@
                                     <form action="{{ route('logout') }}" method="POST" class="m-0">
                                         @csrf
 
-                                        <button type="submit" class="btn btn-danger btn-sm">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?')">
 
                                             <i class="fa fa-sign-out me-1"></i>
                                             Déconnexion
@@ -170,12 +170,12 @@
                         </a>
                     </li>
 
-                    <li>
+                    {{-- <li>
                         <a href="{{ url('/activites') }}">
                             <i class="fa fa-plus"></i>
                             <span>Activités</span>
                         </a>
-                    </li>
+                    </li> --}}
 
                     <li>
                         <a href="{{ url('/historiques') }}">
@@ -224,6 +224,7 @@
     <script src="{{ asset('assets/js/plugins-init/morris-init.js') }}"></script>
     <script src="{{ asset('assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 
 </html>

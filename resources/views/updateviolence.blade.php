@@ -15,8 +15,10 @@
                         <li><a class="nav-link" href="#wizard_Payment"><span>4</span></a></li>
                     </ul>
 
-                    <form action="{{ route('update.violences') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('update.violences', $violence->id) }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
+                        @method('PUT')
                         <input type="hidden" name="id" value="{{ $violence->id }}">
 
                         <div class="tab-content">

@@ -31,12 +31,11 @@ Route::get('/', function () {
 // Routes d'authentification (Login, Register, etc.)
 Auth::routes();
 
+
 Route::get('/utilisateurs', [HomeController::class, 'viewusers'])->name('viewusers');
 Route::post('/create-user', [HomeController::class, 'createUser'])->name('create.user');
 Route::delete('/delete-user/{id}', [HomeController::class, 'deleteUser'])->name('delete.user');
 Route::post('/updateuser', [HomeController::class, 'updateUser'])->name('updateuser');
-
-// Route après connexion
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Route des Natures de cas
@@ -48,20 +47,28 @@ Route::delete('/delete-natures/{id}', [NatureController::class, 'deleteNature'])
 // Route des Collecte
 
 Route::post('/collectes', [CollecteController::class, 'store'])->name('collectes.store');
-Route::get('/collectes', [CollecteController::class, 'viewcollectes'])->name('collectes');
+Route::get('/collectes', [CollecteController::class, 'viewcollectes'])->name('view.collectes');
 Route::post('/update-collecte', [CollecteController::class, 'update'])->name('update.collecte');
 Route::delete('/delete-collecte/{id}', [CollecteController::class, 'deleteCollecte'])->name('delete.collecte');
 
-// Route des violences
+// Groupe de routes pour les Violences
+Route::get('/', [ViolencesController::class, 'viewviolences'])->name('view.violences');
 Route::get('/addviolences', [ViolencesController::class, 'addViolences'])->name('add.violences');
-Route::post('/create-violences', [ViolencesController::class, 'store'])->name('create.violences');
-Route::get('/violences', [ViolencesController::class, 'viewviolences'])->name('view.violences');
+Route::post('/store', [ViolencesController::class, 'store'])->name('create.violences');
+Route::get('/edit/{id}', [ViolencesController::class, 'edit'])->name('edit.violences');
+Route::put('/update/{id}', [ViolencesController::class, 'update'])->name('update.violences');
+Route::delete('/delete/{id}', [ViolencesController::class, 'destroy'])->name('delete.violences');
+Route::get('/export-pdf', [ViolencesController::class, 'exportPDF'])->name('export.violences.pdf');
+Route::get('/export-excel', [ViolencesController::class, 'exportExcel'])->name('export.violences.excel');
+Route::get('/export-csv', [ViolencesController::class, 'exportCSV'])->name('export.violences.csv');
 
-Route::post('/update-violences', [ViolencesController::class, 'update'])->name('update.violences');
+// Route pour l'historique
+Route::get('/historiques', [HistoriqueController::class, 'viewhistorique'])->name('historique');
 
-// Ajoutez ceci dans la section "Route des violences"
-Route::get('/violences/edit/{id}', [ViolencesController::class, 'edit'])->name('edit.violences');
-//Route::post('/violences/update', [ViolencesController::class, 'update'])->name('update.violences');
-
+// Route pour les activités
+Route::get('/activites', [ActivitesController::class, 'viewactivites'])->name('activites');
+Route::get('/mes-activites', [ActivitesController::class, 'viewactivites'])->name('view.activites');
+Route::delete('/activite/delete/{id}', [ActivitesController::class, 'destroy'])->name('delete.activite');
+Route::delete('/activites/clear', [ActivitesController::class, 'clearMyHistory'])->name('clear.activites');
 
 Route::get('/mobiles', [UserMobileController::class, 'viewmobiles'])->name('mobiles');

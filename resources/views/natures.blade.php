@@ -40,12 +40,17 @@
                     </div>
                     <div class="card-body">
                         <!-- Champ de recherche -->
-                        <form class="form-group" action="{{ route('view.natures') }}" method="GET">
-                            <div class="input-group mb-3 input-primary">
-                                <input type="text" class="form-control" placeholder="Entrer la recherche" name="search"
-                                    value="{{ request('search') }}">
+                        <form action="{{ route('view.natures') }}" method="GET">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Rechercher une nature..."
+                                    name="search" value="{{ $search }}">
                                 <div class="input-group-append">
-                                    <button class="input-group-text btn btn-primary" type="submit">Rechercher</button>
+                                    <button class="btn btn-info" type="submit">
+                                        <i class="fa fa-search"></i> Rechercher
+                                    </button>
+                                    @if ($search)
+                                        <a href="{{ route('view.natures') }}" class="btn btn-danger">Effacer</a>
+                                    @endif
                                 </div>
                             </div>
                         </form>
@@ -59,35 +64,37 @@
                             <table class="table table-responsive-md">
                                 <thead>
                                     <tr>
-                                        <th style="width:80px;"><b>#</b></th>
-                                        <th><b>NOM</b></th>
-                                        <th><b>Date d'enregistrement</b></th>
-                                        <th><b>ACTIONS</b></th>
+                                        <th style="width:80px;">#</th>
+                                        <th>NOM</th>
+                                        <th>Date d'enregistrement</th>
+                                        <th>ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($natures as $index => $nature)
                                         <tr>
-                                            <td><strong>{{ $index + 1 }}</strong></td>
+                                            <td><strong>{{ $loop->iteration }}</strong></td>
                                             <td>{{ $nature->nom }}</td>
-                                            <td>{{ $nature->created_at }}</td>
+                                            <td>{{ $nature->created_at->format('d/m/Y H:i') }}</td>
                                             <td>
-                                                <div class="btn-group">
-                                                    <button class="btn btn-info dropdown-toggle"
-                                                        data-toggle="dropdown">Actions</button>
-                                                    <div class="dropdown-menu">
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn btn-info light btn-xs dropdown-toggle"
+                                                        data-toggle="dropdown">
+                                                        Actions
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-right">
                                                         <a class="dropdown-item btnEditNature" href="javascript:void(0)"
                                                             data-toggle="modal" data-target=".bd-example-modal-lgMN"
                                                             data-nature='{{ json_encode($nature) }}'>
                                                             Modifier
                                                         </a>
+
                                                         <form method="POST"
                                                             action="{{ route('delete.natures', $nature->id) }}"
-                                                            class="d-inline">
+                                                            onsubmit="return confirm('Voulez-vous vraiment supprimer cette nature ?');">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="dropdown-item"
-                                                                onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')">
+                                                            <button type="submit" class="dropdown-item text-danger">
                                                                 Supprimer
                                                             </button>
                                                         </form>
@@ -98,12 +105,16 @@
                                     @empty
                                         <tr>
                                             <td colspan="4" class="text-center text-danger">
-                                                Aucun utilisateur trouvé.
+                                                Aucune nature trouvée.
                                             </td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
+
+                            <div class="mt-3">
+                                {{ $natures->appends(['search' => $search])->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>

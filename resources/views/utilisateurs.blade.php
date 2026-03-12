@@ -39,13 +39,17 @@
                         <h4 class="card-title">Liste Des Utilisateurs</h4>
                     </div>
                     <div class="card-body">
-                        <form class="form-group" method="GET" action="{{ route('viewusers') }}">
-                            <div class="input-group mb-3 input-primary">
-                                <input type="text" class="form-control" placeholder="Entrer la recherche" name="search"
-                                    value="{{ request('search') }}">
-
+                        <form method="GET" action="{{ route('viewusers') }}">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Rechercher un nom, email, profil..."
+                                    name="search" value="{{ request('search') }}">
                                 <div class="input-group-append">
-                                    <button class="input-group-text">Rechercher</button>
+                                    <button class="btn btn-info" type="submit">
+                                        <i class="fa fa-search"></i> Rechercher
+                                    </button>
+                                    @if (request('search'))
+                                        <a href="{{ route('viewusers') }}" class="btn btn-danger">Effacer</a>
+                                    @endif
                                 </div>
                             </div>
                         </form>
@@ -58,75 +62,61 @@
                             <table class="table table-responsive-md">
                                 <thead>
                                     <tr>
-                                        <th style="width:80px;"><b>#</b></th>
-                                        <th><b>NOM</b></th>
-                                        <th><b>PRENOM</b></th>
-                                        <th><b>TELEPHONE</b></th>
-                                        <th><b>EMAIL</b></th>
-                                        <th><b>ADRESSE</b></th>
-                                        <th><b>PROFIL</b></th>
-                                        <th><b>ACTIONS</b></th>
+                                        <th style="width:80px;">#</th>
+                                        <th>NOM & PRENOM</th>
+                                        <th>TELEPHONE</th>
+                                        <th>EMAIL</th>
+                                        <th>PROFIL</th>
+                                        <th>ACTIONS</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
-
                                     @forelse ($users as $index => $user)
                                         <tr>
                                             <td><strong>{{ $index + 1 }}</strong></td>
-                                            <td>{{ $user->nom }}</td>
-                                            <td>{{ $user->prenom }}</td>
-                                            <td>{{ $user->telephone ?? '-' }}</td>
+                                            <td>{{ $user->nom }} {{ $user->prenom }}</td>
+                                            <td>{{ $user->telephone ?? 'Non renseigné' }}</td>
                                             <td>{{ $user->email }}</td>
-                                            <td>{{ $user->adresse ?? '-' }}</td>
                                             <td>
                                                 <span class="badge badge-primary">{{ $user->profil }}</span>
                                             </td>
-
                                             <td>
-                                                <div class="btn-group" role="group">
-                                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn btn-info light btn-xs dropdown-toggle"
                                                         data-toggle="dropdown">
                                                         Actions
                                                     </button>
-
-                                                    <div class="dropdown-menu">
-
+                                                    <div class="dropdown-menu dropdown-menu-right">
                                                         <a class="dropdown-item btnEditUser" href="javascript:void(0)"
                                                             data-toggle="modal" data-target=".bd-example-modal-lgMP"
-                                                            data-user='{{ json_encode($user) }}'>
+                                                            data-user='{{ json_encode($user->makeHidden(['password', 'email_verified_at'])) }}'>
                                                             Modifier
                                                         </a>
 
-                                                        <form method="POST"
-                                                            action="{{ route('delete.user', $user->id) }}">
+                                                        <form method="POST" action="{{ route('delete.user', $user->id) }}"
+                                                            onsubmit="return confirm('Supprimer cet utilisateur ?');"
+                                                            style="display:inline;">
                                                             @csrf
                                                             @method('DELETE')
-
-                                                            <button type="submit" class="dropdown-item"
-                                                                onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?')">
-                                                                Supprimer
-                                                            </button>
-
+                                                            <button type="submit"
+                                                                class="dropdown-item text-danger">Supprimer</button>
                                                         </form>
-
                                                     </div>
                                                 </div>
                                             </td>
-
                                         </tr>
-
                                     @empty
-
                                         <tr>
-                                            <td colspan="8" class="text-center text-danger">
-                                                Aucun utilisateur trouvé.
-                                            </td>
+                                            <td colspan="6" class="text-center">Aucun utilisateur trouvé pour
+                                                "{{ request('search') }}"</td>
                                         </tr>
                                     @endforelse
-
                                 </tbody>
                             </table>
+
+                            <div class="mt-3">
+                                {{ $users->appends(request()->input())->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -269,7 +259,7 @@
         </div>
     </div>
 
-      <!--formulaire de modification-->
+    <!--formulaire de modification-->
     <div class="modal fade bd-example-modal-lgMP" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">

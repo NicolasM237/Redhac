@@ -5,18 +5,32 @@ namespace App\Http\Controllers;
 use App\Models\Collecte;
 use Illuminate\Http\Request;
 use App\Models\Nature;
+use Illuminate\Support\Facades\Auth;
 
 class CollecteController extends Controller
 {
     // Affiche toutes les collectes et les natures pour le select
-    public function viewcollectes()
-    {
-        // Corrigé : relation 'nature' et non 'natures'
-        $collectes = Collecte::with('nature')->get();
-        $natures = Nature::all(); // Récupère toutes les natures pour le select
+ public function viewcollectes(Request $request)
+{
+    $search = $request->input('search');
+    $natures = Nature::all(); 
 
-        return view('collectes', compact('collectes', 'natures'));
-    }
+    $collectes = Collecte::with('nature')
+        ->when($search, function ($query, $search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nom', 'like', "%$search%")
+                  ->orWhere('quantite', 'like', "%$search%")
+                  // Recherche optionnelle dans le nom de la nature associée
+                  ->orWhereHas('nature', function($n) use ($search) {
+                      $n->where('nom', 'like', "%$search%");
+                  });
+            });
+        })
+        ->latest()
+        ->paginate(10);
+
+    return view('collectes', compact('collectes', 'natures', 'search'));
+}
 
     // Enregistrer une nouvelle collecte
     public function store(Request $request)

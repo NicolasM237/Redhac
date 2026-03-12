@@ -39,11 +39,18 @@
                         <h4 class="card-title">Liste des modes de collecte</h4>
                     </div>
                     <div class="card-body">
-                        <form class="form-group">
-                            <div class="input-group mb-3 input-primary">
-                                <input type="text" class="form-control" placeholder="Entrer la recherche" name="search">
+                        <form action="{{ route('view.collectes') }}" method="GET">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control"
+                                    placeholder="Rechercher une collecte ou une nature..." name="search"
+                                    value="{{ $search ?? '' }}">
                                 <div class="input-group-append">
-                                    <span class="input-group-text">Rechercher</span>
+                                    <button class="btn btn-info" type="submit">
+                                        <i class="fa fa-search"></i> Rechercher
+                                    </button>
+                                    @if (isset($search) && $search)
+                                        <a href="{{ route('view.collectes') }}" class="btn btn-danger">Effacer</a>
+                                    @endif
                                 </div>
                             </div>
                         </form>
@@ -52,42 +59,46 @@
                             <table class="table table-responsive-md">
                                 <thead>
                                     <tr>
-                                        <th style="width:80px;"><b>#</b></th>
-                                        <th><b>NATURE</b></th>
-                                        <th><b>MODE DE COLLECTE</b></th>
-                                        <th><b>QUANTITE</b></th>
-                                        <th><b>Date d'enregistrement</b></th>
-                                        <th><b>ACTIONS</b></th>
+                                        <th style="width:80px;">#</th>
+                                        <th>NATURE</th>
+                                        <th>MODE DE COLLECTE</th>
+                                        <th>QUANTITÉ</th>
+                                        <th>DATE</th>
+                                        <th>ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($collectes as $index => $collecte)
+                                    @forelse ($collectes as $collecte)
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $collecte->nature->nom ?? '-' }}</td>
-                                            <td>{{ $collecte->nom }}</td>
-                                            <td>{{ $collecte->quantite }}</td>
-                                            <td>{{ $collecte->date_collecte }}</td>
+                                            <td><strong>{{ $loop->iteration + ($collectes->currentPage() - 1) * $collectes->perPage() }}</strong>
+                                            </td>
                                             <td>
-                                                <div class="btn-group">
-                                                    <button class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                                                    {{ $collecte->nature->nom ?? 'N/A' }}
+                                            </td>
+                                            <td>{{ $collecte->nom }}</td>
+                                            <td><span class="text-nowrap">{{ $collecte->quantite }}</span></td>
+                                            <td>{{ \Carbon\Carbon::parse($collecte->date_collecte)->format('d/m/Y') }}</td>
+                                            <td>
+                                                   <div class="dropdown">
+                                                    <button type="button" class="btn btn-info light btn-xs dropdown-toggle"
+                                                        data-toggle="dropdown">
                                                         Actions
                                                     </button>
-                                                    <div class="dropdown-menu">
-                                                        {{-- Modifier --}}
+                                                    <div class="dropdown-menu dropdown-menu-right">
                                                         <a class="dropdown-item btnEditCollecte" href="javascript:void(0)"
                                                             data-toggle="modal" data-target=".bd-example-modal-lgMC"
                                                             data-collecte='{{ json_encode($collecte) }}'>
                                                             Modifier
                                                         </a>
 
-                                                        {{-- Supprimer --}}
+                                                        <div class="dropdown-divider"></div>
+
                                                         <form action="{{ route('delete.collecte', $collecte->id) }}"
-                                                            method="POST" class="d-inline">
+                                                            method="POST"
+                                                            onsubmit="return confirm('Supprimer cette collecte ?');">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="dropdown-item"
-                                                                onclick="return confirm('Voulez-vous vraiment supprimer cette collecte ?')">
+                                                            <button type="submit" class="dropdown-item text-danger">
                                                                 Supprimer
                                                             </button>
                                                         </form>
@@ -97,12 +108,17 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center text-danger">Aucune donnée trouvée
+                                            <td colspan="6" class="text-center text-muted">
+                                                Aucune collecte enregistrée pour cette recherche.
                                             </td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
+
+                            <div class="mt-3">
+                                {{ $collectes->appends(['search' => $search])->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>

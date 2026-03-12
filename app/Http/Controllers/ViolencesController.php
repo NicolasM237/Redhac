@@ -8,45 +8,41 @@ use App\Models\Collecte;
 use App\Models\Violences;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ViolencesExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ViolencesController extends Controller
 {
+
+
     public function viewviolences(Request $request)
     {
-        $nationalites = [
-            'Camerounaise',
-            'Gabonaise',
-            'Tchadienne',
-            'Centrafricaine',
-            'Congolaise',
-            'Autre'
-        ];
+        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Autre'];
 
+        // On récupère l'utilisateur connecté
         $user = auth()->user();
 
-        $query = Violences::with(['nature', 'collecte', 'user']);
-
-        // Si ce n'est pas un administrateur, on ne montre que ses propres cas
-        if ($user->role !== 'Administrateur') {
-            $query->where('user_id', $user->id);
+        // SÉCURITÉ : Si l'utilisateur n'est pas connecté, on le redirige ou on gère l'erreur
+        if (!$user) {
+            return redirect()->route('login');
         }
 
-        // Filtrage par nationalité
-        if ($request->filled('nationalite')) {
-            $query->where('nationalite', $request->nationalite);
-        }
+        $violences = Violences::with(['nature', 'collecte', 'user'])
+            // On vérifie le rôle de manière sécurisée
+            ->when($user->profil !== 'Administrateur', function ($q) use ($user) {
+                return $q->where('user_id', $user->id);
+            })
+            ->when($request->filled('nationalite'), function ($q) use ($request) {
+                return $q->where('nationalite', $request->nationalite);
+            })
+            ->when($request->filled('searchTerm'), function ($q) use ($request) {
+                return $q->where('code', 'like', '%' . $request->searchTerm . '%');
+            })
+            ->latest()
+            ->paginate(10);
 
-        // Filtrage par code si fourni
-        if ($request->filled('searchTerm')) {
-            $query->where('code', 'like', '%' . $request->searchTerm . '%');
-        }
-
-        $violences = $query->get();
-
-        return view('violences', [
-            'violences' => $violences,
-            'nationalites' => $nationalites
-        ]);
+        return view('violences', compact('violences', 'nationalites'));
     }
 
     public function addViolences()
@@ -70,6 +66,13 @@ class ViolencesController extends Controller
         ]);
     }
 
+    public function destroy($id)
+    {
+        $violence = Violences::findOrFail($id);
+        $violence->delete();
+
+        return redirect()->route('view.violences')->with('success', 'Violence supprimée avec succès');
+    }
 
     public function store(Request $request)
     {
@@ -160,10 +163,11 @@ class ViolencesController extends Controller
     }
 
 
-    public function listApi(Request $request){
+    public function listApi(Request $request)
+    {
         $user = Auth::user();
-        $violences = Violence::where('user_id', $user->id)->get();
-        return response()->json($violences); 
+        $violences = Violences::where('user_id', $user->id)->get();
+        return response()->json($violences);
     }
 
     public function storeAPI(Request $request)
@@ -212,14 +216,14 @@ class ViolencesController extends Controller
             $validated['fichie3'] = $request->file('fichie3')->store('violence_files');
         }
 
-        $violence = Violence::create($validated);
+        $violence = Violences::create($validated);
 
         return response()->json($violence, 201);
     }
 
     public function updateAPI(Request $request, $code)
     {
-        $violence = Violence::where('code', $code)
+        $violence = Violences::where('code', $code)
             ->where('user_id', Auth::id())->firstOrFail();
 
         $validated = $request->validate([
@@ -263,5 +267,32 @@ class ViolencesController extends Controller
         $violence->update($validated);
 
         return response()->json($violence);
+    }
+
+
+    public function exportExcel()
+    {
+        if (ob_get_contents()) ob_end_clean(); // Nettoie le tampon de sortie
+        return Excel::download(new ViolencesExport, 'liste-violences.xlsx');
+    }
+
+    public function exportCSV()
+    {
+        return Excel::download(new ViolencesExport, 'liste-violences.csv', \Maatwebsite\Excel\Excel::CSV);
+    }
+
+    public function exportPDF()
+    {
+        // Récupérer les données avec les relations
+        $violences = Violences::with(['nature', 'collecte'])->get();
+
+        // Charger une vue spécifique pour le PDF
+        $pdf = Pdf::loadView('pdf.violences', compact('violences'));
+
+        // Optionnel : Définir le format (A4) et l'orientation (paysage si le tableau est large)
+        $pdf->setPaper('a4', 'landscape');
+
+        // Télécharger le fichier
+        return $pdf->download('liste-violences.pdf');
     }
 }

@@ -5,6 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Nature;
+use App\Models\Collecte;
+use App\Models\Violences;
+use Illuminate\Support\Facades\DB;
+use App\Models\Historique;
+
+
 
 class HomeController extends Controller
 {
@@ -15,7 +22,34 @@ class HomeController extends Controller
 
     public function index()
     {
-        return view('home');
+        Historique::create([
+            'user_id' => auth()->id(),
+        ]);
+        // 1. Comptage pour les widgets (Statistiques)
+        $nb_users = User::count();
+        $nb_natures = Nature::count();
+        $nb_collectes = Collecte::count();
+        $nb_violences = Violences::count();
+
+        // 2. Récupération des données pour le graphe (Violences par Nationalité)
+        // On récupère le nom de la nationalité et le nombre de répétitions
+        $dataGraphe = Violences::select('nationalite', DB::raw('count(*) as total'))
+            ->groupBy('nationalite')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        $labels = $dataGraphe->pluck('nationalite'); // Les noms des pays
+        $values = $dataGraphe->pluck('total');      // Les nombres de cas
+
+        // 3. Envoi de toutes les données à la vue
+        return view('home', compact(
+            'nb_users',
+            'nb_natures',
+            'nb_collectes',
+            'nb_violences',
+            'labels',
+            'values'
+        ));
     }
 
     /**
@@ -23,17 +57,35 @@ class HomeController extends Controller
      */
     public function viewusers(Request $request)
     {
-        $search = $request->search;
+        $search = $request->input('search');
 
+        // 1. Récupération des utilisateurs avec recherche et pagination
         $users = User::when($search, function ($query, $search) {
-            $query->where('nom', 'like', "%$search%")
-                ->orWhere('prenom', 'like', "%$search%")
-                ->orWhere('email', 'like', "%$search%")
-                ->orWhere('telephone', 'like', "%$search%")
-                ->orWhere('profil', 'like', "%$search%");
-        })->get();
+            $query->where(function ($q) use ($search) {
+                $q->where('nom', 'like', "%$search%")
+                    ->orWhere('prenom', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('telephone', 'like', "%$search%")
+                    ->orWhere('profil', 'like', "%$search%");
+            });
+        })
+            ->latest()
+            ->paginate(10);
 
-        return view('utilisateurs', compact('users'));
+        // 2. Récupération des statistiques pour les widgets/sidebar
+        $nb_users = User::count();
+        $nb_natures = Nature::count();
+        $nb_collectes = Collecte::count();
+        $nb_violences = Violences::count();
+
+        // 3. Envoi de toutes les données à la vue
+        return view('utilisateurs', compact(
+            'users',
+            'nb_users',
+            'nb_natures',
+            'nb_collectes',
+            'nb_violences'
+        ));
     }
 
     public function createUser(Request $request)

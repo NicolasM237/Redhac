@@ -56,4 +56,10 @@ class NatureController extends Controller
         $natures->delete();
         return redirect()->back()->with('success', 'Nature de cas supprimé avec succès');
     }
+
+    public function listApi(Request $request){
+        $user = Auth::user();
+        $data = Nature::all();
+        return response()->json($data); 
+    }
 }

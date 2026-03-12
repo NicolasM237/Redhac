@@ -183,6 +183,7 @@ class ViolencesController extends Controller
             'auteurs' => 'nullable|string|max:255',
 
             'collecte_id' => 'required|exists:collectes,id',
+            'nature_id' => 'required|exists:natures,id',
 
             'description_cas' => 'nullable|string',
             'mesure_obc' => 'nullable|string',

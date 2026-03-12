@@ -52,11 +52,9 @@ Route::get('/collectes', [CollecteController::class, 'viewcollectes'])->name('co
 Route::post('/update-collecte', [CollecteController::class, 'update'])->name('update.collecte');
 Route::delete('/delete-collecte/{id}', [CollecteController::class, 'deleteCollecte'])->name('delete.collecte');
 
-// Route des Violences
-Route::post('/create-violences', [ViolencesController::class, 'createViolences'])->name('create.violences');
+// Route des violences
+Route::get('/addviolences', [ViolencesController::class, 'addViolences'])->name('add.violences');
+Route::post('/create-violences', [ViolencesController::class, 'store'])->name('create.violences');
 Route::get('/violences', [ViolencesController::class, 'viewviolences'])->name('view.violences');
-Route::delete('/delete-violences/{id}', [ViolencesController::class, 'deleteViolence'])->name('delete.violences');
-
-
 
 Route::get('/mobiles', [UserMobileController::class, 'viewmobiles'])->name('mobiles');

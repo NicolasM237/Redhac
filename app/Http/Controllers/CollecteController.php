@@ -66,4 +66,10 @@ class CollecteController extends Controller
 
         return redirect()->back()->with('success', 'Collecte supprimée avec succès');
     }
+
+    public function listApi(Request $request){
+        $user = Auth::user();
+        $data = Collecte::all();
+        return response()->json($data); 
+    }
 }

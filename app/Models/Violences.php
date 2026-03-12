@@ -22,20 +22,23 @@ class Violences extends Model
         'lieusurvenue',
         'situation',
         'auteurs',
+        'user_id',
         'nature_id',
         'collecte_id',
-        'mode_collecte',
         'description_cas',
         'mesure_obc',
         'risque_victime',
         'attente_victime',
-        'fichie1',
-        'fichie2',
-        'fichie3'
+        'fichier1',
+        'fichier2',
+        'fichier3'
     ];
 
     // Relation avec la Nature
-
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     public function nature()
     {
         return $this->belongsTo(Nature::class, 'nature_id');

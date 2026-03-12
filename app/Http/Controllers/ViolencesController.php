@@ -7,6 +7,7 @@ use App\Models\Nature;
 use App\Models\Collecte;
 use App\Models\Violences;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class ViolencesController extends Controller
 {
@@ -156,5 +157,110 @@ class ViolencesController extends Controller
         $violence->update($data);
 
         return redirect()->route('view.violences')->with('success', 'Violence mise à jour avec succès');
+    }
+
+
+    public function listViolence(Request $request){
+        $user = Auth::user();
+        $violences = Violence::where('user_id', $user->id)->get();
+        return response()->json($violences); 
+    }
+
+    public function storeAPI(Request $request)
+    {
+        $validated = $request->validate([
+            'status' => 'required|string|max:100',
+            'contact' => 'required|string|max:150',
+            'occupation' => 'nullable|string|max:150',
+            'age' => 'required|integer|min:0|max:120',
+            'sexe' => 'required|in:M,F,Autre',
+            'nationalite' => 'required|string|max:100',
+
+            'residence' => 'required|string|max:255',
+            'datesurvenue' => 'required|date',
+            'lieusurvenue' => 'required|string|max:255',
+            'situation' => 'required|string|max:255',
+            'auteurs' => 'nullable|string|max:255',
+
+            'collecte_id' => 'required|exists:collectes,id',
+
+            'description_cas' => 'nullable|string',
+            'mesure_obc' => 'nullable|string',
+            'risque_victime' => 'nullable|string',
+            'attente_victime' => 'nullable|string',
+
+            'fichie1' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'fichie2' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'fichie3' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
+        ]);
+
+        $validated['code'] = Str::uuid();
+
+        $validated['user_id'] = Auth::id();
+
+        // handle files
+        if ($request->hasFile('fichie1')) {
+            $validated['fichie1'] = $request->file('fichie1')->store('violence_files');
+        }
+
+        if ($request->hasFile('fichie2')) {
+            $validated['fichie2'] = $request->file('fichie2')->store('violence_files');
+        }
+
+        if ($request->hasFile('fichie3')) {
+            $validated['fichie3'] = $request->file('fichie3')->store('violence_files');
+        }
+
+        $violence = Violence::create($validated);
+
+        return response()->json($violence, 201);
+    }
+
+    public function updateAPI(Request $request, $code)
+    {
+        $violence = Violence::where('code', $code)
+            ->where('user_id', Auth::id())->firstOrFail();
+
+        $validated = $request->validate([
+            'status' => 'sometimes|string|max:100',
+            'contact' => 'sometimes|string|max:150',
+            'occupation' => 'nullable|string|max:150',
+            'age' => 'sometimes|integer|min:0|max:120',
+            'sexe' => 'sometimes|in:M,F,Autre',
+            'nationalite' => 'sometimes|string|max:100',
+
+            'residence' => 'sometimes|string|max:255',
+            'datesurvenue' => 'sometimes|date',
+            'lieusurvenue' => 'sometimes|string|max:255',
+            'situation' => 'sometimes|string|max:255',
+            'auteurs' => 'nullable|string|max:255',
+
+            'collecte_id' => 'sometimes|exists:collectes,id',
+
+            'description_cas' => 'nullable|string',
+            'mesure_obc' => 'nullable|string',
+            'risque_victime' => 'nullable|string',
+            'attente_victime' => 'nullable|string',
+
+            'fichie1' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'fichie2' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'fichie3' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
+        ]);
+
+        if ($request->hasFile('fichie1')) {
+            $validated['fichie1'] = $request->file('fichie1')->store('violence_files');
+        }
+
+        if ($request->hasFile('fichie2')) {
+            $validated['fichie2'] = $request->file('fichie2')->store('violence_files');
+        }
+
+        if ($request->hasFile('fichie3')) {
+            $validated['fichie3'] = $request->file('fichie3')->store('violence_files');
+        }
+
+        $violence->update($validated);
+
+        return response()->json($violence);
     }
 }

@@ -160,7 +160,7 @@ class ViolencesController extends Controller
     }
 
 
-    public function listViolence(Request $request){
+    public function listApi(Request $request){
         $user = Auth::user();
         $violences = Violence::where('user_id', $user->id)->get();
         return response()->json($violences); 

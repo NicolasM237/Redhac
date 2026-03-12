@@ -5,17 +5,13 @@
 
     RewriteEngine On
 
-    # Handle Authorization Header
+    # Gestion du Header Authorization (pour les API)
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
-
-    # Send Requests To Front Controller...
+    # Si le fichier demandé n'est pas un dossier et n'existe pas physiquement
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
+    # On envoie tout à l'index.php qui est dans ce même dossier
     RewriteRule ^ index.php [L]
 </IfModule>

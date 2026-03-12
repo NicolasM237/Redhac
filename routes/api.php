@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserMobileController;
+use App\Http\Controllers\ViolencesController;
+use App\Http\Controllers\NatureController;
+use App\Http\Controllers\CollecteController;
 
 
 /*
@@ -18,6 +21,16 @@ use App\Http\Controllers\UserMobileController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+
+Route::middleware('auth:sanctum')->group(function (): void {
+    Route::post('/violence', [ViolencesController::class, 'storeApi']);
+    Route::put('/violence/{code}', [ViolencesController::class, 'updateApi']);
+    Route::get('/violence', [ViolencesController::class, 'listApi']);
+    
+    Route::get('/nature', [NatureController::class, 'listApi']);
+    Route::get('/collecte', [CollecteController::class, 'listApi']);
 });
 
 Route::get('/mobile/users', [UserMobileController::class, 'getUsersMobiles']);        // Liste des utilisateurs

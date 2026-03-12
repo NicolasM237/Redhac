@@ -56,5 +56,9 @@ Route::delete('/delete-collecte/{id}', [CollecteController::class, 'deleteCollec
 Route::get('/addviolences', [ViolencesController::class, 'addViolences'])->name('add.violences');
 Route::post('/create-violences', [ViolencesController::class, 'store'])->name('create.violences');
 Route::get('/violences', [ViolencesController::class, 'viewviolences'])->name('view.violences');
+// Ajoutez ceci dans la section "Route des violences"
+Route::get('/violences/edit/{id}', [ViolencesController::class, 'edit'])->name('edit.violences');
+Route::post('/violences/update', [ViolencesController::class, 'update'])->name('update.violences');
+
 
 Route::get('/mobiles', [UserMobileController::class, 'viewmobiles'])->name('mobiles');

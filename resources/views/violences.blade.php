@@ -136,9 +136,9 @@
                                                             data-toggle="modal" data-target="#infosleModal"
                                                             title="voir les infos petite section"><i class="icon-eye"></i>
                                                             Voir</a>
-                                                            
-                                                        <a href="#" class="dropdown-item btnEditViolence"
-                                                            data-violence='@json($violence)'>
+
+                                                        <a href="{{ route('edit.violences', $violence->id) }}"
+                                                            class="dropdown-item">
                                                             Modifier
                                                         </a>
                                                         <a class="dropdown-item" href="#">Supprimer</a>
@@ -366,4 +366,5 @@
                 });
             });
         </script>
+
     @endsection

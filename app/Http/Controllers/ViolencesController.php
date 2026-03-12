@@ -118,4 +118,43 @@ class ViolencesController extends Controller
 
         return redirect()->route('view.violences')->with('success', 'Cas enregistré avec succès');
     }
+
+    public function edit($id)
+    {
+        $violence = Violences::findOrFail($id);
+        $natures = Nature::all();
+        $collectes = Collecte::all();
+
+        // On définit la liste des statuts
+        $statuses = ['Victime', 'Temoin', 'DDH'];
+
+        // On définit les nationalités (pour être sûr que ça marche aussi)
+        $nationalites = ['Camerounaise', 'Sénégalaise', 'Ivoirienne', 'Malienne', 'Autre'];
+
+        return view('updateviolence', compact('violence', 'natures', 'collectes', 'statuses', 'nationalites'));
+    }
+
+    // Pour sauvegarder les changements
+    public function update(Request $request)
+    {
+        $violence = Violences::findOrFail($request->id);
+        $data = $request->all();
+
+        // Gestion de l'upload fichier 1 (répétez pour 2 et 3)
+        if ($request->hasFile('fichier1')) {
+            $data['fichier1'] = $request->file('fichier1')->store('violences', 'public');
+        }
+
+        if ($request->hasFile('fichier2')) {
+            $data['fichier2'] = $request->file('fichier2')->store('violences', 'public');
+        }
+
+        if ($request->hasFile('fichier3')) {
+            $data['fichier3'] = $request->file('fichier3')->store('violences', 'public');
+        }
+
+        $violence->update($data);
+
+        return redirect()->route('view.violences')->with('success', 'Violence mise à jour avec succès');
+    }
 }

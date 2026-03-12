@@ -350,15 +350,15 @@
                             .attente_victime;
 
                         // Gérer les fichiers
-                        ['fichier1', 'fichier2', 'fichier3'].forEach(fichier => {
-                            let elem = document.getElementById(fichier);
-                            if (violences[fichier]) {
-                                elem.innerHTML =
-                                    `<a href="/storage/${violences[fichier]}" target="_blank">Voir</a>`;
-                            } else {
-                                elem.textContent = '';
-                            }
-                        });
+                      ['fichier1', 'fichier2', 'fichier3'].forEach(fichier => {
+    let elem = document.getElementById(fichier);
+    if (violences[fichier]) {
+        // Ajout de "violences/" dans le chemin si la base de données ne contient que le nom du fichier
+        elem.innerHTML = `<a href="/storage/violences/${violences[fichier]}" target="_blank">Voir</a>`;
+    } else {
+        elem.textContent = 'Aucun fichier';
+    }
+});
 
                         var modal = new bootstrap.Modal(document.getElementById('infosleModal'));
                         modal.show();

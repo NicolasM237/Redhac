@@ -26,7 +26,7 @@ class ViolencesController extends Controller
         $query = Violences::with(['nature', 'collecte', 'user']);
 
         // Si ce n'est pas un administrateur, on ne montre que ses propres cas
-        if ($user->profil !== 'Administrateur') {
+        if ($user->role !== 'Administrateur') {
             $query->where('user_id', $user->id);
         }
 
@@ -116,6 +116,11 @@ class ViolencesController extends Controller
 
         Violences::create($data);
 
-        return redirect()->route('view.violences')->with('success', 'Cas enregistré avec succès');
+        return redirect()->route('view.violences')->with('success', 'Declaration du cas enregistré avec succès');
     }
+    
+    public function update(Request $request)
+{
+    // Votre logique de mise à jour ici...
+}
 }

@@ -18,19 +18,39 @@
                 </ol>
             </div>
         </div>
-        <div class="col-md-12">
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
+        @if (session('success') || session('error'))
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
 
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-        </div>
+                    @if (session('success'))
+                        Toast.fire({
+                            icon: 'success',
+                            title: "{{ session('success') }}"
+                        });
+                    @endif
+
+                    @if (session('error'))
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur...',
+                            text: "{{ session('error') }}",
+                            confirmButtonColor: '#3085d6'
+                        });
+                    @endif
+                });
+            </script>
+        @endif
         <!-- row -->
         <div class="row">
             <div class="col-lg-12">
@@ -53,6 +73,7 @@
                                 </div>
                             </div>
                         </form>
+
                         <div class="table-responsive">
                             @if ($users->isEmpty())
                                 <div class="alert alert-warning">
@@ -93,13 +114,16 @@
                                                             Modifier
                                                         </a>
 
-                                                        <form method="POST" action="{{ route('delete.user', $user->id) }}"
-                                                            onsubmit="return confirm('Supprimer cet utilisateur ?');"
-                                                            style="display:inline;">
+                                                        <button type="button" class="dropdown-item text-danger"
+                                                            onclick="confirmDelete({{ $user->id }})">
+                                                            Supprimer
+                                                        </button>
+
+                                                        <form id="delete-form-{{ $user->id }}"
+                                                            action="{{ route('delete.user', $user->id) }}" method="POST"
+                                                            style="display: none;">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit"
-                                                                class="dropdown-item text-danger">Supprimer</button>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -118,6 +142,27 @@
                                 {{ $users->appends(request()->input())->links() }}
                             </div>
                         </div>
+
+                        <script>
+                            function confirmDelete(id) {
+                                Swal.fire({
+                                    title: 'Êtes-vous sûr ?',
+                                    text: "Vous ne pourrez pas annuler la suppression de cet utilisateur !",
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#d33',
+                                    cancelButtonColor: '#3085d6',
+                                    confirmButtonText: 'Oui, supprimer !',
+                                    cancelButtonText: 'Annuler',
+                                    reverseButtons: true
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Soumission du formulaire correspondant à l'ID
+                                        document.getElementById('delete-form-' + id).submit();
+                                    }
+                                })
+                            }
+                        </script>
                     </div>
                 </div>
             </div>

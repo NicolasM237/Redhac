@@ -17,20 +17,10 @@
                 </ol>
             </div>
         </div>
-        <div class="col-md-12">
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
 
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
+        <div class="col-md-12">
         </div>
-        <!-- row -->
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -38,7 +28,7 @@
                         <h4 class="card-title">Liste Des violences</h4>
                     </div>
                     <div class="card-body">
-                        <div class="row">
+                        <div class="row mb-4">
                             <div class="col-md-4">
                                 <a href="{{ route('export.violences.excel') }}" class="btn btn-rounded btn-info">
                                     <span class="btn-icon-left text-info"><i class="fa fa-download"></i></span>
@@ -56,41 +46,44 @@
                                     Pdf
                                 </a>
                             </div>
-                            <form method="GET" action="{{ route('view.violences') }}">
-                                <div class="row">
-                                    <div class="col-md-5">
-                                        <div class="input-group input-primary">
-                                            <select name="nationalite" class="form-control" onchange="this.form.submit()">
-                                                <option value="">-- Toutes les nationalités --</option>
-                                                @foreach ($nationalites as $pays)
-                                                    <option value="{{ $pays }}"
-                                                        {{ request('nationalite') == $pays ? 'selected' : '' }}>
-                                                        {{ $pays }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">Nationalité</span>
+                            <div class="col-md-8">
+                                <form method="GET" action="{{ route('view.violences') }}">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="input-group input-primary">
+                                                <select name="nationalite" class="form-control"
+                                                    onchange="this.form.submit()">
+                                                    <option value="">-- Toutes les nationalités --</option>
+                                                    @foreach ($nationalites as $pays)
+                                                        <option value="{{ $pays }}"
+                                                            {{ request('nationalite') == $pays ? 'selected' : '' }}>
+                                                            {{ $pays }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">Nationalité</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="input-group input-primary">
-                                            <input type="text" class="form-control" placeholder="Entrer le code..."
-                                                name="searchTerm" value="{{ request('searchTerm') }}">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-info" type="submit">Rechercher</button>
+                                        <div class="col-md-5">
+                                            <div class="input-group input-primary">
+                                                <input type="text" class="form-control" placeholder="Entrer le code..."
+                                                    name="searchTerm" value="{{ request('searchTerm') }}">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="submit">Rechercher</button>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-2">
+                                            @if (request('nationalite') || request('searchTerm'))
+                                                <a href="{{ route('view.violences') }}"
+                                                    class="btn btn-danger btn-block">Effacer</a>
+                                            @endif
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        @if (request('nationalite') || request('searchTerm'))
-                                            <a href="{{ route('view.violences') }}"
-                                                class="btn btn-danger btn-block">Effacer</a>
-                                        @endif
-                                    </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
 
                         <div class="table-responsive">
@@ -129,18 +122,16 @@
                                                             class="dropdown-item">
                                                             <i class="fa fa-edit mr-2"></i> Modifier
                                                         </a>
-
-                                                        <div class="dropdown-divider"></div>
-
-                                                        <form action="{{ route('delete.violences', $violence->id) }}"
-                                                            method="POST"
-                                                            onsubmit="return confirm('Supprimer ce cas de violence ?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item text-danger">
-                                                                <i class="fa fa-trash mr-2"></i> Supprimer
-                                                            </button>
-                                                        </form>
+                                                        <button type="button" class="dropdown-item text-danger"
+                                                            onclick="confirmDeleteViolence({{ $violence->id }})">
+                                                            <i class="fa fa-trash mr-2"></i> Supprimer
+                                                        </button>
+                                                            <form id="delete-form-violence-{{ $violence->id }}"
+                                                                action="{{ route('delete.violences', $violence->id) }}"
+                                                                method="POST" style="display:none;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                            </form>
                                                     </div>
                                                 </div>
                                             </td>
@@ -150,9 +141,7 @@
                                             <td>{{ $violence->nationalite }}</td>
                                             <td><span class="badge badge-light">{{ $violence->status }}</span></td>
                                             <td>{{ $violence->sexe }}</td>
-                                            <td>
-                                                {{ $violence->nature->nom ?? 'N/A' }}
-                                            </td>
+                                            <td>{{ $violence->nature->nom ?? 'N/A' }}</td>
                                             <td>{{ $violence->collecte->nom ?? 'N/A' }}</td>
                                             <td class="text-nowrap">
                                                 {{ \Carbon\Carbon::parse($violence->datesurvenue)->format('d/m/Y') }}</td>
@@ -173,7 +162,8 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="10" class="text-center">Aucun enregistrement trouvé.</td>
+                                            <td colspan="10" class="text-center text-muted">Aucun enregistrement trouvé.
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -187,6 +177,52 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+
+                @if (session('success'))
+                    Toast.fire({
+                        icon: 'success',
+                        title: "{{ session('success') }}"
+                    });
+                @endif
+
+                @if (session('error'))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: "{{ session('error') }}",
+                        confirmButtonColor: '#3085d6'
+                    });
+                @endif
+            });
+
+            function confirmDeleteViolence(id) {
+                Swal.fire({
+                    title: 'Supprimer ce cas ?',
+                    text: "Cette action est irréversible et supprimera les fichiers associés.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Oui, supprimer',
+                    cancelButtonText: 'Annuler',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('delete-form-violence-' + id).submit();
+                    }
+                });
+            }
+        </script>
 
         <small class="copyright" style="text-align:center;">
             <p>Copyright © Designed &amp; Developed by <a href="/login" target="_blank">Univers Solutions</a> 2026</p>

@@ -49,7 +49,7 @@ class CollecteController extends Controller
             'date_collecte' => $request->date_collecte,
         ]);
 
-        return redirect()->back()->with('success', 'Collecte enregistrée avec succès');
+        return redirect()->back()->with('success', 'Mode de collecte enregistré avec succès');
     }
 
     public function update(Request $request)
@@ -69,7 +69,7 @@ class CollecteController extends Controller
         $collecte->date_collecte = $request->date_collecte;
         $collecte->save();
 
-        return redirect()->back()->with('success', 'Collecte modifiée avec succès');
+        return redirect()->back()->with('success', 'Mode de collecte modifié avec succès');
     }
 
     // Supprimer une collecte
@@ -78,7 +78,7 @@ class CollecteController extends Controller
         $collecte = Collecte::findOrFail($id);
         $collecte->delete();
 
-        return redirect()->back()->with('success', 'Collecte supprimée avec succès');
+        return redirect()->back()->with('success', 'Mode de collecte supprimé avec succès');
     }
 
     public function listApi(Request $request){

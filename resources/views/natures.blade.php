@@ -19,19 +19,8 @@
             </div>
         </div>
         <div class="col-md-12">
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
         </div>
-        <!-- row -->
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -39,7 +28,6 @@
                         <h4 class="card-title">Liste des natures des cas</h4>
                     </div>
                     <div class="card-body">
-                        <!-- Champ de recherche -->
                         <form action="{{ route('view.natures') }}" method="GET">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="Rechercher une nature..."
@@ -54,13 +42,8 @@
                                 </div>
                             </div>
                         </form>
-                        <div class="table-responsive">
-                            @if ($natures->isEmpty())
-                                <div class="alert alert-warning">
-                                    Aucun utilisateur trouvé pour votre recherche.
-                                </div>
-                            @endif
 
+                        <div class="table-responsive">
                             <table class="table table-responsive-md">
                                 <thead>
                                     <tr>
@@ -89,14 +72,16 @@
                                                             Modifier
                                                         </a>
 
-                                                        <form method="POST"
+                                                        <button type="button" class="dropdown-item text-danger"
+                                                            onclick="confirmDeleteNature({{ $nature->id }})">
+                                                            Supprimer
+                                                        </button>
+
+                                                        <form id="delete-form-nature-{{ $nature->id }}" method="POST"
                                                             action="{{ route('delete.natures', $nature->id) }}"
-                                                            onsubmit="return confirm('Voulez-vous vraiment supprimer cette nature ?');">
+                                                            style="display:none;">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="dropdown-item text-danger">
-                                                                Supprimer
-                                                            </button>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -120,10 +105,58 @@
                 </div>
             </div>
 
-            <small class="copyright" style="text-align:center;">
+            <small class="copyright" style="text-align:center; width: 100%;">
                 <p>Copyright © Designed &amp; Developed by <a href="/login" target="_blank">Univers Solutions</a> 2026</p>
             </small>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // 1. Gestion des notifications de session
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+
+                @if (session('success'))
+                    Toast.fire({
+                        icon: 'success',
+                        title: "{{ session('success') }}"
+                    });
+                @endif
+
+                @if (session('error'))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oups...',
+                        text: "{{ session('error') }}",
+                        confirmButtonColor: '#3085d6'
+                    });
+                @endif
+            });
+
+            // 2. Fonction de confirmation de suppression
+            function confirmDeleteNature(id) {
+                Swal.fire({
+                    title: 'Supprimer cette nature ?',
+                    text: "Cette action peut impacter les cas liés à cette nature.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Oui, supprimer',
+                    cancelButtonText: 'Annuler',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('delete-form-nature-' + id).submit();
+                    }
+                });
+            }
+        </script>
 
         <!--formulaire d'enregistrement-->
         <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">

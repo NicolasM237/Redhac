@@ -40,9 +40,9 @@
                                 </div>
                             @endif
 
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
                                 <table class="table table-striped table-hover align-middle">
-                                    <thead class="thead-light">
+                                    <thead class="thead-light" style="position: sticky; top: 0; z-index: 1;">
                                         <tr>
                                             <th scope="col"><b>Nom et Prénom</b></th>
                                             <th scope="col"><b>Email</b></th>
@@ -78,10 +78,6 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-                            </div>
-
-                            <div class="d-flex justify-content-center mt-3">
-                                {{ $historiques->links() }}
                             </div>
 
                         </div>

@@ -72,26 +72,17 @@
                         </div>
 
                         <ul class="navbar-nav header-right">
-
-                            <!-- USER PROFILE -->
                             @auth
                                 <li class="nav-item d-flex align-items-center">
-                                    <!-- Bouton Déconnexion visible -->
-                                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="m-0">
                                         @csrf
-
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?')">
-
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="confirmLogout()">
                                             <i class="fa fa-sign-out me-1"></i>
                                             Déconnexion
-
                                         </button>
-
                                     </form>
-
                                 </li>
                             @endauth
-
                         </ul>
 
                     </div>
@@ -100,7 +91,26 @@
             </div>
         </div>
 
-
+        <script>
+            function confirmLogout() {
+                Swal.fire({
+                    title: 'Déconnexion',
+                    text: "Êtes-vous sûr de vouloir quitter votre session ?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33', // Couleur rouge pour la déconnexion
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Oui, me déconnecter',
+                    cancelButtonText: 'Annuler',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Soumission du formulaire si confirmé
+                        document.getElementById('logout-form').submit();
+                    }
+                });
+            }
+        </script>
         <!-- SIDEBAR -->
         <div class="deznav">
             <div class="deznav-scroll">
@@ -225,6 +235,7 @@
     <script src="{{ asset('assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

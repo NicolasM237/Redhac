@@ -18,20 +18,10 @@
                 </ol>
             </div>
         </div>
-        <div class="col-md-12">
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
 
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
+        <div class="col-md-12">
         </div>
-        <!-- row -->
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -54,8 +44,8 @@
                                 </div>
                             </div>
                         </form>
-                        <div class="table-responsive">
 
+                        <div class="table-responsive">
                             <table class="table table-responsive-md">
                                 <thead>
                                     <tr>
@@ -72,14 +62,12 @@
                                         <tr>
                                             <td><strong>{{ $loop->iteration + ($collectes->currentPage() - 1) * $collectes->perPage() }}</strong>
                                             </td>
-                                            <td>
-                                                    {{ $collecte->nature->nom ?? 'N/A' }}
-                                            </td>
+                                            <td>{{ $collecte->nature->nom ?? 'N/A' }}</td>
                                             <td>{{ $collecte->nom }}</td>
                                             <td><span class="text-nowrap">{{ $collecte->quantite }}</span></td>
                                             <td>{{ \Carbon\Carbon::parse($collecte->date_collecte)->format('d/m/Y') }}</td>
                                             <td>
-                                                   <div class="dropdown">
+                                                <div class="dropdown">
                                                     <button type="button" class="btn btn-info light btn-xs dropdown-toggle"
                                                         data-toggle="dropdown">
                                                         Actions
@@ -93,14 +81,16 @@
 
                                                         <div class="dropdown-divider"></div>
 
-                                                        <form action="{{ route('delete.collecte', $collecte->id) }}"
-                                                            method="POST"
-                                                            onsubmit="return confirm('Supprimer cette collecte ?');">
+                                                        <button type="button" class="dropdown-item text-danger"
+                                                            onclick="confirmDeleteCollecte({{ $collecte->id }})">
+                                                            Supprimer
+                                                        </button>
+
+                                                        <form id="delete-form-collecte-{{ $collecte->id }}"
+                                                            action="{{ route('delete.collecte', $collecte->id) }}"
+                                                            method="POST" style="display:none;">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="dropdown-item text-danger">
-                                                                Supprimer
-                                                            </button>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -124,6 +114,56 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Configuration du Toast
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+
+                // Notifications de session
+                @if (session('success'))
+                    Toast.fire({
+                        icon: 'success',
+                        title: "{{ session('success') }}"
+                    });
+                @endif
+
+                @if (session('error'))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: "{{ session('error') }}",
+                        confirmButtonColor: '#3085d6'
+                    });
+                @endif
+            });
+
+            // Fonction de confirmation de suppression
+            function confirmDeleteCollecte(id) {
+                Swal.fire({
+                    title: 'Supprimer cette collecte ?',
+                    text: "Attention, cette action est définitive !",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Oui, supprimer',
+                    cancelButtonText: 'Annuler',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('delete-form-collecte-' + id).submit();
+                    }
+                });
+            }
+        </script>
+
     </div>
 
     <small class="copyright" style="text-align:center;">

@@ -159,7 +159,7 @@ class ViolencesController extends Controller
 
         $violence->update($data);
 
-        return redirect()->route('view.violences')->with('success', 'Violence mise à jour avec succès');
+        return redirect()->route('view.violences')->with('success', 'Declaration de cas mise à jour avec succès');
     }
 
 

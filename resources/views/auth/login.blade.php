@@ -45,8 +45,7 @@
                                 <img src="{{ asset('assets/images/redhac.png') }}" alt="Logo Redhac" width="150"
                                     height="120" style="border-radius: 10%;">
                                 <h1 class="mb-3 text-white">PLATEFORME REDHAC</h1>
-                                <p class="mb-0">Panel d'administration de l'application des violences basées sur le
-                                    genre</p>
+                                <p class="mb-0">Panel d'administration de l'application de restriction des cas Civique</p>
                             </div>
                         </div>
                     </div>

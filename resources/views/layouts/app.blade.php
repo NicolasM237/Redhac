@@ -119,7 +119,8 @@
                     <div class="main-profile">
 
                         <div class="image-bx">
-                            <img src="{{ asset('assets/images/user.png') }}">
+                            <a href="{{ url('/home') }}">
+                            <img src="{{ asset('assets/images/user.png') }}"></a>
                         </div>
 
                         <h5 class="name">

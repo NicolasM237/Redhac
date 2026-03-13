@@ -32,11 +32,12 @@ Route::get('/', function () {
 Auth::routes();
 
 
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/utilisateurs', [HomeController::class, 'viewusers'])->name('viewusers');
 Route::post('/create-user', [HomeController::class, 'createUser'])->name('create.user');
 Route::delete('/delete-user/{id}', [HomeController::class, 'deleteUser'])->name('delete.user');
 Route::post('/updateuser', [HomeController::class, 'updateUser'])->name('updateuser');
-Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Route des Natures de cas
 Route::post('/create-natures', [NatureController::class, 'createNatures'])->name('create.natures');
@@ -52,7 +53,7 @@ Route::post('/update-collecte', [CollecteController::class, 'update'])->name('up
 Route::delete('/delete-collecte/{id}', [CollecteController::class, 'deleteCollecte'])->name('delete.collecte');
 
 // Groupe de routes pour les Violences
-Route::get('/', [ViolencesController::class, 'viewviolences'])->name('view.violences');
+Route::get('/violences', [ViolencesController::class, 'viewviolences'])->name('view.violences');
 Route::get('/addviolences', [ViolencesController::class, 'addViolences'])->name('add.violences');
 Route::post('/store', [ViolencesController::class, 'store'])->name('create.violences');
 Route::get('/edit/{id}', [ViolencesController::class, 'edit'])->name('edit.violences');

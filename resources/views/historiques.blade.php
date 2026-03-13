@@ -41,24 +41,25 @@
                             @endif
 
                             <div class="table-responsive">
-                                <table class="table table-responsive-md">
-                                    <thead>
+                                <table class="table table-striped table-hover align-middle">
+                                    <thead class="thead-light">
                                         <tr>
-                                            <th><b>Nom et Prénom</b></th>
-                                            <th><b>Email</b></th>
-                                            <th><b>Date et Heure</b></th>
-                                            <th><b>Actions</b></th>
+                                            <th scope="col"><b>Nom et Prénom</b></th>
+                                            <th scope="col"><b>Email</b></th>
+                                            <th scope="col"><b>Date et Heure</b></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse($historiques as $item)
                                             <tr>
-                                                <td>
-                                                    <strong>{{ $item->user->nom ?? 'N/A' }}
-                                                        {{ $item->user->prenom ?? '' }}</strong>
+                                                <td class="text-nowrap">
+                                                    <strong>
+                                                        {{ $item->user->nom ?? 'N/A' }}
+                                                        {{ $item->user->prenom ?? '' }}
+                                                    </strong>
                                                 </td>
                                                 <td>{{ $item->user->email ?? 'Email inconnu' }}</td>
-                                                <td>
+                                                <td class="text-nowrap">
                                                     <div class="d-flex align-items-center">
                                                         <i class="fa fa-calendar-o mr-2 text-primary"></i>
                                                         <span>{{ $item->created_at->format('d/m/Y') }}</span>
@@ -70,16 +71,17 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="4" class="text-center">Aucun historique de connexion trouvé.
+                                                <td colspan="3" class="text-center py-4">
+                                                    Aucun historique de connexion trouvé.
                                                 </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
+                            </div>
 
-                                <div class="d-flex justify-content-center">
-                                    {{ $historiques->links() }}
-                                </div>
+                            <div class="d-flex justify-content-center mt-3">
+                                {{ $historiques->links() }}
                             </div>
 
                         </div>

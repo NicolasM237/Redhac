@@ -91,7 +91,7 @@ class UserMobileController extends Controller
         $user->update([
             'nom' => $request->nom,
             'prenom' => $request->prenom,
-            'sexe' => $request->sexe,
+            // 'sexe' => $request->sexe,
         ]);
 
         return response()->json([

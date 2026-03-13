@@ -69,7 +69,8 @@ class UserMobileController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Utilisateur verifie',
-            'user' => $user
+            'user' => $user,
+            'token' => $token,
         ]);
     }
 

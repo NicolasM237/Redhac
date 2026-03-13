@@ -176,7 +176,7 @@ class ViolencesController extends Controller
             'status' => 'required|string|max:100',
             'contact' => 'required|string|max:150',
             'occupation' => 'nullable|string|max:150',
-            'age' => 'required|integer|min:0|max:120',
+            'age' => 'required|string',
             'sexe' => 'required|in:M,F,Autre',
             'nationalite' => 'required|string|max:100',
 

@@ -24,7 +24,7 @@ class UserMobileController extends Controller
             [
                 'numero' => $request->numero,
                 'otp' => $otp,
-                'type' => $type
+                'type' => 'mobile'
             ],
         );
 

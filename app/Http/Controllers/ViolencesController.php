@@ -218,7 +218,7 @@ class ViolencesController extends Controller
 
         $violence = Violences::create($validated);
 
-        return response()->json($violence, 201);
+        return response()->json($violence->loadMissing('nature', 'collecte'), 201);
     }
 
     public function updateAPI(Request $request, $code)

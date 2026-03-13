@@ -199,21 +199,21 @@ class ViolencesController extends Controller
             'fichie3' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
         ]);
 
-        $validated['code'] = Str::uuid();
+        $validated['code'] =  $code = 'VIO-'. Auth::id() .''. date('Y') . '-' . strtoupper(Str::random(5));;
 
         $validated['user_id'] = Auth::id();
 
         // handle files
         if ($request->hasFile('fichie1')) {
-            $validated['fichie1'] = $request->file('fichie1')->store('violence_files');
+            $validated['fichie1'] = $request->file('fichie1')->store('violences', 'public');
         }
 
         if ($request->hasFile('fichie2')) {
-            $validated['fichie2'] = $request->file('fichie2')->store('violence_files');
+            $validated['fichie2'] = $request->file('fichie2')->store('violences', 'public');
         }
 
         if ($request->hasFile('fichie3')) {
-            $validated['fichie3'] = $request->file('fichie3')->store('violence_files');
+            $validated['fichie3'] = $request->file('fichie3')->store('violences', 'public');
         }
 
         $violence = Violences::create($validated);

@@ -38,6 +38,9 @@ Route::get('/utilisateurs', [HomeController::class, 'viewusers'])->name('viewuse
 Route::post('/create-user', [HomeController::class, 'createUser'])->name('create.user');
 Route::delete('/delete-user/{id}', [HomeController::class, 'deleteUser'])->name('delete.user');
 Route::post('/updateuser', [HomeController::class, 'updateUser'])->name('updateuser');
+Route::delete('/users/{id}', [HomeController::class, 'destroy'])->name('users.destroy');
+Route::get('/mobiles', [HomeController::class, 'viewmobiles'])->name('mobiles');
+
 
 // Route des Natures de cas
 Route::post('/create-natures', [NatureController::class, 'createNatures'])->name('create.natures');
@@ -72,4 +75,3 @@ Route::get('/mes-activites', [ActivitesController::class, 'viewactivites'])->nam
 Route::delete('/activite/delete/{id}', [ActivitesController::class, 'destroy'])->name('delete.activite');
 Route::delete('/activites/clear', [ActivitesController::class, 'clearMyHistory'])->name('clear.activites');
 
-Route::get('/mobiles', [UserMobileController::class, 'viewmobiles'])->name('mobiles');

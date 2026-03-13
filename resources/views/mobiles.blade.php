@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
     <div class="container-fluid">
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
@@ -20,12 +19,13 @@
                         <h4 class="card-title">Liste Des Utilisateurs Mobiles</h4>
                     </div>
                     <div class="card-body">
-                        <form class="form-group">
+                        <form class="form-group" method="GET" action="{{ url()->current() }}">
                             <div class="input-group mb-3 input-primary">
-                                <input type="text" class="form-control" placeholder="Entrer la recherche"
-                                     name="search">
+                                <input type="text" class="form-control"
+                                    placeholder="Rechercher par nom, prénom ou téléphone..." name="search"
+                                    value="{{ request('search') }}">
                                 <div class="input-group-append">
-                                    <span class="input-group-text">Rechercher</span>
+                                    <button class="input-group-text" type="submit">Rechercher</button>
                                 </div>
                             </div>
                         </form>
@@ -37,29 +37,44 @@
                                         <th><b>NOM</b></th>
                                         <th><b>PRENOM</b></th>
                                         <th><b>TELEPHONE</b></th>
-                                        <th><b>SEXE</b></th>
+                                        <th><b>EMAIL</b></th>
                                         <th><b>ACTIONS</b></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr >
-                                        <td><strong></strong></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <button type="button" class="btn btn-info dropdown-toggle"
-                                                    data-toggle="dropdown">
-                                                    Actions
-                                                </button>
-                                                <div class="dropdown-menu">
-                                      
+                                    @forelse($mobiles as $key => $mobile)
+                                        <tr>
+                                            <td><strong>{{ $key + 1 }}</strong></td>
+                                            <td>{{ $mobile->nom }}</td>
+                                            <td>{{ $mobile->prenom }}</td>
+                                            <td>{{ $mobile->telephone }}</td>
+                                            <td>{{ $mobile->email }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                                        data-toggle="dropdown">
+                                                        Actions
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <form action="{{ route('users.destroy', $mobile->id) }}"
+                                                            method="POST" class="delete-form">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="button"
+                                                                class="dropdown-item text-danger btn-delete">
+                                                                Supprimer
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center">Aucun utilisateur trouvé pour
+                                                "{{ request('search') }}".</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -72,5 +87,26 @@
             <p>Copyright © Designed &amp; Developed by <a href="/login" target="_blank">Univers Solutions</a> 2026</p>
         </small>
     </div>
+    <script>
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const form = this.closest('.delete-form');
 
+                Swal.fire({
+                    title: 'Êtes-vous sûr ?',
+                    text: "Cette action est irréversible !",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Oui, supprimer !',
+                    cancelButtonText: 'Annuler'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

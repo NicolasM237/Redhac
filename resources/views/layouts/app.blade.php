@@ -152,12 +152,12 @@
                         </a>
                     </li>
 
-                    {{-- <li>
+                    <li>
                         <a href="{{ url('/mobiles') }}">
                             <i class="fa fa-mobile"></i>
                             <span>User Mobile</span>
                         </a>
-                    </li> --}}
+                    </li>
 
                     <li>
                         <a href="{{ url('/natures') }}">

@@ -20,6 +20,23 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
+    public function viewmobiles()
+    {
+        $search = request('search');
+
+        $mobiles = User::where('type', 'mobile')
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('nom', 'like', "%{$search}%")
+                        ->orWhere('prenom', 'like', "%{$search}%")
+                        ->orWhere('telephone', 'like', "%{$search}%");
+                });
+            })
+            ->get();
+
+        return view('mobiles', compact('mobiles'));
+    }
+
     public function index()
     {
         Historique::create([
@@ -59,20 +76,22 @@ class HomeController extends Controller
     {
         $search = $request->input('search');
 
-        // 1. Récupération des utilisateurs avec recherche et pagination
-        $users = User::when($search, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('nom', 'like', "%$search%")
-                    ->orWhere('prenom', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%")
-                    ->orWhere('telephone', 'like', "%$search%")
-                    ->orWhere('profil', 'like', "%$search%");
-            });
-        })
+        // 1. Récupération des utilisateurs de type 'web' avec recherche et pagination
+        $users = User::where('type', 'web') // Filtre pour n'avoir que le type web
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nom', 'like', "%$search%")
+                        ->orWhere('prenom', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%")
+                        ->orWhere('telephone', 'like', "%$search%")
+                        ->orWhere('profil', 'like', "%$search%");
+                });
+            })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString(); // Garde la recherche active lors du changement de page
 
-        // 2. Récupération des statistiques pour les widgets/sidebar
+        // 2. Récupération des statistiques pour les widgets
         $nb_users = User::count();
         $nb_natures = Nature::count();
         $nb_collectes = Collecte::count();
@@ -157,5 +176,26 @@ class HomeController extends Controller
 
         $user->delete();
         return redirect()->back()->with('success', 'Utilisateur supprimé avec succès');
+    }
+
+
+    public function destroy($id)
+    {
+        try {
+
+            $user = User::findOrFail($id);
+
+            // Vérifier que l'utilisateur est bien de type mobile
+            if ($user->type !== 'mobile') {
+                return redirect()->back()->with('error', 'Seuls les utilisateurs mobiles peuvent être supprimés.');
+            }
+
+            $user->delete();
+
+            return redirect()->back()->with('success', 'Utilisateur mobile supprimé avec succès.');
+        } catch (\Exception $e) {
+
+            return redirect()->back()->with('error', 'Erreur lors de la suppression.');
+        }
     }
 }

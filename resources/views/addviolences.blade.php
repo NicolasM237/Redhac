@@ -1,20 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row page-titles mx-0">
-            <div class="col-sm-6 p-md-0">
-                <div class="welcome-text">
-                    <h4 style="color: blue;">Hello,Bon retour!</h4>
-                    <p class="mb-0">Votre session de travail est prete</p>
-                </div>
-            </div>
-        </div>
         <!-- row -->
         <div class="col-xl-12 col-xxl-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Signalement d'un cas</h4>
+                    <h4 class="card-title">Declaration d'un cas</h4>
                 </div>
                 <div class="card-body">
                     <div id="smartwizard" class="form-wizard order-create">
@@ -34,7 +25,7 @@
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Statut <span class="text-danger">*</span></label>
                                             <select name="status" class="form-control default-select" required>
-                                                <option value="" disabled selected>-- Choisir --</option>
+                                                <option value="" disabled selected>-- Selectionner le statut--</option>
                                                 <option value="Victime">Victime</option>
                                                 <option value="Temoin">Témoin</option>
                                                 <option value="DDH">DDH</option>
@@ -44,21 +35,21 @@
                                             <label class="form-label">Contact (Téléphone ou Email) <span
                                                     class="text-danger">*</span></label>
                                             <input type="text" name="contact" class="form-control"
-                                                pattern="^[0-9+@.\s-]+$" required>
+                                                pattern="^[0-9+@.\s-]+$" placeholder="Entrez le numéro de téléphone ou l'adresse email" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Profession <span class="text-danger">*</span></label>
-                                            <input type="text" name="occupation" class="form-control" required>
+                                            <input type="text" name="occupation" class="form-control" placeholder="Entrez la profession" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Âge <span class="text-danger">*</span></label>
                                             <input type="number" min="0" max="120" name="age"
-                                                class="form-control" required>
+                                                class="form-control" placeholder="Entrez l'âge" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Sexe <span class="text-danger">*</span></label>
                                             <select name="sexe" class="form-control default-select" required>
-                                                <option value="" disabled selected>-- Choisir --</option>
+                                                <option  disabled selected>-- Selectionner le genre --</option>
                                                 <option value="M">Masculin</option>
                                                 <option value="F">Féminin</option>
                                             </select>
@@ -66,7 +57,7 @@
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Nationalité <span class="text-danger">*</span></label>
                                             <select name="nationalite" class="form-control" required>
-                                                <option value="" disabled selected>-- Choisir --</option>
+                                                <option value="" disabled selected>-- Selectionner la nationalité --</option>
                                                 @foreach ($nationalites as $pays)
                                                     <option value="{{ $pays }}"
                                                         {{ old('nationalite') == $pays ? 'selected' : '' }}>
@@ -83,17 +74,17 @@
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Résidence (Quartier, Ville) <span
                                                     class="text-danger">*</span></label>
-                                            <input type="text" name="residence" class="form-control" required>
+                                            <input type="text" name="residence" class="form-control" placeholder="Entrez la résidence" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Date de survenance <span
                                                     class="text-danger">*</span></label>
-                                            <input type="date" name="datesurvenue" class="form-control" required>
+                                            <input type="date" name="datesurvenue" class="form-control" placeholder="Entrez la date de survenance" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Lieu de survenance <span
                                                     class="text-danger">*</span></label>
-                                            <input type="text" name="lieusurvenue" class="form-control" required>
+                                            <input type="text" name="lieusurvenue" class="form-control" placeholder="Entrez le lieu de survenance" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Situation du cas <span
@@ -104,7 +95,7 @@
                                         <div class="col-lg-12 mb-3">
                                             <label class="form-label">Auteurs présumés de la violation <span
                                                     class="text-danger">*</span></label>
-                                            <input type="text" name="auteurs" class="form-control" required>
+                                            <input type="text" name="auteurs" class="form-control" placeholder="Entrez les auteurs présumés" required>
                                         </div>
                                     </div>
                                 </div>
@@ -116,7 +107,7 @@
                                             <label class="form-label">Nature de l'événement <span
                                                     class="text-danger">*</span></label>
                                             <select class="form-control" name="nature_id" required>
-                                                <option disabled selected>-- Choisir une nature --</option>
+                                                <option disabled selected>-- Selectionner la nature --</option>
                                                 @foreach ($natures as $nature)
                                                     <option value="{{ $nature->id }}">{{ $nature->nom }}</option>
                                                 @endforeach
@@ -126,7 +117,7 @@
                                             <label class="form-label">Mode de collecte <span
                                                     class="text-danger">*</span></label>
                                             <select class="form-control" name="collecte_id" required>
-                                                <option disabled selected>-- Choisir une mode de collecte --</option>
+                                                <option disabled selected>-- Selectionner le mode de collecte --</option>
                                                 @foreach ($collectes as $collecte)
                                                     <option value="{{ $collecte->id }}">{{ $collecte->nom }}</option>
                                                 @endforeach
@@ -135,22 +126,22 @@
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Description du cas <span
                                                     class="text-danger">*</span></label>
-                                            <textarea class="form-control" name="description_cas" rows="4" required></textarea>
+                                            <textarea class="form-control" name="description_cas" rows="4" placeholder="Entrez la description du cas" required></textarea>
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Mesure prise par l'OSC <span
                                                     class="text-danger">*</span></label>
-                                            <textarea class="form-control" name="mesure_obc" rows="4" required></textarea>
+                                            <textarea class="form-control" name="mesure_obc" rows="4" placeholder="Entrez les mesures prises par l'OSC" required></textarea>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Risques encourus par la victime <span
+                                            <label class="form-label">Risques qu'en cours la victime <span
                                                     class="text-danger">*</span></label>
-                                            <textarea class="form-control" name="risque_victime" rows="4" required></textarea>
+                                            <textarea class="form-control" name="risque_victime" rows="4" placeholder="Entrez les risques encourus par la victime" required></textarea>
                                         </div>
                                         <div class="col-lg-6 mb-3">
                                             <label class="form-label">Attentes de la victime <span
                                                     class="text-danger">*</span></label>
-                                            <textarea class="form-control" name="attente_victime" rows="4" required></textarea>
+                                            <textarea class="form-control" name="attente_victime" rows="4" placeholder="Entrez les attentes de la victime" required></textarea>
                                         </div>
                                     </div>
                                 </div>

@@ -31,7 +31,7 @@ class UserMobileController extends Controller
             );
         }else {
             $user->otp = $otp;
-            $user->type = $mobile;
+            $user->type = 'mobile';
             $user->save();
         }
         

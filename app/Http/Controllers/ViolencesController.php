@@ -201,10 +201,10 @@ class ViolencesController extends Controller
 
         $validated['code'] =  $code = 'VIO-'. Auth::id() .''. date('Y') . '-' . strtoupper(Str::random(5));;
 
-        // $age = $validated['age'];
-        // $occup = $validated['occupation'];
-        // $validated['occupation'] = $age;
-        // $validated['age'] = $occup;
+        $age = $validated['age'];
+        $occup = $validated['occupation'];
+        $validated['occupation'] = $age;
+        $validated['age'] = $occup;
         
         $validated['user_id'] = Auth::id();
 

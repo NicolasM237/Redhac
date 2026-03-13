@@ -20,13 +20,21 @@ class UserMobileController extends Controller
         $otp = rand(1000, 9999);
 
         //creer l'utilisateur (seul le numero est requis ici)
-        $user = User::updateOrCreate(
-            [
-                'email' => $request->numero,
-                'otp' => $otp,
-                'type' => 'mobile'
-            ],
-        );
+        $user = User::query()->where('email' , $request->numero)->first();
+        if($user == null){
+            $user = User::Create(
+                [
+                    'email' => $request->numero,
+                    'otp' => $otp,
+                    'type' => 'mobile'
+                ],
+            );
+        }else {
+            $user->otp = $otp;
+            $user->type = $mobile;
+            $user->save();
+        }
+        
 
         //logique sms ici 
 

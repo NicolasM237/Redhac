@@ -166,7 +166,7 @@ class ViolencesController extends Controller
     public function listApi(Request $request)
     {
         $user = Auth::user();
-        $violences = Violences::where('user_id', $user->id)->get();
+        $violences = Violences::with('collecte', 'nature')->where('user_id', $user->id)->get();
         return response()->json($violences);
     }
 

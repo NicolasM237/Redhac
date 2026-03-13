@@ -204,7 +204,7 @@ class ViolencesController extends Controller
         $age = $validated['age'];
         $occup = $validated['occupation'];
         $validated['occupation'] = $age;
-        $validated['age'] = $occupation;
+        $validated['age'] = $occup;
         
         $validated['user_id'] = Auth::id();
 

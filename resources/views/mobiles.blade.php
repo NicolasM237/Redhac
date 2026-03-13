@@ -46,7 +46,7 @@
                                             <td><strong>{{ $key + 1 }}</strong></td>
                                             <td>{{ $mobile->nom }}</td>
                                             <td>{{ $mobile->prenom }}</td>
-                                            <td>{{ $mobile->telephone }}</td>
+                                            <td>{{ $mobile->email }}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <button type="button" class="btn btn-info dropdown-toggle"

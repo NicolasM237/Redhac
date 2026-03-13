@@ -22,7 +22,7 @@ class UserMobileController extends Controller
         //creer l'utilisateur (seul le numero est requis ici)
         $user = User::query()->where('email' , $request->numero)->first();
         if($user == null){
-            $user = User::Create(
+            $user = User::create(
                 [
                     'email' => $request->numero,
                     'otp' => $otp,

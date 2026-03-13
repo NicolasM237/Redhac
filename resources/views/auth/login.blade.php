@@ -40,7 +40,7 @@
                 <div class="row justify-content-center h-100 align-items-center">
                     <div class="col-md-6">
                         <div class="authentication-content"
-                            style="background-color: #00346b; height: 550px; display: flex; align-items: center; justify-content: center; color: white; padding: 20px; border-radius: 8px;">
+                            style="background-color: #00346b; height: 540px; display: flex; align-items: center; justify-content: center; color: white; padding: 20px; border-radius: 8px;">
                             <div class="text-center">
                                 <img src="{{ asset('assets/images/redhac.png') }}" alt="Logo Redhac" width="150"
                                     height="120" style="border-radius: 10%;">

@@ -77,7 +77,7 @@ class UserMobileController extends Controller
     public function updateProfile(Request $request){
         $validator = Validator::make($request->all(),[
             'nom' => 'required|string|max:50',
-            'prenom' => 'required|string|max:50',
+            'prenom' => 'sometimes|string|max:50',
             'sexe' => 'required'
         ]);
 
@@ -90,7 +90,7 @@ class UserMobileController extends Controller
 
         $user->update([
             'nom' => $request->nom,
-            'prenom' => $request->prenom,
+            'prenom' => $request->prenom ?? "",
             // 'sexe' => $request->sexe,
         ]);
 

@@ -31,9 +31,9 @@ Route::middleware('auth:sanctum')->group(function (): void {
     
     Route::get('/nature', [NatureController::class, 'listApi']);
     Route::get('/collecte', [CollecteController::class, 'listApi']);
+    Route::post('/auth/update-profile', [UserMobileController::class,'updateProfile']);
 });
 
 Route::get('/mobile/users', [UserMobileController::class, 'getUsersMobiles']);        // Liste des utilisateurs
 Route::post('/auth/send-otp', [UserMobileController::class,'sendOtp']);
 Route::post('/auth/verify-otp', [UserMobileController::class,'verifyOtp']);
-Route::post('/auth/update-profile', [UserMobileController::class,'updateProfile']);

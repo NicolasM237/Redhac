@@ -81,6 +81,7 @@ class ViolencesController extends Controller
                 ->withInput(); 
         }
 
+        // 2. Votre validation existante
         $request->validate([
             'status' => 'required',
             'contact' => 'required',
@@ -105,12 +106,14 @@ class ViolencesController extends Controller
             'fichier3' => 'nullable|file|max:10240',
         ]);
 
+        // 3. Logique de création
         $code = 'VIO-' . date('Y') . '-' . strtoupper(Str::random(5));
 
         $data = $request->all();
         $data['code'] = $code;
         $data['user_id'] = auth()->id();
 
+        // Gestion des fichiers...
         if ($request->hasFile('fichier1')) {
             $data['fichier1'] = $request->file('fichier1')->store('violences', 'public');
         }

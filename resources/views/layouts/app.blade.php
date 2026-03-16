@@ -120,7 +120,7 @@
 
                         <div class="image-bx">
                             <a href="{{ url('/home') }}">
-                            <img src="{{ asset('assets/images/user.png') }}"></a>
+                                <img src="{{ asset('assets/images/user.png') }}"></a>
                         </div>
 
                         <h5 class="name">
@@ -146,19 +146,23 @@
                         </a>
                     </li>
 
-                    <li>
-                        <a href="{{ url('/utilisateurs') }}">
-                            <i class="fa fa-user-plus"></i>
-                            <span>Utilisateurs </span>
-                        </a>
-                    </li>
+                    @if (auth()->user()->profil !== 'utilisateur')
+                        <li class="nav-label">Administration</li>
 
-                    <li>
-                        <a href="{{ url('/mobiles') }}">
-                            <i class="fa fa-mobile"></i>
-                            <span>User Mobile</span>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="{{ url('/utilisateurs') }}">
+                                <i class="fa fa-user-plus"></i>
+                                <span class="nav-text">Utilisateurs</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ url('/mobiles') }}">
+                                <i class="fa fa-mobile"></i>
+                                <span class="nav-text">User Mobile</span>
+                            </a>
+                        </li>
+                    @endif
 
                     <li>
                         <a href="{{ url('/natures') }}">

@@ -40,5 +40,18 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('fotso237.com')
             ]
         );
+
+        User::firstOrCreate([
+            'nom' => 'Dupont',
+            'prenom' => 'Jean',
+            'telephone' => '0102030405',
+            'email' => 'jean.mobile@example.com',
+            'adresse' => '123 Rue de la App',
+            'profil' => 'client',
+            'otp' => null,
+            'active' => true,
+            'type' => 'mobile', 
+            'password' => Hash::make('password123'), // Toujours hasher le mot de passe
+        ]);
     }
 }

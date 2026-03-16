@@ -21,7 +21,7 @@ class CreateViolencesTable extends Migration
             $table->string('status');
             $table->string('contact');
             $table->string('occupation');
-            $table->integer('age');
+            $table->string('age');
             $table->string('sexe');
             $table->string('nationalite');
 

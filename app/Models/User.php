@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'adresse',
         'profil',
+        'active',
         'password'
     ];
 

@@ -1,35 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="keywords" content="">
-    <meta name="author" content="">
-    <meta name="robots" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>REDHAC</title>
+    <link rel="stylesheet" href="{{ asset('assets/vendor/chartist/css/chartist.min.css') }}">
+    <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/owl-carousel/owl.carousel.css') }}" rel="stylesheet">
 
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/redhac.png">
-
-    <!-- CSS Vendor -->
-    <link rel="stylesheet" href="assets/vendor/chartist/css/chartist.min.css">
-    <link href="assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
-    <link href="assets/vendor/owl-carousel/owl.carousel.css" rel="stylesheet">
-
-    <link href="assets/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <!-- Custom Stylesheet -->
-    <link href="assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
     <!-- Font Awesome Local -->
-    <link href="assets/icons/font-awesome-old/css/font-awesome.min.css" rel="stylesheet">
-    <link href="assets/icons/font-awesome-old/fonts/fontawesome-webfont3e6e.svg" rel="stylesheet">
-    <link href="assets/icons/icomoon/icomoon.css" rel="stylesheet">
-    <link href="assets/icons/icomoon/fonts/icomoon.svg" rel="stylesheet">
-    <link href="assets/vendor/jquery-smartwizard/dist/css/smart_wizard.min.css" rel="stylesheet">
+    <link href="{{ asset('assets/icons/font-awesome-old/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/icons/font-awesome-old/fonts/fontawesome-webfont3e6e.svg') }}" rel="stylesheet">
+    <link href="{{ asset('assets/icons/icomoon/icomoon.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/icons/icomoon/fonts/icomoon.svg') }}" rel="stylesheet">
+    <link href="{{ asset('assets/vendor/jquery-smartwizard/dist/css/smart_wizard.min.css') }}" rel="stylesheet">
 
 
     <!-- Main CSS -->
-    <link href="{{ asset('assets/css/style.css') }}   " rel="stylesheet">
+    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 </head>
 
 <body>
@@ -45,7 +41,8 @@
                                 <img src="{{ asset('assets/images/redhac.png') }}" alt="Logo Redhac" width="150"
                                     height="120" style="border-radius: 10%;">
                                 <h1 class="mb-3 text-white">PLATEFORME REDHAC</h1>
-                                <p class="mb-0">Panel d'administration de l'application de restriction des cas Civique</p>
+                                <p class="mb-0">Panel d'administration de l'application de restriction des cas Civique
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -56,7 +53,7 @@
                                 <div class="col-xl-12">
                                     <div class="auth-form">
                                         <h2 class="text-center mb-4">CONNEXION</h2>
-                                        <marquee class="mb-4">Entrez vos informations pour vous connecter</marquee>
+                                        <marquee class="mb-4">Entrez vos informations pour vous connectez</marquee>
 
                                         <form method="POST" action="{{ route('login') }}">
                                             @csrf
@@ -108,7 +105,7 @@
 
                                             <div class="text-center">
                                                 <button type="submit" class="btn btn-primary btn-block"
-                                                    style="background-color: #00346b; border: none; width: 100%; padding: 10px;">
+                                                    style="background-color: #00346b;">
                                                     SE CONNECTER
                                                 </button>
                                             </div>

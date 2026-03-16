@@ -20,8 +20,8 @@ class UserMobileController extends Controller
         $otp = rand(1000, 9999);
 
         //creer l'utilisateur (seul le numero est requis ici)
-        $user = User::query()->where('email' , $request->numero)->first();
-        if($user == null){
+        $user = User::query()->where('email', $request->numero)->first();
+        if ($user == null) {
             $user = User::create(
                 [
                     'email' => $request->numero,
@@ -29,12 +29,12 @@ class UserMobileController extends Controller
                     'type' => 'mobile'
                 ],
             );
-        }else {
+        } else {
             $user->otp = $otp;
             $user->type = 'mobile';
             $user->save();
         }
-        
+
 
         //logique sms ici 
 
@@ -55,7 +55,7 @@ class UserMobileController extends Controller
         $user = User::where('email', $request->numero)
             ->where('otp', $request->otp)
             ->first();
-        
+
         if (!$user) {
             return response()->json([
                 'message' => 'Code OTP invalide'
@@ -65,7 +65,7 @@ class UserMobileController extends Controller
         $user->otp = null;
         $user->save();
         $token = $token = $user->createToken('auth_token')->plainTextToken;
-        
+
         return response()->json([
             'status' => 'success',
             'message' => 'Utilisateur verifie',
@@ -74,14 +74,15 @@ class UserMobileController extends Controller
         ]);
     }
 
-    public function updateProfile(Request $request){
-        $validator = Validator::make($request->all(),[
+    public function updateProfile(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'nom' => 'required|string|max:50',
             'prenom' => 'sometimes|string|max:50',
             'sexe' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
@@ -101,10 +102,48 @@ class UserMobileController extends Controller
         ]);
     }
 
-       /** recupere la liste complete des utilisateurs */
-    public function getUsersMobiles()
+    public function viewmobiles()
     {
-        $users = User::where('type', 'mobile')->get();
-        return response()->json($users);
+        $search = request('search');
+        $status = request('status');
+
+        $mobiles = User::where('type', 'mobile')
+            // Filtre Recherche (Nom, Prénom, Téléphone)
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('nom', 'like', "%{$search}%")
+                        ->orWhere('prenom', 'like', "%{$search}%")
+                        ->orWhere('telephone', 'like', "%{$search}%");
+                });
+            })
+            // Filtre Statut (Actif = 1, Inactif = 0)
+            ->when($status, function ($query, $status) {
+                if ($status === 'active') {
+                    return $query->where('active', 1);
+                } elseif ($status === 'desactive') {
+                    return $query->where('active', 0);
+                }
+            })
+            ->get();
+
+        return view('mobiles', compact('mobiles'));
+    }
+
+    public function activate($id)
+    {
+        $user = User::findOrFail($id);
+        $user->active = true;
+        $user->save();
+
+        return back()->with('success', 'Utilisateur activé avec succès !');
+    }
+
+    public function deactivate($id)
+    {
+        $user = User::findOrFail($id);
+        $user->active = false;
+        $user->save();
+
+        return back()->with('success', 'Utilisateur désactivé avec succès !');
     }
 }

@@ -39,8 +39,9 @@ Route::post('/create-user', [HomeController::class, 'createUser'])->name('create
 Route::delete('/delete-user/{id}', [HomeController::class, 'deleteUser'])->name('delete.user');
 Route::post('/updateuser', [HomeController::class, 'updateUser'])->name('updateuser');
 Route::delete('/users/{id}', [HomeController::class, 'destroy'])->name('users.destroy');
-Route::get('/mobiles', [HomeController::class, 'viewmobiles'])->name('mobiles');
-
+Route::get('/mobiles', [UserMobileController::class, 'viewmobiles'])->name('mobiles');
+Route::post('/users/{id}/activate', [UserMobileController::class, 'activate']);
+Route::post('/users/{id}/deactivate', [UserMobileController::class, 'deactivate']);
 
 // Route des Natures de cas
 Route::post('/create-natures', [NatureController::class, 'createNatures'])->name('create.natures');

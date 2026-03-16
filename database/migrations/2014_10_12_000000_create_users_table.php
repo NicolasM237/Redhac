@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('adresse')->nullable();
             $table->string('profil')->nullable(); 
             $table->integer('otp')->nullable();
+            $table->boolean('active')->default(true);
             $table->enum('type', ['mobile', 'web'])->default('web');
             $table->string('password')->nullable();
             $table->rememberToken();

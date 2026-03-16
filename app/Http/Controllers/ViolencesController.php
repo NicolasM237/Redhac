@@ -73,9 +73,14 @@ class ViolencesController extends Controller
 
         return redirect()->route('view.violences')->with('success', 'Violence supprimée avec succès');
     }
-
     public function store(Request $request)
     {
+        if (!auth()->user()->active) {
+            return redirect()->back()
+                ->with('error', 'Votre compte est désactivé. Vous ne pouvez pas enregistrer de nouveaux cas.')
+                ->withInput(); 
+        }
+
         $request->validate([
             'status' => 'required',
             'contact' => 'required',
@@ -120,8 +125,10 @@ class ViolencesController extends Controller
 
         Violences::create($data);
 
-        return redirect()->route('view.violences')->with('success', 'Declaration du cas enregistré avec succès');
+        return redirect()->route('view.violences')->with('success', 'Déclaration du cas enregistrée avec succès');
     }
+
+
 
     public function edit($id)
     {
@@ -199,13 +206,13 @@ class ViolencesController extends Controller
             'fichie3' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
         ]);
 
-        $validated['code'] =  $code = 'VIO-'. Auth::id() .''. date('Y') . '-' . strtoupper(Str::random(5));;
+        $validated['code'] =  $code = 'VIO-' . Auth::id() . '' . date('Y') . '-' . strtoupper(Str::random(5));;
 
         $age = $validated['age'];
         $occup = $validated['occupation'];
         $validated['occupation'] = $age;
         $validated['age'] = $occup;
-        
+
         $validated['user_id'] = Auth::id();
 
         // handle files

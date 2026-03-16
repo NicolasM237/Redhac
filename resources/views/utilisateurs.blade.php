@@ -390,75 +390,78 @@
                     </form>
                 </div>
             </div>
-            <script>
-                // Écouteur d'événement pour le clic sur le bouton "Modifier"
-                document.querySelectorAll('.btnEditUser').forEach(button => {
-                    button.addEventListener('click', function() {
-                        let userData = JSON.parse(this.getAttribute(
-                            'data-user')); // Récupération des données de l'utilisateur
+        </div>
+    </div>
 
-                        console.log(userData); // Debugging pour voir les données
-                        console.log(userData.id); // Debugging pour voir l'ID
+    <script>
+        // Écouteur d'événement pour le clic sur le bouton "Modifier"
+        document.querySelectorAll('.btnEditUser').forEach(button => {
+            button.addEventListener('click', function() {
+                let userData = JSON.parse(this.getAttribute(
+                    'data-user')); // Récupération des données de l'utilisateur
 
-                        // Vérification si l'input est accessible
-                        let idInput = document.querySelector('.bd-example-modal-lgMP input[name="id"]');
-                        if (idInput) {
-                            idInput.value = userData.id; // ID
-                        } else {
-                            console.error("L'input ID n'a pas été trouvé.");
-                        }
+                console.log(userData); // Debugging pour voir les données
+                console.log(userData.id); // Debugging pour voir l'ID
 
-                        let userpermisInput = document.querySelector('.bd-example-modal-lgMP input[name="nom"]');
-                        if (userpermisInput) {
-                            userpermisInput.value = userData.nom; // ID
-                        } else {
-                            console.error("L'input permis n'a pas été trouvé.");
-                        }
-                        let userprenomInput = document.querySelector('.bd-example-modal-lgMP input[name="prenom"]');
-                        if (userprenomInput) {
-                            userprenomInput.value = userData.prenom; // ID
-                        } else {
-                            console.error("L'input prenom n'a pas été trouvé.");
-                        }
-                        let usertelephoneInput = document.querySelector(
-                            '.bd-example-modal-lgMP input[name="telephone"]');
-                        if (usertelephoneInput) {
-                            usertelephoneInput.value = userData.telephone; // ID
-                        } else {
-                            console.error("L'input telephone n'a pas été trouvé.");
-                        }
-                        let useremailInput = document.querySelector('.bd-example-modal-lgMP input[name="email"]');
-                        if (useremailInput) {
-                            useremailInput.value = userData.email; // ID
-                        } else {
-                            console.error("L'input email n'a pas été trouvé.");
-                        }
-                        let useradresseInput = document.querySelector(
-                            '.bd-example-modal-lgMP input[name="adresse"]');
-                        if (useradresseInput) {
-                            useradresseInput.value = userData.adresse; // ID
-                        } else {
-                            console.error("L'input adresse n'a pas été trouvé.");
-                        }
-                        let userprofilInput = document.querySelector(
-                            '.bd-example-modal-lgMP select[name="profil"]');
-                        if (userprofilInput) {
-                            userprofilInput.value = userData.profil; // ID
-                        } else {
-                            console.error("L'input profil n'a pas été trouvé.");
-                        }
-                        let userpasswordInput = document.querySelector(
-                            '.bd-example-modal-lgMP input[name="password"]');
-                        let userconfirmPasswordInput = document.querySelector(
-                            '.bd-example-modal-lgMP input[name="confirm_password"]');
-                        if (userpasswordInput && userconfirmPasswordInput) {
-                            userpasswordInput.value = ''; // ID
-                            userconfirmPasswordInput.value = ''; // ID
-                        } else {
-                            console.error("Les inputs password et confirm_password n'ont pas été trouvés.");
-                        }
+                // Vérification si l'input est accessible
+                let idInput = document.querySelector('.bd-example-modal-lgMP input[name="id"]');
+                if (idInput) {
+                    idInput.value = userData.id; // ID
+                } else {
+                    console.error("L'input ID n'a pas été trouvé.");
+                }
 
-                    });
-                });
-            </script>
-        @endsection
+                let userpermisInput = document.querySelector('.bd-example-modal-lgMP input[name="nom"]');
+                if (userpermisInput) {
+                    userpermisInput.value = userData.nom; // ID
+                } else {
+                    console.error("L'input permis n'a pas été trouvé.");
+                }
+                let userprenomInput = document.querySelector('.bd-example-modal-lgMP input[name="prenom"]');
+                if (userprenomInput) {
+                    userprenomInput.value = userData.prenom; // ID
+                } else {
+                    console.error("L'input prenom n'a pas été trouvé.");
+                }
+                let usertelephoneInput = document.querySelector(
+                    '.bd-example-modal-lgMP input[name="telephone"]');
+                if (usertelephoneInput) {
+                    usertelephoneInput.value = userData.telephone; // ID
+                } else {
+                    console.error("L'input telephone n'a pas été trouvé.");
+                }
+                let useremailInput = document.querySelector('.bd-example-modal-lgMP input[name="email"]');
+                if (useremailInput) {
+                    useremailInput.value = userData.email; // ID
+                } else {
+                    console.error("L'input email n'a pas été trouvé.");
+                }
+                let useradresseInput = document.querySelector(
+                    '.bd-example-modal-lgMP input[name="adresse"]');
+                if (useradresseInput) {
+                    useradresseInput.value = userData.adresse; // ID
+                } else {
+                    console.error("L'input adresse n'a pas été trouvé.");
+                }
+                let userprofilInput = document.querySelector(
+                    '.bd-example-modal-lgMP select[name="profil"]');
+                if (userprofilInput) {
+                    userprofilInput.value = userData.profil; // ID
+                } else {
+                    console.error("L'input profil n'a pas été trouvé.");
+                }
+                let userpasswordInput = document.querySelector(
+                    '.bd-example-modal-lgMP input[name="password"]');
+                let userconfirmPasswordInput = document.querySelector(
+                    '.bd-example-modal-lgMP input[name="confirm_password"]');
+                if (userpasswordInput && userconfirmPasswordInput) {
+                    userpasswordInput.value = ''; // ID
+                    userconfirmPasswordInput.value = ''; // ID
+                } else {
+                    console.error("Les inputs password et confirm_password n'ont pas été trouvés.");
+                }
+
+            });
+        });
+    </script>
+@endsection

@@ -126,12 +126,12 @@
                                                             onclick="confirmDeleteViolence({{ $violence->id }})">
                                                             <i class="fa fa-trash mr-2"></i> Supprimer
                                                         </button>
-                                                            <form id="delete-form-violence-{{ $violence->id }}"
-                                                                action="{{ route('delete.violences', $violence->id) }}"
-                                                                method="POST" style="display:none;">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                            </form>
+                                                        <form id="delete-form-violence-{{ $violence->id }}"
+                                                            action="{{ route('delete.violences', $violence->id) }}"
+                                                            method="POST" style="display:none;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </td>
@@ -245,158 +245,158 @@
                     <div class="row">
                         <div class="col-md-4  ">
                             <strong>Code:</strong>
-                            <span class="badge badge-outline-primary" id="code"></span>
+                            <span style="color: red" id="code"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Nationalité:</strong>
-                            <span class="badge badge-outline-primary" id="nationalite"></span>
+                            <span style="color: red" id="nationalite"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Status:</strong>
-                            <soan class="badge badge-outline-primary" id="status"></span>
+                            <soan style="color: red" id="status"></span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4  ">
                             <strong>Contact:</strong>
-                            <span class="badge badge-outline-primary" id="contact"></span>
+                            <span style="color: red" id="contact"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Occupation:</strong>
-                            <p class="badge badge-outline-primary" id="occupation"></p>
+                            <span style="color: red" id="occupation"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Age:</strong>
-                            <p id="age"></p>
+                            <span style="color: red" id="age"></span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4  ">
                             <strong>Sexe:</strong>
-                            <p id="sexe"></p>
+                            <span style="color: red" id="sexe"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Résidence:</strong>
-                            <p id="residence"></p>
+                            <span style="color: red" id="residence"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Date survenance:</strong>
-                            <p id="datesurvenue"></p>
+                            <span style="color: red" id="datesurvenue"></span>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4  ">
                             <strong>Lieu survenance:</strong>
-                            <p id="lieusurvenue"></p>
+                            <span style="color: red" id="lieusurvenue"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Situation:</strong>
-                            <p id="situation"></p>
+                            <span style="color: red" id="situation"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Auteurs:</strong>
-                            <p id="auteurs"></p>
+                            <span style="color: red" id="auteurs"></span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4  ">
                             <strong>Nature:</strong>
-                            <p id="nature"></p>
+                            <span style="color: red" id="nature"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Collecte:</strong>
-                            <p id="collecte"></p>
+                            <span style="color: red" id="collecte"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Description du cas:</strong>
-                            <p id="description_cas"></p>
+                            <span style="color: red" id="description_cas"></span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4  ">
                             <strong>Mesure OBC:</strong>
-                            <p id="mesure_obc"></p>
+                            <span style="color: red" id="mesure_obc"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Risque victime:</strong>
-                            <p id="risque_victime"></p>
+                            <span style="color: red" id="risque_victime"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Attente victime:</strong>
-                            <p id="attente_victime"></p>
+                            <span style="color: red" id="attente_victime"></span>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4  ">
                             <strong>Fichier 1:</strong>
-                            <p id="fichier1"></p>
+                            <span style="color: red" id="fichier1"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Fichier 2:</strong>
-                            <p id="fichier2"></p>
+                            <span style="color: red" id="fichier2"></span>
                         </div>
                         <div class="col-md-4  ">
                             <strong>Fichier 3:</strong>
-                            <p id="fichier3"></p>
+                            <span style="color: red" id="fichier3"></span>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-                        <button type="button" class="btn btn-dark" id="printModal"
-                            onclick="printModalContent()">Imprimer</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var viewDetailsButtons = document.getElementsByClassName('view-details');
-                Array.from(viewDetailsButtons).forEach(function(button) {
-                    button.addEventListener('click', function() {
-                        var violences = JSON.parse(this.getAttribute('data-violences'));
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var viewDetailsButtons = document.getElementsByClassName('view-details');
+            Array.from(viewDetailsButtons).forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var violences = JSON.parse(this.getAttribute('data-violences'));
 
-                        // Remplir les champs du modal
-                        document.getElementById('code').textContent = violences.code;
-                        document.getElementById('nationalite').textContent = violences.nationalite;
-                        document.getElementById('status').textContent = violences.status;
-                        document.getElementById('contact').textContent = violences.contact;
-                        document.getElementById('occupation').textContent = violences.occupation;
-                        document.getElementById('age').textContent = violences.age;
-                        document.getElementById('sexe').textContent = violences.sexe;
-                        document.getElementById('residence').textContent = violences.residence;
-                        document.getElementById('datesurvenue').textContent = violences.datesurvenue;
-                        document.getElementById('lieusurvenue').textContent = violences.lieusurvenue;
-                        document.getElementById('situation').textContent = violences.situation;
-                        document.getElementById('auteurs').textContent = violences.auteurs;
-                        document.getElementById('nature').textContent = violences.nature?.nom || '';
-                        document.getElementById('collecte').textContent = violences.collecte?.nom || '';
-                        document.getElementById('description_cas').textContent = violences
-                            .description_cas;
-                        document.getElementById('mesure_obc').textContent = violences.mesure_obc;
-                        document.getElementById('risque_victime').textContent = violences
-                            .risque_victime;
-                        document.getElementById('attente_victime').textContent = violences
-                            .attente_victime;
+                    // Remplir les champs du modal
+                    document.getElementById('code').textContent = violences.code;
+                    document.getElementById('nationalite').textContent = violences.nationalite;
+                    document.getElementById('status').textContent = violences.status;
+                    document.getElementById('contact').textContent = violences.contact;
+                    document.getElementById('occupation').textContent = violences.occupation;
+                    document.getElementById('age').textContent = violences.age;
+                    document.getElementById('sexe').textContent = violences.sexe;
+                    document.getElementById('residence').textContent = violences.residence;
+                    document.getElementById('datesurvenue').textContent = violences.datesurvenue;
+                    document.getElementById('lieusurvenue').textContent = violences.lieusurvenue;
+                    document.getElementById('situation').textContent = violences.situation;
+                    document.getElementById('auteurs').textContent = violences.auteurs;
+                    document.getElementById('nature').textContent = violences.nature?.nom || '';
+                    document.getElementById('collecte').textContent = violences.collecte?.nom || '';
+                    document.getElementById('description_cas').textContent = violences
+                        .description_cas;
+                    document.getElementById('mesure_obc').textContent = violences.mesure_obc;
+                    document.getElementById('risque_victime').textContent = violences
+                        .risque_victime;
+                    document.getElementById('attente_victime').textContent = violences
+                        .attente_victime;
 
-                        // Gérer les fichiers
-                        ['fichier1', 'fichier2', 'fichier3'].forEach(fichier => {
-                            let elem = document.getElementById(fichier);
-                            if (violences[fichier]) {
-                                // Ajout de "violences/" dans le chemin si la base de données ne contient que le nom du fichier
-                                elem.innerHTML =
-                                    `<a href="/storage/violences/${violences[fichier]}" target="_blank">Voir</a>`;
-                            } else {
-                                elem.textContent = 'Aucun fichier';
-                            }
-                        });
-
-                        var modal = new bootstrap.Modal(document.getElementById('infosleModal'));
-                        modal.show();
+                    // Gérer les fichiers
+                    ['fichier1', 'fichier2', 'fichier3'].forEach(fichier => {
+                        let elem = document.getElementById(fichier);
+                        if (violences[fichier]) {
+                            // Ajout de "violences/" dans le chemin si la base de données ne contient que le nom du fichier
+                            elem.innerHTML =
+                                `<a href="/storage/violences/${violences[fichier]}" target="_blank">Voir</a>`;
+                        } else {
+                            elem.textContent = 'Aucun fichier';
+                        }
                     });
+
+                    var modal = new bootstrap.Modal(document.getElementById('infosleModal'));
+                    modal.show();
                 });
             });
-        </script>
-    @endsection
+        });
+    </script>
+
+@endsection

@@ -20,23 +20,7 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    public function viewmobiles()
-    {
-        $search = request('search');
-
-        $mobiles = User::where('type', 'mobile')
-            ->when($search, function ($query, $search) {
-                return $query->where(function ($q) use ($search) {
-                    $q->where('nom', 'like', "%{$search}%")
-                        ->orWhere('prenom', 'like', "%{$search}%")
-                        ->orWhere('telephone', 'like', "%{$search}%");
-                });
-            })
-            ->get();
-
-        return view('mobiles', compact('mobiles'));
-    }
-
+  
     public function index()
     {
         Historique::create([

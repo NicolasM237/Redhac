@@ -209,12 +209,7 @@ class ViolencesController extends Controller
             'fichie3' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
         ]);
 
-        $validated['code'] =  $code = 'VIO-' . Auth::id() . '' . date('Y') . '-' . strtoupper(Str::random(5));;
-
-        $age = $validated['age'];
-        $occup = $validated['occupation'];
-        $validated['occupation'] = $age;
-        $validated['age'] = $occup;
+        $validated['code'] =  $code = 'VIO-' . Auth::id() . '' . date('Y') . '-' . strtoupper(Str::random(5));
 
         $validated['user_id'] = Auth::id();
 

@@ -175,8 +175,23 @@ class ViolencesController extends Controller
 
     public function listApi(Request $request)
     {
+        $validated = $request->validate([
+            'status' => 'sometimes|string|max:100',
+            'code' => 'sometimes|string|max:100',
+        ]);
         $user = Auth::user();
-        $violences = Violences::with('collecte', 'nature')->where('user_id', $user->id)->get();
+        
+        $violences = Violences::with('collecte', 'nature')->where('user_id', $user->id);
+        
+        if(isset($validated['status'])){
+            $violences = $violences->where('status', $validated['status']);
+        }
+
+        if(isset($validated['code'])){
+            $violences = $violences->where('code', $validated['code']);
+        }
+        $violences = $violences->paginate(20);
+
         return response()->json($violences);
     }
 
@@ -234,6 +249,11 @@ class ViolencesController extends Controller
         $violence = Violences::create($validated);
 
         return response()->json($violence->loadMissing('nature', 'collecte'), 201);
+    }
+
+    public function getUserStats(Request $request){
+        $violenceCount = Violences::query()->where('user_id', $request->user()->id)->count();
+        return response()->json(['violence_count' => $violenceCount]);
     }
 
     public function updateAPI(Request $request, $code)

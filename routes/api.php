@@ -6,7 +6,7 @@ use App\Http\Controllers\UserMobileController;
 use App\Http\Controllers\ViolencesController;
 use App\Http\Controllers\NatureController;
 use App\Http\Controllers\CollecteController;
-
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +21,13 @@ use App\Http\Controllers\CollecteController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('mail', function(Request $request){
+    Mail::raw('Hello test', function ($msg) {
+        $msg->to('devronaldjunior@gmail.com')
+            ->subject('Quick Test');
+    });
 });
 
 

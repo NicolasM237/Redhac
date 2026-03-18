@@ -235,7 +235,7 @@ class ViolencesController extends Controller
         $validated['user_id'] = Auth::id();
         $user = $request->user();
 
-        if($user->is_active == 0){
+        if($user->active == 0){
             return response()->json("Account not active", 500);
         }
 

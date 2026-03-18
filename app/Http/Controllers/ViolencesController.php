@@ -192,7 +192,13 @@ class ViolencesController extends Controller
         }
         $violences = $violences->paginate(20);
 
-        return response()->json($violences);
+        return response()->json([
+            'current_page' => $this->currentPage(),
+            'last_page' => $this->lastPage(),
+            'per_page' => $this->perPage(),
+            'total' => $this->total(),
+            
+            'data' => $violences]);
     }
 
     public function storeAPI(Request $request)

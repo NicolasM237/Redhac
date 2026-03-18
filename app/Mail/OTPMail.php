@@ -57,8 +57,8 @@ class OTPMail extends Mailable
         return $this->subject('Your OTP Code')
                     ->view('emails.inscription-code')
                     ->with([
-                        'code' => $this->otp
+                        'code' => $this->optCode
                     ]);
-    }
+    
     }
 }

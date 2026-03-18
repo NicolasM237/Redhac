@@ -212,6 +212,11 @@ class ViolencesController extends Controller
         $validated['code'] =  $code = 'VIO-' . Auth::id() . '' . date('Y') . '-' . strtoupper(Str::random(5));
 
         $validated['user_id'] = Auth::id();
+        $user = $request->user();
+
+        if($user->is_active == 0){
+            return response()->json("Account not active", 500);
+        }
 
         // handle files
         if ($request->hasFile('fichie1')) {

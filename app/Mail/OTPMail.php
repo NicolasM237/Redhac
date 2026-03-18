@@ -5,6 +5,8 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 
 class OTPMail extends Mailable
@@ -16,9 +18,34 @@ class OTPMail extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public $optCode;
+
+    public function __construct($otpCode)
     {
-        //
+        $this->optCode = $otpCode;
+    }
+
+    /**
+     * Get the message envelope.
+     */
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Votre code OTP',
+        );
+    }
+
+     /**
+     * Get the message content definition.
+     */
+    public function content(): Content
+    {
+        return new Content(
+            view: 'emails.inscription-code',
+            with: [
+                'code' => $this->otpCode,
+            ],
+        );
     }
 
     /**
@@ -26,8 +53,8 @@ class OTPMail extends Mailable
      *
      * @return $this
      */
-    public function build()
-    {
-        return $this->view('view.name');
-    }
+    // public function build()
+    // {
+    //     return $this->view('view.name');
+    // }
 }

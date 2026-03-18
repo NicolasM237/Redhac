@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OTPMail;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class UserMobileController extends Controller
@@ -35,7 +37,7 @@ class UserMobileController extends Controller
             $user->save();
         }
 
-
+        Mail::to($user->email)->send(new OTPMail($otp));
         //logique sms ici 
 
         return response()->json([

@@ -224,6 +224,7 @@ class ViolencesController extends Controller
             'mesure_obc' => 'nullable|string',
             'risque_victime' => 'nullable|string',
             'attente_victime' => 'nullable|string',
+            'coordinates' => 'nullable|string',
 
             'fichie1' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'fichie2' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
@@ -274,6 +275,8 @@ class ViolencesController extends Controller
             'age' => 'sometimes|integer|min:0|max:120',
             'sexe' => 'sometimes|in:M,F,Autre',
             'nationalite' => 'sometimes|string|max:100',
+            'coordinates' => 'nullable|string',
+
 
             'residence' => 'sometimes|string|max:255',
             'datesurvenue' => 'sometimes|date',
@@ -305,6 +308,9 @@ class ViolencesController extends Controller
             $validated['fichie3'] = $request->file('fichie3')->store('violence_files');
         }
 
+        if($violence->can_modify != 1){
+            return response()->json(['message' => "Unable to modify sorry contact your administrator"], 400);
+        }
         $violence->update($validated);
 
         return response()->json($violence);

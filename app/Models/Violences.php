@@ -20,6 +20,7 @@ class Violences extends Model
         'residence',
         'datesurvenue',
         'lieusurvenue',
+        'coordinates',
         'situation',
         'auteurs',
         'user_id',

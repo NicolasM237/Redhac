@@ -204,9 +204,30 @@ class ViolencesController extends Controller
 
     public function listApi(Request $request)
     {
+        $validated = $request->validate([
+            'status' => 'sometimes|string|max:100',
+            'code' => 'sometimes|string|max:100',
+        ]);
         $user = Auth::user();
-        $violences = Violences::with('collecte', 'nature')->where('user_id', $user->id)->get();
-        return response()->json($violences);
+        
+        $violences = Violences::with('collecte', 'nature')->where('user_id', $user->id);
+        
+        if(isset($validated['status'])){
+            $violences = $violences->where('status', $validated['status']);
+        }
+
+        if(isset($validated['code'])){
+            $violences = $violences->where('code', $validated['code']);
+        }
+        $violences = $violences->paginate(20);
+
+        return response()->json([
+            'current_page' => $violences->currentPage(),
+            'last_page' => $violences->lastPage(),
+            'per_page' => $violences->perPage(),
+            'total' => $violences->total(),
+            
+            'data' => $violences]);
     }
 
     public function storeAPI(Request $request)
@@ -232,37 +253,43 @@ class ViolencesController extends Controller
             'mesure_obc' => 'nullable|string',
             'risque_victime' => 'nullable|string',
             'attente_victime' => 'nullable|string',
+            'coordinates' => 'sometimes|string',
 
             'fichie1' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'fichie2' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'fichie3' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
         ]);
 
-        $validated['code'] =  $code = 'VIO-' . Auth::id() . '' . date('Y') . '-' . strtoupper(Str::random(5));;
-
-        $age = $validated['age'];
-        $occup = $validated['occupation'];
-        $validated['occupation'] = $age;
-        $validated['age'] = $occup;
+        $validated['code'] =  $code = 'VIO-' . Auth::id() . '' . date('Y') . '-' . strtoupper(Str::random(5));
 
         $validated['user_id'] = Auth::id();
+        $user = $request->user();
+
+        if($user->active == 0){
+            return response()->json("Account not active", 500);
+        }
 
         // handle files
         if ($request->hasFile('fichie1')) {
-            $validated['fichie1'] = $request->file('fichie1')->store('violences', 'public');
+            $validated['fichier1'] = $request->file('fichie1')->store('violences', 'public');
         }
 
         if ($request->hasFile('fichie2')) {
-            $validated['fichie2'] = $request->file('fichie2')->store('violences', 'public');
+            $validated['fichier2'] = $request->file('fichie2')->store('violences', 'public');
         }
 
         if ($request->hasFile('fichie3')) {
-            $validated['fichie3'] = $request->file('fichie3')->store('violences', 'public');
+            $validated['fichier3'] = $request->file('fichie3')->store('violences', 'public');
         }
 
         $violence = Violences::create($validated);
 
         return response()->json($violence->loadMissing('nature', 'collecte'), 201);
+    }
+
+    public function getUserStats(Request $request){
+        $violenceCount = Violences::query()->where('user_id', $request->user()->id)->count();
+        return response()->json(['violence_count' => $violenceCount]);
     }
 
     public function updateAPI(Request $request, $code)
@@ -277,6 +304,8 @@ class ViolencesController extends Controller
             'age' => 'sometimes|integer|min:0|max:120',
             'sexe' => 'sometimes|in:M,F,Autre',
             'nationalite' => 'sometimes|string|max:100',
+            'coordinates' => 'nullable|string',
+
 
             'residence' => 'sometimes|string|max:255',
             'datesurvenue' => 'sometimes|date',
@@ -308,6 +337,9 @@ class ViolencesController extends Controller
             $validated['fichie3'] = $request->file('fichie3')->store('violence_files');
         }
 
+        if($violence->can_modify != 1){
+            return response()->json(['message' => "Unable to modify sorry contact your administrator"], 400);
+        }
         $violence->update($validated);
 
         return response()->json($violence);

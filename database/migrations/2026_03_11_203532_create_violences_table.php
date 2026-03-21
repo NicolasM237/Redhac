@@ -18,6 +18,7 @@ class CreateViolencesTable extends Migration
 
             // Wizard Service
             $table->string('code')->unique();
+            $table->boolean('permis')->default(false);
             $table->string('status');
             $table->string('contact');
             $table->string('occupation');

@@ -11,6 +11,7 @@ class Violences extends Model
 
     protected $fillable = [
         'code',
+        'permis',
         'status',
         'contact',
         'occupation',

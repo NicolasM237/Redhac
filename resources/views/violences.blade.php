@@ -30,16 +30,20 @@
                     <div class="card-body">
                         <div class="row mb-4">
                             <div class="col-md-4">
-                                <a href="{{ route('export.violences.excel') }}" class="btn btn-rounded btn-info">
+                                <a href="{{ route('export.violences.excel', request()->query()) }}"
+                                    class="btn btn-rounded btn-info">
                                     <span class="btn-icon-left text-info"><i class="fa fa-download"></i></span>
                                     Excel
                                 </a>
 
-                                <a href="{{ route('export.violences.csv') }}" class="btn btn-rounded btn-primary">
+                                <a href="{{ route('export.violences.csv', request()->query()) }}"
+                                    class="btn btn-rounded btn-primary">
                                     <span class="btn-icon-left text-primary"><i class="fa fa-download"></i></span>
                                     CSV
                                 </a>
-                                <a href="{{ route('export.violences.pdf') }}" class="btn btn-rounded btn-secondary">
+
+                                <a href="{{ route('export.violences.pdf', request()->query()) }}"
+                                    class="btn btn-rounded btn-secondary">
                                     <span class="btn-icon-left text-secondary">
                                         <i class="fa fa-file-pdf-o"></i>
                                     </span>
@@ -91,10 +95,11 @@
                                 <thead>
                                     <tr>
                                         <th><b>ACTIONS</b></th>
+                                        <th>Permis</th>
                                         <th>#</th>
                                         <th>Code</th>
                                         <th>Nationalité</th>
-                                        <th>Status</th>
+                                        <th>Statut</th>
                                         <th>Sexe</th>
                                         <th>Nature</th>
                                         <th>Collecte</th>
@@ -117,7 +122,6 @@
                                                             data-toggle="modal" data-target="#infosleModal">
                                                             <i class="fa fa-eye mr-2"></i> Voir
                                                         </a>
-
                                                         <a href="{{ route('edit.violences', $violence->id) }}"
                                                             class="dropdown-item">
                                                             <i class="fa fa-edit mr-2"></i> Modifier
@@ -134,6 +138,12 @@
                                                         </form>
                                                     </div>
                                                 </div>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-primary toggle-permis"
+                                                    data-id="{{ $violence->id }}">
+                                                    {{ $violence->permis ? 'oui' : 'non' }}
+                                                </button>
                                             </td>
                                             <td><strong>{{ $loop->iteration + ($violences->currentPage() - 1) * $violences->perPage() }}</strong>
                                             </td>
@@ -399,4 +409,28 @@
         });
     </script>
 
+
+    <script>
+        document.querySelectorAll('.toggle-permis').forEach(button => {
+            button.addEventListener('click', function() {
+
+                let id = this.dataset.id;
+
+                fetch(`/violences/${id}/toggle-permis`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.textContent = data.permis ? 'oui' : 'non';
+                        }
+                    });
+
+            });
+        });
+    </script>
 @endsection

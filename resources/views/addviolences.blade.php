@@ -52,6 +52,7 @@
                                                 <option  disabled selected>-- Selectionner le genre --</option>
                                                 <option value="M">Masculin</option>
                                                 <option value="F">Féminin</option>
+                                                <option value="A">Autre</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-6 mb-3">

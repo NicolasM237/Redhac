@@ -20,29 +20,46 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-  
+
     public function index()
     {
         Historique::create([
             'user_id' => auth()->id(),
         ]);
-        // 1. Comptage pour les widgets (Statistiques)
-        $nb_users = User::count();
-        $nb_natures = Nature::count();
-        $nb_collectes = Collecte::count();
-        $nb_violences = Violences::count();
 
-        // 2. Récupération des données pour le graphe (Violences par Nationalité)
-        // On récupère le nom de la nationalité et le nombre de répétitions
-        $dataGraphe = Violences::select('nationalite', DB::raw('count(*) as total'))
+        $user = auth()->user();
+
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $query = Violences::query();
+
+        if ($user->profil !== 'Administrateur') {
+            $query->where('user_id', $user->id);
+        }
+
+        if ($user->profil === 'Administrateur') {
+            $nb_users = User::count();
+            $nb_natures = Nature::count();
+            $nb_collectes = Collecte::count();
+        } else {
+            $nb_users = 1;
+            $nb_natures = Nature::count();
+            $nb_collectes = Collecte::count();
+        }
+
+        $nb_violences = $query->count();
+
+        $dataGraphe = $query
+            ->select('nationalite', DB::raw('count(*) as total'))
             ->groupBy('nationalite')
-            ->orderBy('total', 'desc')
+            ->orderByDesc('total')
             ->get();
 
-        $labels = $dataGraphe->pluck('nationalite'); // Les noms des pays
-        $values = $dataGraphe->pluck('total');      // Les nombres de cas
+        $labels = $dataGraphe->pluck('nationalite');
+        $values = $dataGraphe->pluck('total');
 
-        // 3. Envoi de toutes les données à la vue
         return view('home', compact(
             'nb_users',
             'nb_natures',
@@ -59,9 +76,12 @@ class HomeController extends Controller
     public function viewusers(Request $request)
     {
         $search = $request->input('search');
+        $user = auth()->user();
 
-        // 1. Récupération des utilisateurs de type 'web' avec recherche et pagination
-        $users = User::where('type', 'web') // Filtre pour n'avoir que le type web
+        if (!$user) {
+            return redirect()->route('login');
+        }
+        $users = User::where('type', 'web')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('nom', 'like', "%$search%")
@@ -73,15 +93,19 @@ class HomeController extends Controller
             })
             ->latest()
             ->paginate(10)
-            ->withQueryString(); // Garde la recherche active lors du changement de page
+            ->withQueryString();
+        if ($user->profil === 'Administrateur') {
+            $nb_users = User::count();
+            $nb_natures = Nature::count();
+            $nb_collectes = Collecte::count();
+            $nb_violences = Violences::count();
+        } else {
+            $nb_users = 1; // lui-même
+            $nb_natures = Nature::count(); // généralement global (référentiel)
+            $nb_collectes = Collecte::count(); // idem
+            $nb_violences = Violences::where('user_id', $user->id)->count();
+        }
 
-        // 2. Récupération des statistiques pour les widgets
-        $nb_users = User::count();
-        $nb_natures = Nature::count();
-        $nb_collectes = Collecte::count();
-        $nb_violences = Violences::count();
-
-        // 3. Envoi de toutes les données à la vue
         return view('utilisateurs', compact(
             'users',
             'nb_users',

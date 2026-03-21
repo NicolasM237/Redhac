@@ -10,17 +10,6 @@ use App\Http\Controllers\NatureController;
 use App\Http\Controllers\UserMobileController;
 use App\Http\Controllers\ViolencesController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 
 
 // Route pour l'affichage de la page de connexion
@@ -66,7 +55,8 @@ Route::delete('/delete/{id}', [ViolencesController::class, 'destroy'])->name('de
 Route::get('/export-pdf', [ViolencesController::class, 'exportPDF'])->name('export.violences.pdf');
 Route::get('/export-excel', [ViolencesController::class, 'exportExcel'])->name('export.violences.excel');
 Route::get('/export-csv', [ViolencesController::class, 'exportCSV'])->name('export.violences.csv');
-
+Route::post('/violences/{id}/toggle-permis', [ViolencesController::class, 'togglePermis'])
+    ->name('violences.togglePermis');
 // Route pour l'historique
 Route::get('/historiques', [HistoriqueController::class, 'viewhistorique'])->name('historique');
 
@@ -76,3 +66,12 @@ Route::get('/mes-activites', [ActivitesController::class, 'viewactivites'])->nam
 Route::delete('/activite/delete/{id}', [ActivitesController::class, 'destroy'])->name('delete.activite');
 Route::delete('/activites/clear', [ActivitesController::class, 'clearMyHistory'])->name('clear.activites');
 
+
+Route::get('/lang/{locale}', function ($locale) {
+    if (!in_array($locale, ['fr', 'en'])) {
+        abort(400);
+    }
+
+    session(['locale' => $locale]);
+    return redirect()->back();
+})->name('lang.switch');

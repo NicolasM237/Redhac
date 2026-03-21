@@ -56,7 +56,15 @@ class ViolencesController extends Controller
             'Tchadienne',
             'Centrafricaine',
             'Congolaise',
-            'Autre'
+            'Nigériane',
+            'Ghanéenne',
+            'Ivoirienne',
+            'Sénégalaise',
+            'Malienne',
+            'Burkinabè',
+            'Béninoise',
+            'Togolaise',
+            'Guinéenne',
         ];
 
         return view('addviolences', [
@@ -73,12 +81,13 @@ class ViolencesController extends Controller
 
         return redirect()->route('view.violences')->with('success', 'Violence supprimée avec succès');
     }
+
     public function store(Request $request)
     {
         if (!auth()->user()->active) {
             return redirect()->back()
                 ->with('error', 'Votre compte est désactivé. Vous ne pouvez pas enregistrer de nouveaux cas.')
-                ->withInput(); 
+                ->withInput();
         }
 
         // 2. Votre validation existante
@@ -148,13 +157,32 @@ class ViolencesController extends Controller
         return view('updateviolence', compact('violence', 'natures', 'collectes', 'statuses', 'nationalites'));
     }
 
-    // Pour sauvegarder les changements
+    public function togglePermis($id)
+    {
+        $violence = Violences::findOrFail($id);
+
+        // Inverser la valeur (false → true, true → false)
+        $violence->permis = !$violence->permis;
+        $violence->save();
+
+        return response()->json([
+            'success' => true,
+            'permis' => $violence->permis
+        ]);
+    }
+
     public function update(Request $request)
     {
         $violence = Violences::findOrFail($request->id);
+
+        if (!$violence->permis) {
+            return redirect()->route('view.violences')
+                ->with('error', 'Vous ne pouvez pas effectuer cette opération');
+        }
+
         $data = $request->all();
 
-        // Gestion de l'upload fichier 1 (répétez pour 2 et 3)
+        // Gestion des fichiers
         if ($request->hasFile('fichier1')) {
             $data['fichier1'] = $request->file('fichier1')->store('violences', 'public');
         }
@@ -169,7 +197,8 @@ class ViolencesController extends Controller
 
         $violence->update($data);
 
-        return redirect()->route('view.violences')->with('success', 'Declaration de cas mise à jour avec succès');
+        return redirect()->route('view.violences')
+            ->with('success', 'Declaration de cas mise à jour avec succès');
     }
 
 
@@ -285,29 +314,59 @@ class ViolencesController extends Controller
     }
 
 
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
-        if (ob_get_contents()) ob_end_clean(); // Nettoie le tampon de sortie
-        return Excel::download(new ViolencesExport, 'liste-violences.xlsx');
+        if (ob_get_contents()) ob_end_clean();
+
+        $query = Violences::with(['nature', 'collecte']);
+
+        if ($request->filled('nationalite')) {
+            $query->where('nationalite', $request->nationalite);
+        }
+
+        if ($request->filled('searchTerm')) {
+            $query->where('code', 'like', '%' . $request->searchTerm . '%');
+        }
+
+        $violences = $query->get();
+
+        return Excel::download(new ViolencesExport($violences), 'liste-violences.xlsx');
     }
 
-    public function exportCSV()
+    public function exportCSV(Request $request)
     {
-        return Excel::download(new ViolencesExport, 'liste-violences.csv', \Maatwebsite\Excel\Excel::CSV);
+        $query = Violences::with(['nature', 'collecte']);
+
+        if ($request->filled('nationalite')) {
+            $query->where('nationalite', $request->nationalite);
+        }
+
+        if ($request->filled('searchTerm')) {
+            $query->where('code', 'like', '%' . $request->searchTerm . '%');
+        }
+
+        $violences = $query->get();
+
+        return Excel::download(new ViolencesExport($violences), 'liste-violences.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
-    public function exportPDF()
+    public function exportPDF(Request $request)
     {
-        // Récupérer les données avec les relations
-        $violences = Violences::with(['nature', 'collecte'])->get();
+        $query = Violences::with(['nature', 'collecte']);
 
-        // Charger une vue spécifique pour le PDF
+        if ($request->filled('nationalite')) {
+            $query->where('nationalite', $request->nationalite);
+        }
+
+        if ($request->filled('searchTerm')) {
+            $query->where('code', 'like', '%' . $request->searchTerm . '%');
+        }
+
+        $violences = $query->get();
+
         $pdf = Pdf::loadView('pdf.violences', compact('violences'));
-
-        // Optionnel : Définir le format (A4) et l'orientation (paysage si le tableau est large)
         $pdf->setPaper('a4', 'landscape');
 
-        // Télécharger le fichier
         return $pdf->download('liste-violences.pdf');
     }
 }

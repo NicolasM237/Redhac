@@ -6,8 +6,8 @@
             <div class="row page-titles mx-0">
                 <div class="col-sm-6 p-md-0">
                     <div class="welcome-text">
-                        <h4 style="color: blue;">Hello,Bon retour!</h4>
-                        <p class="mb-0">Votre session de travail est prete</p>
+                        <h4 style="color: blue;">{{ __('messages.welcome_back') }}</h4>
+                        <p class="mb-0">{{ __('messages.session_ready') }}</p>
                     </div>
                 </div>
             </div>
@@ -16,17 +16,17 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">Liste des historiques de connexion</h4>
+                            <h4 class="card-title">{{ __('messages.history_list_title') }}</h4>
                         </div>
                         <div class="card-body">
                             <form action="{{ route('historique') }}" method="GET" class="form-group">
                                 <div class="input-group mb-3 input-primary">
                                     <input type="text" name="search" class="form-control"
-                                        placeholder="Rechercher un utilisateur (nom, email...)"
+                                        placeholder="{{ __('messages.search_user_placeholder') }}"
                                         value="{{ request('search') }}">
                                     <div class="input-group-append">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fa fa-search mr-2"></i> Rechercher
+                                        <button type="submit" class="btn btn-info">
+                                            <i class="fa fa-search mr-2"></i> {{ __('messages.search_button') }}
                                         </button>
                                     </div>
                                 </div>
@@ -35,7 +35,7 @@
                             @if (request('search'))
                                 <div class="mb-3">
                                     <a href="{{ route('historique') }}" class="btn btn-light btn-xs text-danger">
-                                        <i class="fa fa-times"></i> Annuler la recherche
+                                        <i class="fa fa-times"></i> {{ __('messages.cancel_search') }}
                                     </a>
                                 </div>
                             @endif
@@ -44,9 +44,9 @@
                                 <table class="table table-striped table-hover align-middle">
                                     <thead class="thead-light" style="position: sticky; top: 0; z-index: 1;">
                                         <tr>
-                                            <th scope="col"><b>Nom et Prénom</b></th>
-                                            <th scope="col"><b>Email</b></th>
-                                            <th scope="col"><b>Date et Heure</b></th>
+                                            <th scope="col"><b>{{ __('messages.full_name') }}</b></th>
+                                            <th scope="col"><b>{{ __('messages.email') }}</b></th>
+                                            <th scope="col"><b>{{ __('messages.date_and_time') }}</b></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -58,7 +58,7 @@
                                                         {{ $item->user->prenom ?? '' }}
                                                     </strong>
                                                 </td>
-                                                <td>{{ $item->user->email ?? 'Email inconnu' }}</td>
+                                                <td>{{ $item->user->email ?? __('messages.unknown_email') }}</td>
                                                 <td class="text-nowrap">
                                                     <div class="d-flex align-items-center">
                                                         <i class="fa fa-calendar-o mr-2 text-primary"></i>
@@ -72,7 +72,7 @@
                                         @empty
                                             <tr>
                                                 <td colspan="3" class="text-center py-4">
-                                                    Aucun historique de connexion trouvé.
+                                                    {{ __('messages.no_history_found') }}
                                                 </td>
                                             </tr>
                                         @endforelse

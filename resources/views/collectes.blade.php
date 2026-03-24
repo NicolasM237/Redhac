@@ -5,8 +5,8 @@
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
                 <div class="welcome-text">
-                    <h4 style="color: blue;">Hello,Bon retour!</h4>
-                    <p class="mb-0">Votre session de travail est prete</p>
+                    <h4 style="color: blue;">{{ __('messages.welcome_back') }}</h4>
+                    <p class="mb-0">{{ __('messages.session_ready') }}</p>
                 </div>
             </div>
             <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
@@ -14,7 +14,7 @@
                     <button type="button" class="btn btn-rounded btn-info" data-toggle="modal"
                         data-target=".bd-example-modal-lg"><span class="btn-icon-left text-info"><i
                                 class="fa fa-plus color-info"></i>
-                        </span>Ajouter</button>
+                        </span>{{ __('messages.add_button') }}</button>
                 </ol>
             </div>
         </div>
@@ -26,37 +26,48 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Liste des modes de collecte</h4>
+                        <h4 class="card-title">{{ __('messages.collecte_list_title') }}</h4>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('view.collectes') }}" method="GET">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control"
-                                    placeholder="Rechercher une collecte ou une nature..." name="search"
+                                    placeholder="{{ __('messages.search_collecte_placeholder') }}" name="search"
                                     value="{{ $search ?? '' }}">
                                 <div class="input-group-append">
                                     <button class="btn btn-info" type="submit">
-                                        <i class="fa fa-search"></i> Rechercher
+                                        <i class="fa fa-search"></i> {{ __('messages.search_button') }}
                                     </button>
                                     @if (isset($search) && $search)
-                                        <a href="{{ route('view.collectes') }}" class="btn btn-danger">Effacer</a>
+                                        <a href="{{ route('view.collectes') }}" class="btn btn-danger">{{ __('messages.clear_button') }}</a>
                                     @endif
                                 </div>
                             </div>
                         </form>
 
                         <div class="table-responsive">
-                            <table class="table table-responsive-md">
+
+                            <table id="collectes-datatable" class="table table-responsive-md table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th style="width:80px;">#</th>
-                                        <th>NATURE</th>
-                                        <th>MODE DE COLLECTE</th>
-                                        <th>QUANTITÉ</th>
-                                        <th>DATE</th>
-                                        <th>ACTIONS</th>
+                                        <th>{{ __('messages.nature_name') }}</th>
+                                        <th>{{ __('messages.collecte_mode') }}</th>
+                                        <th>{{ __('messages.quantity') }}</th>
+                                        <th>{{ __('messages.created_at') }}</th>
+                                        <th>{{ __('messages.actions') }}</th>
                                     </tr>
                                 </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
                                 <tbody>
                                     @forelse ($collectes as $collecte)
                                         <tr>
@@ -70,20 +81,20 @@
                                                 <div class="dropdown">
                                                     <button type="button" class="btn btn-info light btn-xs dropdown-toggle"
                                                         data-toggle="dropdown">
-                                                        Actions
+                                                        {{ __('messages.actions') }}
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right">
                                                         <a class="dropdown-item btnEditCollecte" href="javascript:void(0)"
                                                             data-toggle="modal" data-target=".bd-example-modal-lgMC"
                                                             data-collecte='{{ json_encode($collecte) }}'>
-                                                            Modifier
+                                                            {{ __('messages.edit') }}
                                                         </a>
 
                                                         <div class="dropdown-divider"></div>
 
                                                         <button type="button" class="dropdown-item text-danger"
                                                             onclick="confirmDeleteCollecte({{ $collecte->id }})">
-                                                            Supprimer
+                                                            {{ __('messages.delete') }}
                                                         </button>
 
                                                         <form id="delete-form-collecte-{{ $collecte->id }}"
@@ -99,7 +110,7 @@
                                     @empty
                                         <tr>
                                             <td colspan="6" class="text-center text-muted">
-                                                Aucune collecte enregistrée pour cette recherche.
+                                                {{ __('messages.no_collecte_found') }}
                                             </td>
                                         </tr>
                                     @endforelse
@@ -147,14 +158,14 @@
             // Fonction de confirmation de suppression
             function confirmDeleteCollecte(id) {
                 Swal.fire({
-                    title: 'Supprimer cette collecte ?',
-                    text: "Attention, cette action est définitive !",
+                    title: '{{ __('messages.delete_collecte_title') }}',
+                    text: '{{ __('messages.delete_collecte_text') }}',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Oui, supprimer',
-                    cancelButtonText: 'Annuler',
+                    confirmButtonText: '{{ __('messages.delete_collecte_confirm') }}',
+                    cancelButtonText: '{{ __('messages.delete_collecte_cancel') }}',
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -176,7 +187,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Formulaire d'enregistrement</h5>
+                    <h5 class="modal-title">{{ __('messages.form_collecte_title_create') }}</h5>
                     <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
                     </button>
                 </div>
@@ -185,9 +196,9 @@
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label>Natures de cas</label>
+                                <label>{{ __('messages.natures_of_case') }}</label>
                                 <select class="form-control" name="nature_id" required>
-                                    <option disabled selected>-- Choisir une nature --</option>
+                                    <option disabled selected>{{ __('messages.choose_nature') }}</option>
                                     @foreach ($natures as $nature)
                                         <option value="{{ $nature->id }}">{{ $nature->nom }}</option>
                                     @endforeach
@@ -195,26 +206,26 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>Mode de collecte</label>
-                                <input type="text" name="nom" class="form-control" placeholder="Entrer votre nom"
+                                <label>{{ __('messages.collecte_mode') }}</label>
+                                <input type="text" name="nom" class="form-control" placeholder="{{ __('messages.enter_name') }}"
                                     required>
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>Quantite de la collecte</label>
+                                <label>{{ __('messages.quantity_collecte') }}</label>
                                 <input type="number" name="quantite" class="form-control"
-                                    placeholder="Entrer votre quantite" required min="0">
+                                    placeholder="{{ __('messages.enter_quantity') }}" required min="0">
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label>Date de collecte</label>
+                                <label>{{ __('messages.collecte_date') }}</label>
                                 <input type="date" name="date_collecte" class="form-control" required>
                             </div>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-info">Enregistrer</button>
+                            <button type="button" class="btn btn-danger light" data-dismiss="modal">{{ __('messages.button_close') }}</button>
+                            <button type="submit" class="btn btn-info">{{ __('messages.button_save') }}</button>
                         </div>
                     </form>
                 </div>
@@ -228,7 +239,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myLargeModalLabel">Modification d'une Nature </h5>
+                    <h5 class="modal-title" id="myLargeModalLabel">{{ __('messages.form_collecte_title_edit') }}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -239,7 +250,7 @@
                         <div class=" row gutters">
                             <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="inputName">Nature de cas</label>
+                                    <label for="inputName">{{ __('messages.natures_of_case') }}</label>
                                     <select class="form-control" name="nature_id" required>
                                         @foreach ($natures as $nature)
                                             <option value="{{ $nature->id }}">{{ $nature->nom }}</option>
@@ -250,20 +261,20 @@
 
                             <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="inputName">Mode de collecte</label>
+                                    <label for="inputName">{{ __('messages.collecte_mode') }}</label>
                                     <input type="text" class="form-control" id="inputName" name="nom" required>
                                     <input type="hidden" class="form-control" id="inputName" name="id" required>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="inputName">Quantite</label>
+                                    <label for="inputName">{{ __('messages.quantity') }}</label>
                                     <input type="text" class="form-control" id="inputName" name="quantite" required>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="inputName">Date de collecte</label>
+                                    <label for="inputName">{{ __('messages.collecte_date') }}</label>
                                     <input type="date" class="form-control" id="inputName" name="date_collecte"
                                         required>
                                 </div>
@@ -271,8 +282,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('messages.button_close') }}</button>
+                            <button type="submit" class="btn btn-primary">{{ __('messages.button_save') }}</button>
                         </div>
                     </form>
                 </div>

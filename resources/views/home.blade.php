@@ -4,7 +4,7 @@
     <div class="container-fluid">
 
         <div class="form-head mb-sm-5 mb-3 d-flex flex-wrap align-items-center">
-            <h2 class="font-w600 title mb-2 mr-auto">Dashboard</h2>
+            <h2 class="font-w600 title mb-2 mr-auto">{{ __('messages.dashboard') }}</h2>
         </div>
 
         <div class="row">
@@ -14,12 +14,12 @@
                 <div class="card card-coin">
                     <div class="card-body text-center">
                         <i class="fa fa-users" style="font-size:48px;color:#29008a;"></i>
-                        <h2 class="text-black mb-2 font-w600">Users</h2>
+                        <h2 class="text-black mb-2 font-w600">{{ __('messages.users') }}</h2>
                         <p class="mb-0 fs-14">
                             <span class="text-primary mr-1" style="font-size:24px; font-weight:bold;">
                                 {{ $nb_users }}
                             </span>
-                            registered users
+                            {{ __('messages.registered_users') }}
                         </p>
                     </div>
                 </div>
@@ -29,12 +29,12 @@
                 <div class="card card-coin">
                     <div class="card-body text-center">
                         <i class="fa fa-file-text" style="font-size:48px;color:#29008a;"></i>
-                        <h2 class="text-black mb-0 font-w600">Case Types</h2>
+                        <h2 class="text-black mb-0 font-w600">{{ __('messages.case_types') }}</h2>
                         <p class="mb-0 fs-13">
                             <span class="text-success mr-1" style="font-size:24px; font-weight:bold;">
                                 {{ $nb_natures }}
                             </span>
-                            recorded types
+                            {{ __('messages.registered_types') }}
                         </p>
                     </div>
                 </div>
@@ -44,12 +44,12 @@
                 <div class="card card-coin">
                     <div class="card-body text-center">
                         <i class="fa fa-database" style="font-size:48px;color:#29008a;"></i>
-                        <h2 class="text-black mb-2 font-w600">Collection Methods</h2>
+                        <h2 class="text-black mb-2 font-w600">{{ __('messages.collection_methods') }}</h2>
                         <p class="mb-0 fs-14">
                             <span class="text-info mr-1" style="font-size:24px; font-weight:bold;">
                                 {{ $nb_collectes }}
                             </span>
-                            recorded methods
+                            {{ __('messages.registered_methods') }}
                         </p>
                     </div>
                 </div>
@@ -59,12 +59,12 @@
                 <div class="card card-coin">
                     <div class="card-body text-center">
                         <i class="fa fa-exclamation-triangle" style="font-size:48px;color:#29008a;"></i>
-                        <h2 class="text-black mb-2 font-w600">Case Declarations</h2>
+                        <h2 class="text-black mb-2 font-w600">{{ __('messages.violence_reports') }}</h2>
                         <p class="mb-0 fs-14">
                             <span class="text-danger mr-1" style="font-size:24px; font-weight:bold;">
                                 {{ $nb_violences }}
                             </span>
-                            reported violence cases
+                            {{ __('messages.reported_violence_cases') }}
                         </p>
                     </div>
                 </div>
@@ -72,12 +72,12 @@
            @endif
         </div>
 
-        <!-- GRAPH -->
+        <!-- GRAPHIQUE -->
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="fs-20 text-black">Violence Graphs by Country</h4>
+                        <h4 class="fs-20 text-black">{{ __('messages.violence_chart_title') }}</h4>
                     </div>
                     <div class="card-body">
                         <div style="height: 400px;">
@@ -90,8 +90,8 @@
 
         <small class="copyright" style="text-align:center;">
             <p>
-                Copyright © Designed & Developed by
-                <a href="/login">Univers Solutions</a> 2026
+                {{ __('messages.copyright') }}
+                <a href="/login">{{ __('messages.developed_by') }}</a> 2026
             </p>
         </small>
     </div>
@@ -107,7 +107,7 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Number of Cases',
+                        label: '{{ __('messages.case_count_label') }}',
                         data: dataValues,
                         backgroundColor: 'rgba(41, 0, 138, 0.7)',
                         borderColor: '#29008a',

@@ -72,6 +72,7 @@ Route::get('/lang/{locale}', function ($locale) {
         abort(400);
     }
 
-    session(['locale' => $locale]);
-    return redirect()->back();
+    session(['locale' => $locale]); // stocke la langue dans la session
+    app()->setLocale($locale);      // applique immédiatement la langue
+    return redirect()->back();       // ou redirect()->to('/home');
 })->name('lang.switch');

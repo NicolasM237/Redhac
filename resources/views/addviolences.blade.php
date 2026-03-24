@@ -5,7 +5,7 @@
         <div class="col-xl-12 col-xxl-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Declaration d'un cas</h4>
+                    <h4 class="card-title">{{ __('messages.declare_case_title') }}</h4>
                 </div>
                 <div class="card-body">
                     <div id="smartwizard" class="form-wizard order-create">
@@ -20,45 +20,45 @@
                             <div class="tab-content">
 
                                 <div id="wizard_Service" class="tab-pane" role="tabpanel">
-                                    <h5 class="mb-4">1. Informations personnelles de la victime</h5>
+                                    <h5 class="mb-4">{{ __('messages.step1_personal_info') }}</h5>
                                     <div class="row">
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Statut <span class="text-danger">*</span></label>
+                                            <label class="form-label">{{ __('messages.status') }} <span class="text-danger">*</span></label>
                                             <select name="status" class="form-control default-select" required>
-                                                <option value="" disabled selected>-- Selectionner le statut--</option>
-                                                <option value="Victime">Victime</option>
-                                                <option value="Temoin">Témoin</option>
-                                                <option value="DDH">DDH</option>
+                                                <option value="" disabled selected>{{ __('messages.choose_status') }}</option>
+                                                <option value="Victime">{{ __('messages.victim') }}</option>
+                                                <option value="Temoin">{{ __('messages.witness') }}</option>
+                                                <option value="DDH">{{ __('messages.human_rights_defender') }}</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Contact (Téléphone ou Email) <span
+                                            <label class="form-label">{{ __('messages.contact') }} <span
                                                     class="text-danger">*</span></label>
                                             <input type="text" name="contact" class="form-control"
-                                                pattern="^[0-9+@.\s-]+$" placeholder="Entrez le numéro de téléphone ou l'adresse email" required>
+                                                pattern="^[0-9+@.\s-]+$" placeholder="{{ __('messages.phone_email_placeholder') }}" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Profession <span class="text-danger">*</span></label>
-                                            <input type="text" name="occupation" class="form-control" placeholder="Entrez la profession" required>
+                                            <label class="form-label">{{ __('messages.occupation') }} <span class="text-danger">*</span></label>
+                                            <input type="text" name="occupation" class="form-control" placeholder="{{ __('messages.profession_placeholder') }}" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Âge <span class="text-danger">*</span></label>
+                                            <label class="form-label">{{ __('messages.age') }} <span class="text-danger">*</span></label>
                                             <input type="number" min="0" max="120" name="age"
-                                                class="form-control" placeholder="Entrez l'âge" required>
+                                                class="form-control" placeholder="{{ __('messages.age_placeholder') }}" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Sexe <span class="text-danger">*</span></label>
+                                            <label class="form-label">{{ __('messages.sex') }} <span class="text-danger">*</span></label>
                                             <select name="sexe" class="form-control default-select" required>
-                                                <option  disabled selected>-- Selectionner le genre --</option>
-                                                <option value="M">Masculin</option>
-                                                <option value="F">Féminin</option>
-                                                <option value="A">Autre</option>
+                                                <option  disabled selected>{{ __('messages.choose_gender') }}</option>
+                                                <option value="M">{{ __('messages.masculine') }}</option>
+                                                <option value="F">{{ __('messages.feminine') }}</option>
+                                                <option value="A">{{ __('messages.other') }}</option>
                                             </select>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Nationalité <span class="text-danger">*</span></label>
+                                            <label class="form-label">{{ __('messages.nationality') }} <span class="text-danger">*</span></label>
                                             <select name="nationalite" class="form-control" required>
-                                                <option value="" disabled selected>-- Selectionner la nationalité --</option>
+                                                <option value="" disabled selected>{{ __('messages.choose_nationality') }}</option>
                                                 @foreach ($nationalites as $pays)
                                                     <option value="{{ $pays }}"
                                                         {{ old('nationalite') == $pays ? 'selected' : '' }}>
@@ -70,108 +70,108 @@
                                 </div>
 
                                 <div id="wizard_Time" class="tab-pane" role="tabpanel">
-                                    <h5 class="mb-4">2. Lieu et dates</h5>
+                                    <h5 class="mb-4">{{ __('messages.step2_location_dates') }}</h5>
                                     <div class="row">
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Résidence (Quartier, Ville) <span
+                                            <label class="form-label">{{ __('messages.residence') }} <span
                                                     class="text-danger">*</span></label>
-                                            <input type="text" name="residence" class="form-control" placeholder="Entrez la résidence" required>
+                                            <input type="text" name="residence" class="form-control" placeholder="{{ __('messages.residence_placeholder') }}" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Date de survenance <span
+                                            <label class="form-label">{{ __('messages.occurrence_date') }} <span
                                                     class="text-danger">*</span></label>
-                                            <input type="date" name="datesurvenue" class="form-control" placeholder="Entrez la date de survenance" required>
+                                            <input type="date" name="datesurvenue" class="form-control" placeholder="{{ __('messages.occurrence_date_placeholder') }}" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Lieu de survenance <span
+                                            <label class="form-label">{{ __('messages.occurrence_location') }} <span
                                                     class="text-danger">*</span></label>
-                                            <input type="text" name="lieusurvenue" class="form-control" placeholder="Entrez le lieu de survenance" required>
+                                            <input type="text" name="lieusurvenue" class="form-control" placeholder="{{ __('messages.occurrence_location_placeholder') }}" required>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Situation du cas <span
+                                            <label class="form-label">{{ __('messages.case_situation') }} <span
                                                     class="text-danger">*</span></label>
                                             <input type="text" name="situation" class="form-control"
-                                                placeholder="Ex: En cours, Résolu..." required>
+                                                placeholder="{{ __('messages.case_situation_placeholder') }}" required>
                                         </div>
                                         <div class="col-lg-12 mb-3">
-                                            <label class="form-label">Auteurs présumés de la violation <span
+                                            <label class="form-label">{{ __('messages.presumed_perpetrators') }} <span
                                                     class="text-danger">*</span></label>
-                                            <input type="text" name="auteurs" class="form-control" placeholder="Entrez les auteurs présumés" required>
+                                            <input type="text" name="auteurs" class="form-control" placeholder="{{ __('messages.perpetrators_placeholder') }}" required>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div id="wizard_Details" class="tab-pane" role="tabpanel">
-                                    <h5 class="mb-4">3. Détails du cas</h5>
+                                    <h5 class="mb-4">{{ __('messages.step3_case_details') }}</h5>
                                     <div class="row">
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Nature de l'événement <span
+                                            <label class="form-label">{{ __('messages.event_nature') }} <span
                                                     class="text-danger">*</span></label>
                                             <select class="form-control" name="nature_id" required>
-                                                <option disabled selected>-- Selectionner la nature --</option>
+                                                <option disabled selected>{{ __('messages.choose_nature') }}</option>
                                                 @foreach ($natures as $nature)
                                                     <option value="{{ $nature->id }}">{{ $nature->nom }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Mode de collecte <span
+                                            <label class="form-label">{{ __('messages.collection_method') }} <span
                                                     class="text-danger">*</span></label>
                                             <select class="form-control" name="collecte_id" required>
-                                                <option disabled selected>-- Selectionner le mode de collecte --</option>
+                                                <option disabled selected>{{ __('messages.choose_collection_method') }}</option>
                                                 @foreach ($collectes as $collecte)
                                                     <option value="{{ $collecte->id }}">{{ $collecte->nom }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Description du cas <span
+                                            <label class="form-label">{{ __('messages.case_description') }} <span
                                                     class="text-danger">*</span></label>
-                                            <textarea class="form-control" name="description_cas" rows="4" placeholder="Entrez la description du cas" required></textarea>
+                                            <textarea class="form-control" name="description_cas" rows="4" placeholder="{{ __('messages.case_description_placeholder') }}" required></textarea>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Mesure prise par l'OSC <span
+                                            <label class="form-label">{{ __('messages.measures_taken') }} <span
                                                     class="text-danger">*</span></label>
-                                            <textarea class="form-control" name="mesure_obc" rows="4" placeholder="Entrez les mesures prises par l'OSC" required></textarea>
+                                            <textarea class="form-control" name="mesure_obc" rows="4" placeholder="{{ __('messages.measures_placeholder') }}" required></textarea>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Risques qu'en cours la victime <span
+                                            <label class="form-label">{{ __('messages.victim_risks') }} <span
                                                     class="text-danger">*</span></label>
-                                            <textarea class="form-control" name="risque_victime" rows="4" placeholder="Entrez les risques encourus par la victime" required></textarea>
+                                            <textarea class="form-control" name="risque_victime" rows="4" placeholder="{{ __('messages.victim_risks_placeholder') }}" required></textarea>
                                         </div>
                                         <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Attentes de la victime <span
+                                            <label class="form-label">{{ __('messages.victim_expectations') }} <span
                                                     class="text-danger">*</span></label>
-                                            <textarea class="form-control" name="attente_victime" rows="4" placeholder="Entrez les attentes de la victime" required></textarea>
+                                            <textarea class="form-control" name="attente_victime" rows="4" placeholder="{{ __('messages.victim_expectations_placeholder') }}" required></textarea>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div id="wizard_Payment" class="tab-pane" role="tabpanel">
-                                    <h5 class="mb-4">4. Pièces jointes</h5>
+                                    <h5 class="mb-4">{{ __('messages.step4_attachments') }}</h5>
                                     <div class="row">
                                         <div class="col-lg-4 mb-3">
-                                            <label class="form-label">Fichier 1</label>
+                                            <label class="form-label">{{ __('messages.file1') }}</label>
                                             <input type="file" name="fichier1" class="form-control"
                                                 accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
-                                            <small class="text-muted">Max 10 Mo</small>
+                                            <small class="text-muted">{{ __('messages.max_size') }}</small>
                                         </div>
                                         <div class="col-lg-4 mb-3">
-                                            <label class="form-label">Fichier 2</label>
+                                            <label class="form-label">{{ __('messages.file2') }}</label>
                                             <input type="file" name="fichier2" class="form-control"
                                                 accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
-                                            <small class="text-muted">Max 10 Mo</small>
+                                            <small class="text-muted">{{ __('messages.max_size') }}</small>
                                         </div>
                                         <div class="col-lg-4 mb-3">
-                                            <label class="form-label">Fichier 3</label>
+                                            <label class="form-label">{{ __('messages.file3') }}</label>
                                             <input type="file" name="fichier3" class="form-control"
                                                 accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
-                                            <small class="text-muted">Max 10 Mo</small>
+                                            <small class="text-muted">{{ __('messages.max_size') }}</small>
                                         </div>
                                     </div>
 
                                     <div class="text-end mt-4">
-                                        <button type="submit" class="btn btn-info btn-lg px-5">Enregistrer</button>
+                                        <button type="submit" class="btn btn-info btn-lg px-5">{{ __('messages.save_button') }}</button>
                                     </div>
                                 </div>
                             </div>

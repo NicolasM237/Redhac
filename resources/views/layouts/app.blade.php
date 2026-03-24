@@ -8,7 +8,7 @@
 
     <title>REDHAC</title>
 
-    <!-- CSS Vendors -->
+    <!-- CSS Fournisseurs -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/chartist/css/chartist.min.css') }}">
     <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/owl-carousel/owl.carousel.css') }}" rel="stylesheet">
@@ -25,7 +25,7 @@
 <body>
     <div id="main-wrapper">
 
-        <!-- HEADER LOGO -->
+        <!-- EN-TÊTE LOGO -->
         <div class="nav-header">
             <a href="{{ url('/home') }}" class="brand-logo">
                 <img src="{{ asset('assets/images/redhac.png') }}" width="74">
@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <!-- TOP HEADER -->
+        <!-- EN-TÊTE PRINCIPAL -->
         <div class="header">
             <div class="header-content">
                 <nav class="navbar navbar-expand">
@@ -47,22 +47,22 @@
 
                         <div class="header-left">
                             <div class="input-group search-area right d-lg-inline-flex d-none">
-                                <input type="text" class="form-control" placeholder="Search...">
+                                <input type="text" class="form-control" placeholder="Recherche...">
                             </div>
                         </div>
 
-                        <!-- LANGUAGE SWITCH -->
+                        <!-- CHANGEMENT DE LANGUE -->
                         <li class="nav-item dropdown">
                             <a class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" href="#">
-                                🌐 Language
+                                🌐 {{ __('messages.language') }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="{{ route('lang.switch', 'fr') }}">🇫🇷 Français</a>
-                                <a class="dropdown-item" href="{{ route('lang.switch', 'en') }}">🇬🇧 English</a>
+                                <a class="dropdown-item" href="{{ route('lang.switch', 'fr') }}">🇫🇷 {{ __('messages.french') }}</a>
+                                <a class="dropdown-item" href="{{ route('lang.switch', 'en') }}">🇬🇧 {{ __('messages.english') }}</a>
                             </div>
                         </li>
 
-                        <!-- LOGOUT -->
+                        <!-- DÉCONNEXION -->
                         <ul class="navbar-nav header-right">
                             @auth
                                 <li class="nav-item d-flex align-items-center">
@@ -70,7 +70,7 @@
                                         @csrf
                                         <button type="button" class="btn btn-danger btn-sm" onclick="confirmLogout()">
                                             <i class="fa fa-sign-out me-1"></i>
-                                            Logout
+                                            Déconnexion
                                         </button>
                                     </form>
                                 </li>
@@ -85,14 +85,14 @@
         <script>
             function confirmLogout() {
                 Swal.fire({
-                    title: 'Logout',
-                    text: "Are you sure you want to leave your session?",
+                    title: 'Déconnexion',
+                    text: "Êtes-vous sûr de vouloir quitter votre session ?",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, logout',
-                    cancelButtonText: 'Cancel',
+                    confirmButtonText: 'Oui, déconnectez-moi',
+                    cancelButtonText: 'Annuler',
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -102,7 +102,7 @@
             }
         </script>
 
-        <!-- SIDEBAR -->
+        <!-- BARRE LATÉRALE -->
         <div class="deznav">
             <div class="deznav-scroll">
                 @auth
@@ -113,7 +113,7 @@
                             </a>
                         </div>
                         <h5 class="name">
-                            Welcome {{ Auth::user()->nom }}
+                            Bienvenue {{ Auth::user()->nom }}
                         </h5>
                         <p class="email">
                             <small>{{ Auth::user()->email }}</small>
@@ -122,26 +122,26 @@
                 @endauth
 
                 <ul class="metismenu" id="menu">
-                    <li class="nav-label">Navigation</li>
+                    <li class="nav-label">{{ __('messages.navigation') }}</li>
                     <li>
                         <a href="{{ url('/home') }}">
                             <i class="flaticon-144-layout"></i>
-                            <span>Dashboard</span>
+                            <span>{{ __('messages.dashboard') }}</span>
                         </a>
                     </li>
 
                     @if (auth()->user()->profil !== 'Utilisateur')
-                        <li class="nav-label">Administration</li>
+                        <li class="nav-label">{{ __('messages.administration') }}</li>
                         <li>
                             <a href="{{ url('/utilisateurs') }}">
                                 <i class="fa fa-user-plus"></i>
-                                <span>Users</span>
+                                <span>{{ __('messages.users') }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ url('/mobiles') }}">
                                 <i class="fa fa-mobile"></i>
-                                <span>Mobile Users</span>
+                                <span>{{ __('messages.mobile_users') }}</span>
                             </a>
                         </li>
                     @endif
@@ -149,19 +149,19 @@
                     <li>
                         <a href="{{ url('/natures') }}">
                             <i class="fa fa-location-arrow"></i>
-                            <span>Case Types</span>
+                            <span>{{ __('messages.case_types') }}</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ url('/collectes') }}">
                             <i class="fa fa-pencil"></i>
-                            <span>Collection Methods</span>
+                            <span>{{ __('messages.collection_methods') }}</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ url('/violences') }}">
                             <i class="fa fa-sun-o"></i>
-                            <span>Case Declarations</span>
+                            <span>{{ __('messages.violence_reports') }}</span>
                         </a>
                     </li>
 
@@ -169,26 +169,22 @@
                         <li>
                             <a href="{{ url('/historiques') }}">
                                 <i class="fa fa-cog"></i>
-                                <span>Login History</span>
+                                <span>{{ __('messages.history_logs') }}</span>
                             </a>
                         </li>
                     @endif
                 </ul>
-
-                <div class="copyright">
-                    <p>Developed by Univers Solutions</p>
-                </div>
             </div>
         </div>
 
-        <!-- PAGE CONTENT -->
+        <!-- CONTENU DE LA PAGE -->
         <div class="content-body">
             @yield('content')
         </div>
 
     </div>
 
-    <!-- JS Vendor -->
+    <!-- JS Fournisseurs -->
     <script data-cfasync="false"
         src="{{ asset('assets/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/global/global.min.js') }}"></script>

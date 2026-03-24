@@ -92,8 +92,7 @@ class HomeController extends Controller
                 });
             })
             ->latest()
-            ->paginate(10)
-            ->withQueryString();
+            ->get();
         if ($user->profil === 'Administrateur') {
             $nb_users = User::count();
             $nb_natures = Nature::count();

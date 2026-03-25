@@ -47,7 +47,7 @@
 
                         <div class="header-left">
                             <div class="input-group search-area right d-lg-inline-flex d-none">
-                                <input type="text" class="form-control" placeholder="Recherche...">
+                                <input type="text" class="form-control" placeholder="{{ __('messages.search1') }}...">
                             </div>
                         </div>
 
@@ -70,7 +70,7 @@
                                         @csrf
                                         <button type="button" class="btn btn-danger btn-sm" onclick="confirmLogout()">
                                             <i class="fa fa-sign-out me-1"></i>
-                                            Déconnexion
+                                            {{ __('messages.logout') }}
                                         </button>
                                     </form>
                                 </li>
@@ -113,7 +113,7 @@
                             </a>
                         </div>
                         <h5 class="name">
-                            Bienvenue {{ Auth::user()->nom }}
+                            <small>{{ __('messages.acceuil') }}</small> {{ Auth::user()->nom }}
                         </h5>
                         <p class="email">
                             <small>{{ Auth::user()->email }}</small>

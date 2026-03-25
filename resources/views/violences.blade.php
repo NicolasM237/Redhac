@@ -63,7 +63,7 @@
                                             <div class="input-group input-primary">
                                                 <select name="nationalite" class="form-control"
                                                     onchange="this.form.submit()">
-                                                    <option value="">-- Toutes les nationalités --</option>
+                                                    <option value="">-- {{ __('messages.nat') }} --</option>
                                                     @foreach ($nationalites as $pays)
                                                         <option value="{{ $pays }}"
                                                             {{ request('nationalite') == $pays ? 'selected' : '' }}>
@@ -72,7 +72,7 @@
                                                     @endforeach
                                                 </select>
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text">Nationalité</span>
+                                                    <span class="input-group-text">{{ __('messages.nationality') }}</span>
                                                 </div>
                                             </div>
                                         </div>

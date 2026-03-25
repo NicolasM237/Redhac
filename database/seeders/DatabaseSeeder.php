@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
             'Témoignage de la victime',
             'Témoignage du témoin',
             'Réseaux sociaux',
-            'Mail'
+            'Email'
         ];
 
         foreach ($methodesCollecte as $methode) {

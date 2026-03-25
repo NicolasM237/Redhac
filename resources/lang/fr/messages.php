@@ -93,6 +93,7 @@ return [
     'delete_nature_confirm' => 'Oui, supprimer',
     'delete_nature_cancel' => 'Annuler',
     'add_button' => 'Ajouter',
+    'clear_filters' => 'Effacer les filtres',
     'nature_list_title' => 'Liste des natures de cas',
     'search_nature_placeholder' => 'Rechercher une nature...',
     'clear_button' => 'Effacer',

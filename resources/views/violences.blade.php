@@ -90,7 +90,7 @@
                                         <div class="col-md-2">
                                             @if (request('nationalite') || request('searchTerm'))
                                                 <a href="{{ route('view.violences') }}"
-                                                    class="btn btn-danger btn-block">Effacer</a>
+                                                    class="btn btn-danger btn-block">{{ __('messages.clear_filters') }}</a>
                                             @endif
                                         </div>
                                     </div>

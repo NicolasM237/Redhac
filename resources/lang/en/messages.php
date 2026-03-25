@@ -93,6 +93,7 @@ return [
     'delete_nature_confirm' => 'Yes, delete',
     'delete_nature_cancel' => 'Cancel',
     'add_button' => 'Add',
+    'clear_filters' => 'Clear filters',
     'nature_list_title' => 'Nature case list',
     'search_nature_placeholder' => 'Search for a nature...',
     'clear_button' => 'Clear',

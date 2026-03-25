@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Nature;
+use App\Models\Collecte; // N'oubliez pas d'importer le modèle Collecte
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
@@ -19,7 +20,7 @@ class DatabaseSeeder extends Seeder
     {
         $now = Carbon::now();
 
-        // 1️⃣ Compte Administrateur Principal
+        // 1️⃣ Comptes Administrateurs et Utilisateurs
         User::firstOrCreate(
             ['email' => 'nicolas@redhac.com'],
             [
@@ -32,7 +33,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2️⃣ Second utilisateur
         User::firstOrCreate(
             ['email' => 'fotso@redhac.com'],
             [
@@ -45,21 +45,22 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 3️⃣ Utilisateur mobile
-        User::firstOrCreate([
-            'nom' => 'Dupont',
-            'prenom' => 'Jean',
-            'telephone' => '0102030405',
-            'email' => 'jean.mobile@example.com',
-            'adresse' => '123 Rue de la App',
-            'profil' => 'client',
-            'otp' => null,
-            'active' => true,
-            'type' => 'mobile',
-            'password' => Hash::make('password123'),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'jean.mobile@example.com'],
+            [
+                'nom' => 'Dupont',
+                'prenom' => 'Jean',
+                'telephone' => '0102030405',
+                'adresse' => '123 Rue de la App',
+                'profil' => 'client',
+                'otp' => null,
+                'active' => true,
+                'type' => 'mobile',
+                'password' => Hash::make('password123'),
+            ]
+        );
 
-        // 4️⃣ Insertion des natures de cas
+        // 2️⃣ Insertion des natures de cas
         $natures = [
             'Violation des libertés fondamentales',
             'Violations d’autres droits civils et politiques',
@@ -68,15 +69,36 @@ class DatabaseSeeder extends Seeder
             'Violation des droits humains liés à la COVID-19',
             'Atteintes à la liberté d’expression',
             'Violations des droits des minorités',
-            'Harcèlement et discrimination institutionnelle',
+            'Harcèlement et discrimination institutionnelle',
             'Atteintes aux droits économiques, sociaux et culturels',
             'Restrictions illégales aux activités des ONG'
         ];
 
-        foreach ($natures as $nature) {
-            Nature::firstOrCreate(
-                ['nom' => $nature],
-                ['created_at' => $now, 'updated_at' => $now]
+        foreach ($natures as $natureNom) {
+            Nature::firstOrCreate(['nom' => $natureNom]);
+        }
+
+        // Insertion des méthodes de collecte
+        // On récupère une nature par défaut (ex: la première) pour satisfaire la contrainte de clé étrangère
+        $defaultNature = Nature::first();
+
+        $methodesCollecte = [
+            'Témoignage de la victime',
+            'Témoignage du témoin',
+            'Réseaux sociaux',
+            'Mail'
+        ];
+
+        foreach ($methodesCollecte as $methode) {
+            Collecte::firstOrCreate(
+                ['nom' => $methode],
+                [
+                    'nature_id' => $defaultNature->id,
+                    'quantite' => 10, // Valeur par défaut
+                    'date_collecte' => $now->toDateString(),
+                    'created_at' => $now,
+                    'updated_at' => $now
+                ]
             );
         }
     }

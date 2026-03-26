@@ -5,8 +5,8 @@
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
                 <div class="welcome-text">
-                    <h4 style="color: blue;">Hello,Bon retour!</h4>
-                    <p class="mb-0">Votre session de travail est prete</p>
+                    <h4 style="color: blue;">{{ __('messages.welcome_back') }}</h4>
+                    <p class="mb-0">{{ __('messages.session_ready') }}</p>
                 </div>
             </div>
             <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
@@ -14,7 +14,7 @@
                     <button type="button" class="btn btn-rounded btn-info" data-toggle="modal"
                         data-target=".bd-example-modal-lg"><span class="btn-icon-left text-info"><i
                                 class="fa fa-plus color-info"></i>
-                        </span>Ajouter</button>
+                        </span>{{ __('messages.add_user') }}</button>
                 </ol>
             </div>
         </div>
@@ -56,19 +56,19 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Liste Des Utilisateurs</h4>
+                        <h4 class="card-title">{{ __('messages.users_list_title') }}</h4>
                     </div>
                     <div class="card-body">
                         <form method="GET" action="{{ route('viewusers') }}">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Rechercher un nom, email, profil..."
+                                <input type="text" class="form-control" placeholder="{{ __('messages.search_user_profile_placeholder') }}"
                                     name="search" value="{{ request('search') }}">
                                 <div class="input-group-append">
                                     <button class="btn btn-info" type="submit">
-                                        <i class="fa fa-search"></i> Rechercher
+                                        <i class="fa fa-search"></i> {{ __('messages.search_button') }}
                                     </button>
                                     @if (request('search'))
-                                        <a href="{{ route('viewusers') }}" class="btn btn-danger">Effacer</a>
+                                        <a href="{{ route('viewusers') }}" class="btn btn-danger">{{ __('messages.clear_search') }}</a>
                                     @endif
                                 </div>
                             </div>
@@ -77,20 +77,30 @@
                         <div class="table-responsive">
                             @if ($users->isEmpty())
                                 <div class="alert alert-warning">
-                                    Aucun utilisateur trouvé pour votre recherche.
+                                    {{ __('messages.no_user_found_search') }}
                                 </div>
                             @endif
-                            <table class="table table-responsive-md">
+                            <table id="users-datatable" class="table table-responsive-md table-striped table-bordered" >
                                 <thead>
                                     <tr>
-                                        <th style="width:80px;">#</th>
-                                        <th>NOM & PRENOM</th>
-                                        <th>TELEPHONE</th>
-                                        <th>EMAIL</th>
-                                        <th>PROFIL</th>
-                                        <th>ACTIONS</th>
+                                        <th style="width:80px;">{{ __('messages.number') }}</th>
+                                        <th>{{ __('messages.last_name') }} & {{ __('messages.first_name') }}</th>
+                                        <th>{{ __('messages.phone') }}</th>
+                                        <th>{{ __('messages.email') }}</th>
+                                        <th>{{ __('messages.profile') }}</th>
+                                        <th>{{ __('messages.actions') }}</th>
                                     </tr>
                                 </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
                                 <tbody>
                                     @forelse ($users as $index => $user)
                                         <tr>
@@ -105,18 +115,18 @@
                                                 <div class="dropdown">
                                                     <button type="button" class="btn btn-info light btn-xs dropdown-toggle"
                                                         data-toggle="dropdown">
-                                                        Actions
+                                                        {{ __('messages.actions') }}
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right">
                                                         <a class="dropdown-item btnEditUser" href="javascript:void(0)"
                                                             data-toggle="modal" data-target=".bd-example-modal-lgMP"
                                                             data-user='{{ json_encode($user->makeHidden(['password', 'email_verified_at'])) }}'>
-                                                            Modifier
+                                                            {{ __('messages.edit') }}
                                                         </a>
 
                                                         <button type="button" class="dropdown-item text-danger"
                                                             onclick="confirmDelete({{ $user->id }})">
-                                                            Supprimer
+                                                            {{ __('messages.delete') }}
                                                         </button>
 
                                                         <form id="delete-form-{{ $user->id }}"
@@ -131,17 +141,15 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center">Aucun utilisateur trouvé pour
-                                                "{{ request('search') }}"</td>
+                                            <td colspan="6" class="text-center">{{ __('messages.no_user_found') }} "{{ request('search') }}"</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
 
-                            <div class="mt-3">
-                                {{ $users->appends(request()->input())->links() }}
                             </div>
                         </div>
+                        
 
                         <script>
                             function confirmDelete(id) {
@@ -178,7 +186,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Formulaire d'enregistrement</h5>
+                    <h5 class="modal-title">{{ __('messages.form_create_title') }}</h5>
                     <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
                     </button>
                 </div>
@@ -187,7 +195,7 @@
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="nom" class="col-md-4 col-form-label text-md-end">Nom</label>
+                                <label for="nom" class="col-md-4 col-form-label text-md-end">{{ __('messages.name') }}</label>
                                 <input id="nom" type="text" class="form-control @error('nom') is-invalid @enderror"
                                     name="nom" value="{{ old('nom') }}" required autofocus>
 
@@ -199,7 +207,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="prenom" class="col-md-4 col-form-label text-md-end">Prénom</label>
+                                <label for="prenom" class="col-md-4 col-form-label text-md-end">{{ __('messages.surname') }}</label>
                                 <input id="prenom" type="text"
                                     class="form-control @error('prenom') is-invalid @enderror" name="prenom"
                                     value="{{ old('prenom') }}" required>
@@ -461,6 +469,32 @@
                     console.error("Les inputs password et confirm_password n'ont pas été trouvés.");
                 }
 
+            });
+        });
+
+        // DataTables init pour tri, recherche et filtres de colonnes
+        $(document).ready(function() {
+            var table = $('#users-datatable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                order: [[1, 'asc']],
+                pageLength: 10,
+                language: {
+                    "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
+                },
+                initComplete: function() {
+                    this.api().columns([1,2,3,4]).every(function() {
+                        var column = this;
+                        var input = $('<input type="text" placeholder="' + column.header().textContent.trim() + '..." />')
+                            .appendTo($(column.footer()).empty())
+                            .on('keyup change clear', function() {
+                                if (column.search() !== this.value) {
+                                    column.search(this.value).draw();
+                                }
+                            });
+                    });
+                }
             });
         });
     </script>

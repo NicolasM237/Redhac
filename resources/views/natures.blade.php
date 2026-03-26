@@ -5,8 +5,8 @@
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
                 <div class="welcome-text">
-                    <h4 style="color: blue;">Hello,Bon retour!</h4>
-                    <p class="mb-0">Votre session de travail est prete</p>
+                    <h4 style="color: blue;">{{ __('messages.welcome_back') }}</h4>
+                    <p class="mb-0">{{ __('messages.session_ready') }}</p>
                 </div>
             </div>
             <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
@@ -14,7 +14,7 @@
                     <button type="button" class="btn btn-rounded btn-info" data-toggle="modal"
                         data-target=".bd-example-modal-lg"><span class="btn-icon-left text-info"><i
                                 class="fa fa-plus color-info"></i>
-                        </span>Ajouter</button>
+                        </span>{{ __('messages.add_button') }}</button>
                 </ol>
             </div>
         </div>
@@ -25,34 +25,44 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Liste des natures des cas</h4>
+                        <h4 class="card-title">{{ __('messages.nature_list_title') }}</h4>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('view.natures') }}" method="GET">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Rechercher une nature..."
-                                    name="search" value="{{ $search }}">
+                                <input type="text" class="form-control"
+                                    placeholder="{{ __('messages.search_nature_placeholder') }}" name="search"
+                                    value="{{ $search }}">
                                 <div class="input-group-append">
                                     <button class="btn btn-info" type="submit">
-                                        <i class="fa fa-search"></i> Rechercher
+                                        <i class="fa fa-search"></i> {{ __('messages.search_button') }}
                                     </button>
                                     @if ($search)
-                                        <a href="{{ route('view.natures') }}" class="btn btn-danger">Effacer</a>
+                                        <a href="{{ route('view.natures') }}"
+                                            class="btn btn-danger">{{ __('messages.clear_button') }}</a>
                                     @endif
                                 </div>
                             </div>
                         </form>
 
                         <div class="table-responsive">
-                            <table class="table table-responsive-md">
+                            <table id="natures-datatable" class="table table-responsive-md table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th style="width:80px;">#</th>
-                                        <th>NOM</th>
-                                        <th>Date d'enregistrement</th>
-                                        <th>ACTIONS</th>
+                                        <th>{{ __('messages.nature_name') }}</th>
+                                        <th>{{ __('messages.created_at') }}</th>
+                                        <th>{{ __('messages.actions') }}</th>
                                     </tr>
                                 </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
                                 <tbody>
                                     @forelse ($natures as $index => $nature)
                                         <tr>
@@ -63,18 +73,18 @@
                                                 <div class="dropdown">
                                                     <button type="button" class="btn btn-info light btn-xs dropdown-toggle"
                                                         data-toggle="dropdown">
-                                                        Actions
+                                                        {{ __('messages.actions') }}
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right">
                                                         <a class="dropdown-item btnEditNature" href="javascript:void(0)"
                                                             data-toggle="modal" data-target=".bd-example-modal-lgMN"
                                                             data-nature='{{ json_encode($nature) }}'>
-                                                            Modifier
+                                                            {{ __('messages.edit') ?? 'Modifier' }}
                                                         </a>
 
                                                         <button type="button" class="dropdown-item text-danger"
                                                             onclick="confirmDeleteNature({{ $nature->id }})">
-                                                            Supprimer
+                                                            {{ __('messages.delete') ?? 'Supprimer' }}
                                                         </button>
 
                                                         <form id="delete-form-nature-{{ $nature->id }}" method="POST"
@@ -90,7 +100,7 @@
                                     @empty
                                         <tr>
                                             <td colspan="4" class="text-center text-danger">
-                                                Aucune nature trouvée.
+                                                {{ __('messages.no_nature_found') }}
                                             </td>
                                         </tr>
                                     @endforelse
@@ -131,7 +141,7 @@
                 @if (session('error'))
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oups...',
+                        title: '{{ __('messages.oops') }}',
                         text: "{{ session('error') }}",
                         confirmButtonColor: '#3085d6'
                     });
@@ -141,14 +151,14 @@
             // 2. Fonction de confirmation de suppression
             function confirmDeleteNature(id) {
                 Swal.fire({
-                    title: 'Supprimer cette nature ?',
-                    text: "Cette action peut impacter les cas liés à cette nature.",
+                    title: '{{ __('messages.delete_nature_title') }}',
+                    text: '{{ __('messages.delete_nature_text') }}',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Oui, supprimer',
-                    cancelButtonText: 'Annuler',
+                    confirmButtonText: '{{ __('messages.delete_nature_confirm') }}',
+                    cancelButtonText: '{{ __('messages.delete_nature_cancel') }}',
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -156,6 +166,35 @@
                     }
                 });
             }
+
+            $(document).ready(function() {
+                var table = $('#natures-datatable').DataTable({
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    order: [[1, 'asc']],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        { extend: 'copy', text: '{{ __('messages.copy') ?? 'Copy' }}' },
+                        { extend: 'csv', text: '{{ __('messages.csv') ?? 'CSV' }}' },
+                        { extend: 'excel', text: '{{ __('messages.excel') ?? 'Excel' }}' },
+                        { extend: 'pdf', text: '{{ __('messages.pdf') ?? 'PDF' }}' },
+                        { extend: 'print', text: '{{ __('messages.print') ?? 'Print' }}' }
+                    ],
+                    initComplete: function() {
+                        this.api().columns([1,2]).every(function() {
+                            var column = this;
+                            var input = $('<input type="text" placeholder="' + column.header().textContent.trim() + '..." />')
+                                .appendTo($(column.footer()).empty())
+                                .on('keyup change clear', function() {
+                                    if (column.search() !== this.value) {
+                                        column.search(this.value).draw();
+                                    }
+                                });
+                        });
+                    }
+                });
+            });
         </script>
 
         <!--formulaire d'enregistrement-->
@@ -163,7 +202,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Formulaire d'enregistrement</h5>
+                        <h5 class="modal-title">{{ __('messages.form_title_create') }}</h5>
                         <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
                         </button>
                     </div>
@@ -172,7 +211,8 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-12">
-                                    <label class="col-md-4 col-form-label text-md-end">Nature de cas</label>
+                                    <label
+                                        class="col-md-4 col-form-label text-md-end">{{ __('messages.label_case_nature') }}</label>
                                     <input id="nom" type="text"
                                         class="form-control @error('nom') is-invalid @enderror" name="nom"
                                         value="{{ old('nom') }}" required autofocus>
@@ -185,8 +225,9 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-danger light" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-info">Enregistrer</button>
+                                <button type="button" class="btn btn-danger light"
+                                    data-dismiss="modal">{{ __('messages.button_close') }}</button>
+                                <button type="submit" class="btn btn-info">{{ __('messages.button_save') }}</button>
                             </div>
                         </form>
                     </div>
@@ -200,7 +241,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="myLargeModalLabel">Modification d'une Nature </h5>
+                        <h5 class="modal-title" id="myLargeModalLabel">{{ __('messages.form_title_edit') }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -221,38 +262,42 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">{{ __('messages.button_close') }}</button>
+                                <button type="submit" class="btn btn-primary">{{ __('messages.button_save') }}</button>
                             </div>
                         </form>
                     </div>
                 </div>
-                <script>
-                    // Écouteur d'événement pour le clic sur le bouton "Modifier"
-                    document.querySelectorAll('.btnEditNature').forEach(button => {
-                        button.addEventListener('click', function() {
-                            let natureData = JSON.parse(this.getAttribute(
-                                'data-nature')); // Récupération des données de l'utilisateur
+            </div>
+        </div>
 
-                            console.log(natureData); // Debugging pour voir les données
-                            console.log(natureData.id); // Debugging pour voir l'ID
+        <script>
+            // Écouteur d'événement pour le clic sur le bouton "Modifier"
+            document.querySelectorAll('.btnEditNature').forEach(button => {
+                button.addEventListener('click', function() {
+                    let natureData = JSON.parse(this.getAttribute(
+                        'data-nature')); // Récupération des données de l'utilisateur
 
-                            // Vérification si l'input est accessible
-                            let idInput = document.querySelector('.bd-example-modal-lgMN input[name="id"]');
-                            if (idInput) {
-                                idInput.value = natureData.id; // ID
-                            } else {
-                                console.error("L'input ID n'a pas été trouvé.");
-                            }
+                    console.log(natureData); // Debugging pour voir les données
+                    console.log(natureData.id); // Debugging pour voir l'ID
 
-                            let naturepermisInput = document.querySelector('.bd-example-modal-lgMN input[name="nom"]');
-                            if (naturepermisInput) {
-                                naturepermisInput.value = natureData.nom; // ID
-                            } else {
-                                console.error("L'input Nature n'a pas été trouvé.");
-                            }
+                    // Vérification si l'input est accessible
+                    let idInput = document.querySelector('.bd-example-modal-lgMN input[name="id"]');
+                    if (idInput) {
+                        idInput.value = natureData.id; // ID
+                    } else {
+                        console.error("L'input ID n'a pas été trouvé.");
+                    }
 
-                        });
-                    });
-                </script>
-            @endsection
+                    let naturepermisInput = document.querySelector('.bd-example-modal-lgMN input[name="nom"]');
+                    if (naturepermisInput) {
+                        naturepermisInput.value = natureData.nom; // ID
+                    } else {
+                        console.error("L'input Nature n'a pas été trouvé.");
+                    }
+
+                });
+            });
+        </script>
+    @endsection

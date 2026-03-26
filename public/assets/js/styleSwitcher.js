@@ -24,7 +24,11 @@
 
 (function($) {
     "use strict"
-	addSwitcher();
+	if (typeof addSwitcher === 'function') {
+		addSwitcher();
+	} else {
+		console.warn('addSwitcher() non défini - styleSwitcher désactivé sur cette page.');
+	}
 
 	
     const body = $('body');

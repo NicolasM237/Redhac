@@ -5,8 +5,8 @@
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
                 <div class="welcome-text">
-                    <h4 style="color: blue;">Hello, Bon retour!</h4>
-                    <p class="mb-0">Votre session de travail est prête</p>
+                    <h4 style="color: blue;">{{ __('messages.welcome_back') }}</h4>
+                    <p class="mb-0">{{ __('messages.session_ready') }}</p>
                 </div>
             </div>
         </div>
@@ -15,7 +15,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Liste Des Utilisateurs Mobiles</h4>
+                        <h4 class="card-title">{{ __('messages.mobile_users_list') }}</h4>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -23,12 +23,12 @@
                                 <form class="form-group" method="GET" action="{{ url()->current() }}">
                                     <div class="input-group mb-3 input-primary">
                                         <input type="text" class="form-control"
-                                            placeholder="Rechercher par nom, prénom ou téléphone..." name="search"
+                                            placeholder="{{ __('messages.search_placeholder') }}" name="search"
                                             value="{{ request('search') }}">
                                         {{-- On garde le statut actuel si on recherche par texte --}}
                                         <input type="hidden" name="status" value="{{ request('status') }}">
                                         <div class="input-group-append">
-                                            <button class="input-group-text" type="submit">Rechercher</button>
+                                            <button class="input-group-text" type="submit">{{ __('messages.search_button') }}</button>
                                         </div>
                                     </div>
                                 </form>
@@ -40,15 +40,15 @@
                                         {{-- On garde la recherche actuelle si on filtre par statut --}}
                                         <input type="hidden" name="search" value="{{ request('search') }}">
                                         <select name="status" class="form-control">
-                                            <option value="" selected>Tous les statuts</option>
+                                            <option value="" selected>{{ __('messages.all_status') }}</option>
                                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>
-                                                Actifs uniquement</option>
+                                                {{ __('messages.active_only') }}</option>
                                             <option value="desactive"
-                                                {{ request('status') == 'desactive' ? 'selected' : '' }}>Inactifs uniquement
+                                                {{ request('status') == 'desactive' ? 'selected' : '' }}>{{ __('messages.inactive_only') }}
                                             </option>
                                         </select>
                                         <div class="input-group-append">
-                                            <button class="input-group-text" type="submit">Filtrer</button>
+                                            <button class="input-group-text" type="submit">{{ __('messages.filter_button') ?? 'Filtrer' }}</button>
                                         </div>
                                     </div>
                                 </form>
@@ -60,11 +60,11 @@
                                 <thead>
                                     <tr>
                                         <th style="width:80px;"><b>#</b></th>
-                                        <th><b>NOM</b></th>
-                                        <th><b>PRENOM</b></th>
-                                        <th><b>TELEPHONE</b></th>
-                                        <th><b>STATUS</b></th>
-                                        <th><b>ACTIONS</b></th>
+                                        <th><b>{{ __('messages.last_name') ?? 'NOM' }}</b></th>
+                                        <th><b>{{ __('messages.first_name') ?? 'PRENOM' }}</b></th>
+                                        <th><b>{{ __('messages.phone') ?? 'TELEPHONE' }}</b></th>
+                                        <th><b>{{ __('messages.status') ?? 'STATUS' }}</b></th>
+                                        <th><b>{{ __('messages.actions') }}</b></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -76,16 +76,16 @@
                                             <td>{{ $mobile->telephone }}</td>
                                             <td>
                                                 @if ($mobile->active)
-                                                    <span class="badge badge-success">Actif</span>
+                                                    <span class="badge badge-success">{{ __('messages.active') }}</span>
                                                 @else
-                                                    <span class="badge badge-danger">Inactif</span>
+                                                    <span class="badge badge-danger">{{ __('messages.inactive') }}</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-info btn-sm dropdown-toggle"
                                                         data-toggle="dropdown">
-                                                        Actions
+                                                        {{ __('messages.actions') }}
                                                     </button>
                                                     <div class="dropdown-menu">
                                                         @if (!$mobile->active)
@@ -94,8 +94,8 @@
                                                                 @csrf
                                                                 <button type="button"
                                                                     class="dropdown-item btn-confirm-action"
-                                                                    data-title="Activer cet utilisateur ?">
-                                                                    <i class="fa fa-check text-success mr-2"></i> Activer
+                                                                    data-title="{{ __('messages.confirm_activate_user_title') }}">
+                                                                    <i class="fa fa-check text-success mr-2"></i> {{ __('messages.active') }}
                                                                 </button>
                                                             </form>
                                                         @else
@@ -105,8 +105,8 @@
                                                                 @csrf
                                                                 <button type="button"
                                                                     class="dropdown-item btn-confirm-action"
-                                                                    data-title="Désactiver cet utilisateur ?">
-                                                                    <i class="fa fa-times text-danger mr-2"></i> Désactiver
+                                                                    data-title="{{ __('messages.confirm_deactivate_user_title') }}">
+                                                                    <i class="fa fa-times text-danger mr-2"></i> {{ __('messages.inactive') }}
                                                                 </button>
                                                             </form>
                                                         @endif
@@ -116,7 +116,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center">Aucun utilisateur trouvé.</td>
+                                            <td colspan="6" class="text-center">{{ __('messages.no_user_found') }}</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -128,7 +128,7 @@
         </div>
 
         <small class="copyright" style="text-align:center; display: block; margin-top: 20px;">
-            <p>Copyright © Designed &amp; Developed by <a href="/login" target="_blank">Univers Solutions</a> 2026</p>
+            <p>{{ __('messages.copyright') }} <a href="/login" target="_blank">{{ __('messages.developed_by') }}</a> 2026</p>
         </small>
     </div>
 
@@ -155,7 +155,7 @@
             @if (session('error'))
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oups...',
+                    title: '{{ __('messages.oops') }}',
                     text: "{{ session('error') }}",
                     confirmButtonColor: '#3085d6'
                 });
@@ -169,13 +169,13 @@
 
                     Swal.fire({
                         title: title,
-                        text: "Le statut de l'utilisateur sera mis à jour immédiatement.",
+                        text: '{{ __('messages.confirm_status_update_text') }}',
                         icon: 'question',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Oui, confirmer',
-                        cancelButtonText: 'Annuler',
+                        confirmButtonText: '{{ __('messages.confirm_yes') }}',
+                        cancelButtonText: '{{ __('messages.confirm_cancel') }}',
                         reverseButtons: true
                     }).then((result) => {
                         if (result.isConfirmed) {

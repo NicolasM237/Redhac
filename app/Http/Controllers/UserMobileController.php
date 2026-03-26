@@ -90,17 +90,17 @@ class UserMobileController extends Controller
 
         $id = $request->user()->id;
         $user = User::where('id', $id)->first();
+        $updates = [];
         $path = null;
         if ($request->hasFile('path')) {
             $path = $request->file('path')->store('violences', 'public');
+            $updates['path'] = $path;
         }
 
-        $user->update([
-            'nom' => $request->nom,
-            'prenom' => $request->prenom ?? "",
-            'profil' => $path,
-            'sexe' => $request->sexe,
-        ]);
+        $updates['nom'] = $request->nom;
+        $updates['prenom'] = $request->prenom ?? "";
+        $updates['sexe'] = $request->sexe;
+        $user->update($updates);
 
         return response()->json([
             'status' => 'success',

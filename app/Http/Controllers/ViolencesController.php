@@ -226,9 +226,9 @@ class ViolencesController extends Controller
             'attente_victime' => 'nullable|string',
             'coordinates' => 'sometimes|string',
 
-            'fichie1' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'fichie2' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'fichie3' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
+            'fichie1' => 'nullable|file|max:21120',
+            'fichie2' => 'nullable|file|max:21120',
+            'fichie3' => 'nullable|file|max:21120'
         ]);
 
         $validated['code'] =  $code = 'VIO-' . Auth::id() . '' . date('Y') . '-' . strtoupper(Str::random(5));
@@ -291,9 +291,9 @@ class ViolencesController extends Controller
             'risque_victime' => 'nullable|string',
             'attente_victime' => 'nullable|string',
 
-            'fichie1' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'fichie2' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'fichie3' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
+            'fichie1' => 'nullable|file|max:21120',
+            'fichie2' => 'nullable|file|max:21120',
+            'fichie3' => 'nullable|file|max:21120'
         ]);
 
         if ($request->hasFile('fichie1')) {

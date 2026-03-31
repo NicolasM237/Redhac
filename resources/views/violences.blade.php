@@ -344,8 +344,6 @@
             </div>
         </div>
     </div>
-
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Toggle Column Selector Section
@@ -439,8 +437,23 @@
                 for (let i = 1; i <= 3; i++) {
                     let field = 'fichier' + i;
                     if (data[field]) {
+                        let filePath = data[field];
+
+                        // Nettoyage et dédoublonnage du chemin
+                        if (!/^https?:\/\//i.test(filePath)) {
+                            // enlever leading slashs
+                            filePath = filePath.replace(/^\/*/, '');
+
+                            // enlever duplication de segment
+                            filePath = filePath.replace(/^storage\//i, '');
+                            filePath = filePath.replace(/^violences\//i, '');
+
+                            // chemin final vers le disque public
+                            filePath = '/storage/violences/violences/' + filePath;
+                        }
+
                         $('#mdl-' + field).html(
-                            `<a href="/storage/${data[field]}" target="_blank" class="btn btn-xs btn-info"><i class="fa fa-download"></i> Voir</a>`
+                            `<a href="${filePath}" target="_blank" class="btn btn-xs btn-info"><i class="fa fa-download"></i> Voir</a>`
                         );
                     } else {
                         $('#mdl-' + field).text('Aucun');

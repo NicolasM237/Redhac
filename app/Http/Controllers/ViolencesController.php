@@ -15,7 +15,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ViolencesController extends Controller
 {
- 
+
     private function logActivity($type, $id = null, $description = null)
     {
         Activite::create([
@@ -117,7 +117,7 @@ class ViolencesController extends Controller
         $natures = Nature::all();
         $collectes = Collecte::all();
         $statuses = ['Victime', 'Temoin', 'DDH'];
-        $nationalites = ['Camerounaise', 'Sénégalaise', 'Ivoirienne', 'Malienne', 'Autre'];
+        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Nigeriane', 'Malienne', 'Ivorienne', 'Autre'];
 
         $this->logActivity('Consultation', $violence->id, "Ouverture édition pour ID: " . $violence->code);
 
@@ -141,7 +141,7 @@ class ViolencesController extends Controller
         $violence->update($data);
         $this->logActivity('Modification', $violence->id, "Mise à jour réussie du code: " . $violence->code);
 
-        return redirect()->route('view.violences')->with('success', 'Mise à jour effectuée');
+        return redirect()->route('view.violences')->with('success', 'Mise à jour du cas effectuée');
     }
 
     public function destroy($id)
@@ -165,7 +165,7 @@ class ViolencesController extends Controller
 
         return response()->json(['success' => true, 'permis' => $violence->permis]);
     }
-    
+
     // --- SECTION API ---
 
     public function storeAPI(Request $request)
@@ -221,7 +221,7 @@ class ViolencesController extends Controller
 
         return response()->json($violence->loadMissing('nature', 'collecte'), 201);
     }
-    
+
     public function updateAPI(Request $request, $code)
     {
         $violence = Violences::where('code', $code)->where('user_id', Auth::id())->firstOrFail();
@@ -280,14 +280,14 @@ class ViolencesController extends Controller
             'code' => 'sometimes|string|max:100',
         ]);
         $user = Auth::user();
-        
+
         $violences = Violences::with('collecte', 'nature')->where('user_id', $user->id);
-        
-        if(isset($validated['status'])){
+
+        if (isset($validated['status'])) {
             $violences = $violences->where('status', $validated['status']);
         }
 
-        if(isset($validated['code'])){
+        if (isset($validated['code'])) {
             $violences = $violences->where('code', $validated['code']);
         }
         $violences = $violences->paginate(20);
@@ -297,16 +297,18 @@ class ViolencesController extends Controller
             'last_page' => $violences->lastPage(),
             'per_page' => $violences->perPage(),
             'total' => $violences->total(),
-            
-            'data' => $violences]);
+
+            'data' => $violences
+        ]);
     }
-    
-    public function getUserStats(Request $request){
+
+    public function getUserStats(Request $request)
+    {
         $violenceCount = Violences::query()->where('user_id', $request->user()->id)->count();
         return response()->json(['violence_count' => $violenceCount]);
     }
-    
-// --- SECTION EXPORTS ---
+
+    // --- SECTION EXPORTS ---
 
     public function exportExcel(Request $request)
     {

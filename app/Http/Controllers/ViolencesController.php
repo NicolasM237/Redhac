@@ -51,7 +51,7 @@ class ViolencesController extends Controller
 
     public function viewviolences(Request $request)
     {
-        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise','Nigerian','Malienne','Ivorienne','Autre'];
+        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise','Nigeriane','Malienne','Ivorienne','Autre'];
         $user = auth()->user();
 
         if (!$user) return redirect()->route('login');

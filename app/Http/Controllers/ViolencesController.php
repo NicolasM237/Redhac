@@ -270,7 +270,7 @@ class ViolencesController extends Controller
         $violence->update($validated);
         $this->logActivity('Modification API', $violence->id, "Mise à jour via API du code : $code");
 
-        return response()->json($violence->load('nature', 'collecte'));
+        return response()->json($violence->loadMissing('nature', 'collecte'));
     }
 
     public function listApi(Request $request)

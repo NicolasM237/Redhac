@@ -29,6 +29,9 @@ class ViolencesController extends Controller
         ]);
     }
 
+    /**
+     * Helper pour appliquer les filtres de recherche (utilisé par view et exports)
+     */
     private function applyFilters($query, Request $request)
     {
         return $query->when($request->filled('nationalite'), function ($q) use ($request) {
@@ -48,7 +51,7 @@ class ViolencesController extends Controller
 
     public function viewviolences(Request $request)
     {
-        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Autre'];
+        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise','Nigerian','Malienne','Ivorienne','Autre'];
         $user = auth()->user();
 
         if (!$user) return redirect()->route('login');

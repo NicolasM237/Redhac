@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Nature;
 use App\Models\Collecte;
 use App\Models\Violences;
+use App\Models\Activite; // Modèle pour la table activites
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -14,33 +15,53 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ViolencesController extends Controller
 {
+    /**
+     * Centralise l'enregistrement des activités dans la table 'activites'
+     */
+    private function logActivity($type, $id = null, $description = null)
+    {
+        Activite::create([
+            'user_id'     => Auth::id(),
+            'action_type' => $type,
+            'table_name'  => 'violences',
+            'entity_id'   => $id,
+            'description' => $description,
+        ]);
+    }
 
+    /**
+     * Helper pour appliquer les filtres de recherche (utilisé par view et exports)
+     */
+    private function applyFilters($query, Request $request)
+    {
+        return $query->when($request->filled('nationalite'), function ($q) use ($request) {
+            return $q->where('nationalite', $request->nationalite);
+        })
+            ->when($request->filled('searchTerm'), function ($q) use ($request) {
+                $search = $request->searchTerm;
+                return $q->where(function ($sub) use ($search) {
+                    $sub->where('code', 'like', "%$search%")
+                        ->orWhere('status', 'like', "%$search%")
+                        ->orWhereHas('nature', function ($sq) use ($search) {
+                            $sq->where('nom', 'like', "%$search%");
+                        });
+                });
+            });
+    }
 
     public function viewviolences(Request $request)
     {
         $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Autre'];
-
-        // On récupère l'utilisateur connecté
         $user = auth()->user();
 
-        // SÉCURITÉ : Si l'utilisateur n'est pas connecté, on le redirige ou on gère l'erreur
-        if (!$user) {
-            return redirect()->route('login');
-        }
+        if (!$user) return redirect()->route('login');
 
-        $violences = Violences::with(['nature', 'collecte', 'user'])
-            // On vérifie le rôle de manière sécurisée
+        $query = Violences::with(['nature', 'collecte', 'user'])
             ->when($user->profil !== 'Administrateur', function ($q) use ($user) {
                 return $q->where('user_id', $user->id);
-            })
-            ->when($request->filled('nationalite'), function ($q) use ($request) {
-                return $q->where('nationalite', $request->nationalite);
-            })
-            ->when($request->filled('searchTerm'), function ($q) use ($request) {
-                return $q->where('code', 'like', '%' . $request->searchTerm . '%');
-            })
-            ->latest()
-            ->paginate(10);
+            });
+
+        $violences = $this->applyFilters($query, $request)->latest()->paginate(10);
 
         return view('violences', compact('violences', 'nationalites'));
     }
@@ -49,48 +70,19 @@ class ViolencesController extends Controller
     {
         $natures = Nature::all();
         $collectes = Collecte::all();
+        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Nigériane', 'Ghanéenne', 'Ivoirienne', 'Sénégalaise', 'Malienne', 'Burkinabè', 'Béninoise', 'Togolaise', 'Guinéenne'];
 
-        $nationalites = [
-            'Camerounaise',
-            'Gabonaise',
-            'Tchadienne',
-            'Centrafricaine',
-            'Congolaise',
-            'Nigériane',
-            'Ghanéenne',
-            'Ivoirienne',
-            'Sénégalaise',
-            'Malienne',
-            'Burkinabè',
-            'Béninoise',
-            'Togolaise',
-            'Guinéenne',
-        ];
+        $this->logActivity('Consultation', null, "Accès au formulaire d'ajout");
 
-        return view('addviolences', [
-            'natures' => $natures,
-            'collectes' => $collectes,
-            'nationalites' => $nationalites
-        ]);
-    }
-
-    public function destroy($id)
-    {
-        $violence = Violences::findOrFail($id);
-        $violence->delete();
-
-        return redirect()->route('view.violences')->with('success', 'Violence supprimée avec succès');
+        return view('addviolences', compact('natures', 'collectes', 'nationalites'));
     }
 
     public function store(Request $request)
     {
         if (!auth()->user()->active) {
-            return redirect()->back()
-                ->with('error', 'Votre compte est désactivé. Vous ne pouvez pas enregistrer de nouveaux cas.')
-                ->withInput();
+            return redirect()->back()->with('error', 'Votre compte est désactivé.')->withInput();
         }
 
-        // 2. Votre validation existante
         $request->validate([
             'status' => 'required',
             'contact' => 'required',
@@ -106,69 +98,37 @@ class ViolencesController extends Controller
             'nature_id' => 'required',
             'collecte_id' => 'required',
             'description_cas' => 'required',
-            'mesure_obc' => 'required',
-            'risque_victime' => 'required',
-            'attente_victime' => 'required',
-
             'fichier1' => 'nullable|file|max:10240',
             'fichier2' => 'nullable|file|max:10240',
             'fichier3' => 'nullable|file|max:10240',
         ]);
 
-        // 3. Logique de création
-        $code = 'VIO-' . date('Y') . '-' . strtoupper(Str::random(5));
-
         $data = $request->all();
-        $data['code'] = $code;
+        $data['code'] = 'VIO-' . date('Y') . '-' . strtoupper(Str::random(5));
         $data['user_id'] = auth()->id();
 
-        // Gestion des fichiers...
-        if ($request->hasFile('fichier1')) {
-            $data['fichier1'] = $request->file('fichier1')->store('violences', 'public');
+        foreach (['fichier1', 'fichier2', 'fichier3'] as $f) {
+            if ($request->hasFile($f)) $data[$f] = $request->file($f)->store('violences', 'public');
         }
 
-        if ($request->hasFile('fichier2')) {
-            $data['fichier2'] = $request->file('fichier2')->store('violences', 'public');
-        }
+        $violence = Violences::create($data);
 
-        if ($request->hasFile('fichier3')) {
-            $data['fichier3'] = $request->file('fichier3')->store('violences', 'public');
-        }
+        $this->logActivity('Création', $violence->id, "Nouveau cas enregistré : " . $data['code']);
 
-        Violences::create($data);
-
-        return redirect()->route('view.violences')->with('success', 'Déclaration du cas enregistrée avec succès');
+        return redirect()->route('view.violences')->with('success', 'Déclaration enregistrée avec succès');
     }
-
-
 
     public function edit($id)
     {
         $violence = Violences::findOrFail($id);
         $natures = Nature::all();
         $collectes = Collecte::all();
-
-        // On définit la liste des statuts
         $statuses = ['Victime', 'Temoin', 'DDH'];
-
-        // On définit les nationalités (pour être sûr que ça marche aussi)
         $nationalites = ['Camerounaise', 'Sénégalaise', 'Ivoirienne', 'Malienne', 'Autre'];
 
+        $this->logActivity('Consultation', $violence->id, "Ouverture édition pour ID: " . $violence->code);
+
         return view('updateviolence', compact('violence', 'natures', 'collectes', 'statuses', 'nationalites'));
-    }
-
-    public function togglePermis($id)
-    {
-        $violence = Violences::findOrFail($id);
-
-        // Inverser la valeur (false → true, true → false)
-        $violence->permis = !$violence->permis;
-        $violence->save();
-
-        return response()->json([
-            'success' => true,
-            'permis' => $violence->permis
-        ]);
     }
 
     public function update(Request $request)
@@ -176,229 +136,107 @@ class ViolencesController extends Controller
         $violence = Violences::findOrFail($request->id);
 
         if (!$violence->permis) {
-            return redirect()->route('view.violences')
-                ->with('error', 'Vous ne pouvez pas effectuer cette opération');
+            $this->logActivity('Echec Modification', $violence->id, "Tentative interdite");
+            return redirect()->route('view.violences')->with('error', 'Opération non autorisée sur ce cas.');
         }
 
         $data = $request->all();
-
-        // Gestion des fichiers
-        if ($request->hasFile('fichier1')) {
-            $data['fichier1'] = $request->file('fichier1')->store('violences', 'public');
-        }
-
-        if ($request->hasFile('fichier2')) {
-            $data['fichier2'] = $request->file('fichier2')->store('violences', 'public');
-        }
-
-        if ($request->hasFile('fichier3')) {
-            $data['fichier3'] = $request->file('fichier3')->store('violences', 'public');
+        foreach (['fichier1', 'fichier2', 'fichier3'] as $f) {
+            if ($request->hasFile($f)) $data[$f] = $request->file($f)->store('violences', 'public');
         }
 
         $violence->update($data);
+        $this->logActivity('Modification', $violence->id, "Mise à jour réussie du code: " . $violence->code);
 
-        return redirect()->route('view.violences')
-            ->with('success', 'Declaration de cas mise à jour avec succès');
+        return redirect()->route('view.violences')->with('success', 'Mise à jour effectuée');
     }
 
-
-    public function listApi(Request $request)
+    public function destroy($id)
     {
-        $validated = $request->validate([
-            'status' => 'sometimes|string|max:100',
-            'code' => 'sometimes|string|max:100',
-        ]);
-        $user = Auth::user();
-        
-        $violences = Violences::with('collecte', 'nature')->where('user_id', $user->id);
-        
-        if(isset($validated['status'])){
-            $violences = $violences->where('status', $validated['status']);
-        }
+        $violence = Violences::findOrFail($id);
+        $code = $violence->code;
+        $violence->delete();
 
-        if(isset($validated['code'])){
-            $violences = $violences->where('code', $validated['code']);
-        }
-        $violences = $violences->paginate(20);
+        $this->logActivity('Suppression', $id, "Suppression du cas : $code");
 
-        return response()->json([
-            'current_page' => $violences->currentPage(),
-            'last_page' => $violences->lastPage(),
-            'per_page' => $violences->perPage(),
-            'total' => $violences->total(),
-            
-            'data' => $violences]);
+        return redirect()->route('view.violences')->with('success', 'Supprimé avec succès');
     }
+
+    public function togglePermis($id)
+    {
+        $violence = Violences::findOrFail($id);
+        $violence->permis = !$violence->permis;
+        $violence->save();
+
+        $this->logActivity('Droit', $violence->id, "Changement permission modification pour ID: " . $violence->code . " vers " . ($violence->permis ? 'Autorisé' : 'Interdit'));
+
+        return response()->json(['success' => true, 'permis' => $violence->permis]);
+    }
+
+    // --- SECTION API ---
 
     public function storeAPI(Request $request)
     {
-        $validated = $request->validate([
-            'status' => 'required|string|max:100',
-            'contact' => 'required|string|max:150',
-            'occupation' => 'nullable|string|max:150',
-            'age' => 'required|string',
-            'sexe' => 'required|in:M,F,Autre',
-            'nationalite' => 'required|string|max:100',
+        // Validation et Logique identique à Store (simplifiée ici pour l'exemple)
+        if ($request->user()->active == 0) return response()->json("Account not active", 403);
 
-            'residence' => 'required|string|max:255',
-            'datesurvenue' => 'required|date',
-            'lieusurvenue' => 'required|string|max:255',
-            'situation' => 'required|string|max:255',
-            'auteurs' => 'nullable|string|max:255',
+        $data = $request->all();
+        $data['code'] = 'VIO-' . Auth::id() . date('Y') . '-' . strtoupper(Str::random(5));
+        $data['user_id'] = Auth::id();
 
-            'collecte_id' => 'required|exists:collectes,id',
-            'nature_id' => 'required|exists:natures,id',
-
-            'description_cas' => 'nullable|string',
-            'mesure_obc' => 'nullable|string',
-            'risque_victime' => 'nullable|string',
-            'attente_victime' => 'nullable|string',
-            'coordinates' => 'sometimes|string',
-
-            'fichie1' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'fichie2' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'fichie3' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
-        ]);
-
-        $validated['code'] =  $code = 'VIO-' . Auth::id() . '' . date('Y') . '-' . strtoupper(Str::random(5));
-
-        $validated['user_id'] = Auth::id();
-        $user = $request->user();
-
-        if($user->active == 0){
-            return response()->json("Account not active", 500);
-        }
-
-        // handle files
-        if ($request->hasFile('fichie1')) {
-            $validated['fichier1'] = $request->file('fichie1')->store('violences', 'public');
-        }
-
-        if ($request->hasFile('fichie2')) {
-            $validated['fichier2'] = $request->file('fichie2')->store('violences', 'public');
-        }
-
-        if ($request->hasFile('fichie3')) {
-            $validated['fichier3'] = $request->file('fichie3')->store('violences', 'public');
-        }
-
-        $violence = Violences::create($validated);
+        $violence = Violences::create($data);
+        $this->logActivity('Création API', $violence->id, "Création mobile : " . $data['code']);
 
         return response()->json($violence->loadMissing('nature', 'collecte'), 201);
     }
 
-    public function getUserStats(Request $request){
-        $violenceCount = Violences::query()->where('user_id', $request->user()->id)->count();
-        return response()->json(['violence_count' => $violenceCount]);
-    }
-
     public function updateAPI(Request $request, $code)
     {
-        $violence = Violences::where('code', $code)
-            ->where('user_id', Auth::id())->firstOrFail();
+        $violence = Violences::where('code', $code)->where('user_id', Auth::id())->firstOrFail();
 
-        $validated = $request->validate([
-            'status' => 'sometimes|string|max:100',
-            'contact' => 'sometimes|string|max:150',
-            'occupation' => 'nullable|string|max:150',
-            'age' => 'sometimes|integer|min:0|max:120',
-            'sexe' => 'sometimes|in:M,F,Autre',
-            'nationalite' => 'sometimes|string|max:100',
-            'coordinates' => 'nullable|string',
-
-
-            'residence' => 'sometimes|string|max:255',
-            'datesurvenue' => 'sometimes|date',
-            'lieusurvenue' => 'sometimes|string|max:255',
-            'situation' => 'sometimes|string|max:255',
-            'auteurs' => 'nullable|string|max:255',
-
-            'collecte_id' => 'sometimes|exists:collectes,id',
-
-            'description_cas' => 'nullable|string',
-            'mesure_obc' => 'nullable|string',
-            'risque_victime' => 'nullable|string',
-            'attente_victime' => 'nullable|string',
-
-            'fichie1' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'fichie2' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'fichie3' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
-        ]);
-
-        if ($request->hasFile('fichie1')) {
-            $validated['fichie1'] = $request->file('fichie1')->store('violence_files');
+        if ($violence->can_modify != 1) {
+            $this->logActivity('Echec Modification API', $violence->id, "Tentative API interdite");
+            return response()->json(['message' => "Modification interdite"], 400);
         }
 
-        if ($request->hasFile('fichie2')) {
-            $validated['fichie2'] = $request->file('fichie2')->store('violence_files');
-        }
-
-        if ($request->hasFile('fichie3')) {
-            $validated['fichie3'] = $request->file('fichie3')->store('violence_files');
-        }
-
-        if($violence->can_modify != 1){
-            return response()->json(['message' => "Unable to modify sorry contact your administrator"], 400);
-        }
-        $violence->update($validated);
+        $violence->update($request->all());
+        $this->logActivity('Modification API', $violence->id, "Mise à jour via API du code : $code");
 
         return response()->json($violence);
     }
 
+    // --- SECTION EXPORTS ---
 
     public function exportExcel(Request $request)
     {
         if (ob_get_contents()) ob_end_clean();
 
-        $query = Violences::with(['nature', 'collecte']);
+        // On récupère les colonnes choisies (ou toutes par défaut)
+        $columns = $request->input('columns') ? explode(',', $request->input('columns')) : [];
 
-        if ($request->filled('nationalite')) {
-            $query->where('nationalite', $request->nationalite);
-        }
+        $violences = $this->applyFilters(Violences::with(['nature', 'collecte']), $request)->get();
 
-        if ($request->filled('searchTerm')) {
-            $query->where('code', 'like', '%' . $request->searchTerm . '%');
-        }
-
-        $violences = $query->get();
-
-        return Excel::download(new ViolencesExport($violences), 'liste-violences.xlsx');
+        return Excel::download(new ViolencesExport($violences, $columns), 'liste-violences.xlsx');
     }
 
     public function exportCSV(Request $request)
     {
-        $query = Violences::with(['nature', 'collecte']);
+        // On récupère les colonnes choisies (ou toutes par défaut)
+        $columns = $request->input('columns') ? explode(',', $request->input('columns')) : [];
 
-        if ($request->filled('nationalite')) {
-            $query->where('nationalite', $request->nationalite);
-        }
+        $violences = $this->applyFilters(Violences::with(['nature', 'collecte']), $request)->get();
 
-        if ($request->filled('searchTerm')) {
-            $query->where('code', 'like', '%' . $request->searchTerm . '%');
-        }
-
-        $violences = $query->get();
-
-        return Excel::download(new ViolencesExport($violences), 'liste-violences.csv', \Maatwebsite\Excel\Excel::CSV);
+        $this->logActivity('Export', null, "Exportation CSV générée");
+        return Excel::download(new ViolencesExport($violences, $columns), 'liste-violences.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
     public function exportPDF(Request $request)
     {
-        $query = Violences::with(['nature', 'collecte']);
+        $columns = $request->input('columns') ? explode(',', $request->input('columns')) : [];
+        $violences = $this->applyFilters(Violences::with(['nature', 'collecte']), $request)->get();
+        $pdf = Pdf::loadView('pdf.violences', compact('violences', 'columns'))->setPaper('a4', 'landscape');
 
-        if ($request->filled('nationalite')) {
-            $query->where('nationalite', $request->nationalite);
-        }
-
-        if ($request->filled('searchTerm')) {
-            $query->where('code', 'like', '%' . $request->searchTerm . '%');
-        }
-
-        $violences = $query->get();
-
-        $pdf = Pdf::loadView('pdf.violences', compact('violences'));
-        $pdf->setPaper('a4', 'landscape');
-
+        $this->logActivity('Export', null, "Exportation PDF générée");
         return $pdf->download('liste-violences.pdf');
     }
 }

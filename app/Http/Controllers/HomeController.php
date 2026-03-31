@@ -12,20 +12,19 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Historique;
 
 
-
 class HomeController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-
+    /**connexion du user par son role */
     public function index()
     {
-        Historique::create([
-            'user_id' => auth()->id(),
-        ]);
+        // Ne pas enregistrer à chaque redirection vers le home
+        // L'enregistrement d'une connexion se fait dans LoginController::authenticated()
 
         $user = auth()->user();
 
@@ -70,9 +69,7 @@ class HomeController extends Controller
         ));
     }
 
-    /**
-     * Page des utilisateurs avec liste
-     */
+    /**affichage des users */
     public function viewusers(Request $request)
     {
         $search = $request->input('search');
@@ -99,9 +96,9 @@ class HomeController extends Controller
             $nb_collectes = Collecte::count();
             $nb_violences = Violences::count();
         } else {
-            $nb_users = 1; // lui-même
-            $nb_natures = Nature::count(); // généralement global (référentiel)
-            $nb_collectes = Collecte::count(); // idem
+            $nb_users = 1;
+            $nb_natures = Nature::count();
+            $nb_collectes = Collecte::count();
             $nb_violences = Violences::where('user_id', $user->id)->count();
         }
 
@@ -114,6 +111,7 @@ class HomeController extends Controller
         ));
     }
 
+    /**creation des users */
     public function createUser(Request $request)
     {
         $request->validate([
@@ -139,7 +137,7 @@ class HomeController extends Controller
         return redirect()->back()->with('success', 'Utilisateur créé avec succès');
     }
 
-
+    /**Mise a jour des users */
     public function updateUser(Request $request)
     {
         $request->validate([
@@ -171,7 +169,7 @@ class HomeController extends Controller
 
         return redirect()->back()->with('success', 'Utilisateur modifié avec succès');
     }
-
+    /**supprimer des users */
     public function deleteUser($id)
     {
         $user = User::findOrFail($id);
@@ -185,7 +183,7 @@ class HomeController extends Controller
         return redirect()->back()->with('success', 'Utilisateur supprimé avec succès');
     }
 
-
+    /**supprimer des users cote mobiles */
     public function destroy($id)
     {
         try {

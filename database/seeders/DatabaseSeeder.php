@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Nature;
-use App\Models\Collecte; // N'oubliez pas d'importer le modèle Collecte
+use App\Models\Collecte; 
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
@@ -20,11 +20,11 @@ class DatabaseSeeder extends Seeder
     {
         $now = Carbon::now();
 
-        // 1️⃣ Comptes Administrateurs et Utilisateurs
+        // Comptes Administrateurs et Utilisateurs
         User::firstOrCreate(
             ['email' => 'nicolas@redhac.com'],
             [
-                'nom' => 'Mekam',
+                'nom' => 'Ing Mekam',
                 'prenom' => 'Nicolas',
                 'telephone' => '670000000',
                 'adresse' => 'Douala',
@@ -60,7 +60,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2️⃣ Insertion des natures de cas
+        //Insertion des natures de cas
         $natures = [
             'Violation des libertés fondamentales',
             'Violations d’autres droits civils et politiques',
@@ -77,9 +77,7 @@ class DatabaseSeeder extends Seeder
         foreach ($natures as $natureNom) {
             Nature::firstOrCreate(['nom' => $natureNom]);
         }
-
         // Insertion des méthodes de collecte
-        // On récupère une nature par défaut (ex: la première) pour satisfaire la contrainte de clé étrangère
         $defaultNature = Nature::first();
 
         $methodesCollecte = [
@@ -94,7 +92,7 @@ class DatabaseSeeder extends Seeder
                 ['nom' => $methode],
                 [
                     'nature_id' => $defaultNature->id,
-                    'quantite' => 10, // Valeur par défaut
+                    'quantite' => 10, 
                     'date_collecte' => $now->toDateString(),
                     'created_at' => $now,
                     'updated_at' => $now

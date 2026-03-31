@@ -25,10 +25,10 @@
                                         <input type="text" class="form-control"
                                             placeholder="{{ __('messages.search_placeholder') }}" name="search"
                                             value="{{ request('search') }}">
-                                        {{-- On garde le statut actuel si on recherche par texte --}}
                                         <input type="hidden" name="status" value="{{ request('status') }}">
                                         <div class="input-group-append">
-                                            <button class="input-group-text" type="submit">{{ __('messages.search_button') }}</button>
+                                            <button class="btn btn-info"
+                                                type="submit">{{ __('messages.search_button') }}</button>
                                         </div>
                                     </div>
                                 </form>
@@ -37,27 +37,28 @@
                             <div class="col-md-6">
                                 <form action="{{ url()->current() }}" method="GET" class="form-group">
                                     <div class="input-group mb-3 input-primary">
-                                        {{-- On garde la recherche actuelle si on filtre par statut --}}
                                         <input type="hidden" name="search" value="{{ request('search') }}">
                                         <select name="status" class="form-control">
                                             <option value="" selected>{{ __('messages.all_status') }}</option>
                                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>
                                                 {{ __('messages.active_only') }}</option>
                                             <option value="desactive"
-                                                {{ request('status') == 'desactive' ? 'selected' : '' }}>{{ __('messages.inactive_only') }}
+                                                {{ request('status') == 'desactive' ? 'selected' : '' }}>
+                                                {{ __('messages.inactive_only') }}
                                             </option>
                                         </select>
                                         <div class="input-group-append">
-                                            <button class="input-group-text" type="submit">{{ __('messages.filter_button') ?? 'Filtrer' }}</button>
+                                            <button class="btn btn-info"
+                                                type="submit">{{ __('messages.filter_button') ?? 'Filtrer' }}</button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
 
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
                             <table class="table table-responsive-md">
-                                <thead>
+                                <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
                                     <tr>
                                         <th style="width:80px;"><b>#</b></th>
                                         <th><b>{{ __('messages.last_name') ?? 'NOM' }}</b></th>
@@ -95,7 +96,8 @@
                                                                 <button type="button"
                                                                     class="dropdown-item btn-confirm-action"
                                                                     data-title="{{ __('messages.confirm_activate_user_title') }}">
-                                                                    <i class="fa fa-check text-success mr-2"></i> {{ __('messages.active') }}
+                                                                    <i class="fa fa-check text-success mr-2"></i>
+                                                                    {{ __('messages.active') }}
                                                                 </button>
                                                             </form>
                                                         @else
@@ -106,7 +108,8 @@
                                                                 <button type="button"
                                                                     class="dropdown-item btn-confirm-action"
                                                                     data-title="{{ __('messages.confirm_deactivate_user_title') }}">
-                                                                    <i class="fa fa-times text-danger mr-2"></i> {{ __('messages.inactive') }}
+                                                                    <i class="fa fa-times text-danger mr-2"></i>
+                                                                    {{ __('messages.inactive') }}
                                                                 </button>
                                                             </form>
                                                         @endif
@@ -126,10 +129,6 @@
                 </div>
             </div>
         </div>
-
-        <small class="copyright" style="text-align:center; display: block; margin-top: 20px;">
-            <p>{{ __('messages.copyright') }} <a href="/login" target="_blank">{{ __('messages.developed_by') }}</a> 2026</p>
-        </small>
     </div>
 
     <script>
@@ -186,4 +185,12 @@
             });
         });
     </script>
+
+    <style>
+        .table-scrollable {
+            max-height: 500px;
+            overflow-y: auto;
+            display: block;
+        }
+    </style>
 @endsection

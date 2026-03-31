@@ -39,15 +39,16 @@
                                         <i class="fa fa-search"></i> {{ __('messages.search_button') }}
                                     </button>
                                     @if (isset($search) && $search)
-                                        <a href="{{ route('view.collectes') }}" class="btn btn-danger">{{ __('messages.clear_button') }}</a>
+                                        <a href="{{ route('view.collectes') }}"
+                                            class="btn btn-danger">{{ __('messages.clear_button') }}</a>
                                     @endif
                                 </div>
                             </div>
                         </form>
 
-                        <div class="table-responsive">
-
-                            <table id="collectes-datatable" class="table table-responsive-md table-striped table-bordered" style="width:100%">
+                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                            <table id="collectes-datatable" class="table table-responsive-md table-striped table-bordered"
+                                style="width:100%">
                                 <thead>
                                     <tr>
                                         <th style="width:80px;">#</th>
@@ -175,140 +176,150 @@
             }
         </script>
 
-    </div>
 
-    <small class="copyright" style="text-align:center;">
-        <p>Copyright © Designed &amp; Developed by <a href="/login" target="_blank">Univers Solutions</a> 2026</p>
-    </small>
-    </div>
-
-    <!--formulaire d'enregistrement-->
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ __('messages.form_collecte_title_create') }}</h5>
-                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('collectes.store') }}" method="POST" #naturescasForm="ngForm">
-                        @csrf
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label>{{ __('messages.natures_of_case') }}</label>
-                                <select class="form-control" name="nature_id" required>
-                                    <option disabled selected>{{ __('messages.choose_nature') }}</option>
-                                    @foreach ($natures as $nature)
-                                        <option value="{{ $nature->id }}">{{ $nature->nom }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label>{{ __('messages.collecte_mode') }}</label>
-                                <input type="text" name="nom" class="form-control" placeholder="{{ __('messages.enter_name') }}"
-                                    required>
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label>{{ __('messages.quantity_collecte') }}</label>
-                                <input type="number" name="quantite" class="form-control"
-                                    placeholder="{{ __('messages.enter_quantity') }}" required min="0">
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label>{{ __('messages.collecte_date') }}</label>
-                                <input type="date" name="date_collecte" class="form-control" required>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger light" data-dismiss="modal">{{ __('messages.button_close') }}</button>
-                            <button type="submit" class="btn btn-info">{{ __('messages.button_save') }}</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--formulaire de modification-->
-    <div class="modal fade bd-example-modal-lgMC" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="myLargeModalLabel">{{ __('messages.form_collecte_title_edit') }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="{{ route('update.collecte') }}" enctype="multipart/form-data">
-                        @csrf
-                        <div class=" row gutters">
-                            <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="inputName">{{ __('messages.natures_of_case') }}</label>
+        <!--formulaire d'enregistrement-->
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ __('messages.form_collecte_title_create') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('collectes.store') }}" method="POST" #naturescasForm="ngForm">
+                            @csrf
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>{{ __('messages.natures_of_case') }}</label>
                                     <select class="form-control" name="nature_id" required>
+                                        <option disabled selected>{{ __('messages.choose_nature') }}</option>
                                         @foreach ($natures as $nature)
                                             <option value="{{ $nature->id }}">{{ $nature->nom }}</option>
                                         @endforeach
                                     </select>
                                 </div>
+
+                                <div class="form-group col-md-6">
+                                    <label>{{ __('messages.collecte_mode') }}</label>
+                                    <input type="text" name="nom" class="form-control"
+                                        placeholder="{{ __('messages.enter_name') }}" required>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label>{{ __('messages.quantity_collecte') }}</label>
+                                    <input type="number" name="quantite" class="form-control"
+                                        placeholder="{{ __('messages.enter_quantity') }}" required min="0">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label>{{ __('messages.collecte_date') }}</label>
+                                    <input type="date" name="date_collecte" class="form-control" required>
+                                </div>
                             </div>
 
-                            <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="inputName">{{ __('messages.collecte_mode') }}</label>
-                                    <input type="text" class="form-control" id="inputName" name="nom" required>
-                                    <input type="hidden" class="form-control" id="inputName" name="id" required>
-                                </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger light"
+                                    data-dismiss="modal">{{ __('messages.button_close') }}</button>
+                                <button type="submit" class="btn btn-info">{{ __('messages.button_save') }}</button>
                             </div>
-                            <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="inputName">{{ __('messages.quantity') }}</label>
-                                    <input type="text" class="form-control" id="inputName" name="quantite" required>
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="inputName">{{ __('messages.collecte_date') }}</label>
-                                    <input type="date" class="form-control" id="inputName" name="date_collecte"
-                                        required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('messages.button_close') }}</button>
-                            <button type="submit" class="btn btn-primary">{{ __('messages.button_save') }}</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <script>
-                // Écouteur d'événement pour le clic sur le bouton "Modifier"
-                document.querySelectorAll('.btnEditCollecte').forEach(button => {
-                    button.addEventListener('click', function() {
-                        let collecteData = JSON.parse(this.getAttribute('data-collecte')); // CORRECT
+        </div>
 
-                        // Remplir le champ hidden ID
-                        let idInput = document.querySelector('.bd-example-modal-lgMC input[name="id"]');
-                        if (idInput) idInput.value = collecteData.id;
+        <!--formulaire de modification-->
+        <div class="modal fade bd-example-modal-lgMC" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myLargeModalLabel">{{ __('messages.form_collecte_title_edit') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="{{ route('update.collecte') }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class=" row gutters">
+                                <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
+                                    <div class="form-group">
+                                        <label for="inputName">{{ __('messages.natures_of_case') }}</label>
+                                        <select class="form-control" name="nature_id" required>
+                                            @foreach ($natures as $nature)
+                                                <option value="{{ $nature->id }}">{{ $nature->nom }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
 
-                        // Remplir le champ nom
-                        let nomInput = document.querySelector('.bd-example-modal-lgMC input[name="nom"]');
-                        if (nomInput) nomInput.value = collecteData.nom;
+                                <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
+                                    <div class="form-group">
+                                        <label for="inputName">{{ __('messages.collecte_mode') }}</label>
+                                        <input type="text" class="form-control" id="inputName" name="nom"
+                                            required>
+                                        <input type="hidden" class="form-control" id="inputName" name="id"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
+                                    <div class="form-group">
+                                        <label for="inputName">{{ __('messages.quantity') }}</label>
+                                        <input type="text" class="form-control" id="inputName" name="quantite"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
+                                    <div class="form-group">
+                                        <label for="inputName">{{ __('messages.collecte_date') }}</label>
+                                        <input type="date" class="form-control" id="inputName" name="date_collecte"
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
 
-                        let quantiteInput = document.querySelector('.bd-example-modal-lgMC input[name="quantite"]');
-                        if (quantiteInput) quantiteInput.value = collecteData.quantite;
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">{{ __('messages.button_close') }}</button>
+                                <button type="submit" class="btn btn-primary">{{ __('messages.button_save') }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                        let dateCollecteInput = document.querySelector(
-                            '.bd-example-modal-lgMC input[name="date_collecte"]');
-                        if (dateCollecteInput) dateCollecteInput.value = collecteData.date_collecte;
-                    });
+        <script>
+            // Écouteur d'événement pour le clic sur le bouton "Modifier"
+            document.querySelectorAll('.btnEditCollecte').forEach(button => {
+                button.addEventListener('click', function() {
+                    let collecteData = JSON.parse(this.getAttribute('data-collecte')); // CORRECT
+
+                    // Remplir le champ hidden ID
+                    let idInput = document.querySelector('.bd-example-modal-lgMC input[name="id"]');
+                    if (idInput) idInput.value = collecteData.id;
+
+                    // Remplir le champ nom
+                    let nomInput = document.querySelector('.bd-example-modal-lgMC input[name="nom"]');
+                    if (nomInput) nomInput.value = collecteData.nom;
+
+                    let quantiteInput = document.querySelector('.bd-example-modal-lgMC input[name="quantite"]');
+                    if (quantiteInput) quantiteInput.value = collecteData.quantite;
+
+                    let dateCollecteInput = document.querySelector(
+                        '.bd-example-modal-lgMC input[name="date_collecte"]');
+                    if (dateCollecteInput) dateCollecteInput.value = collecteData.date_collecte;
                 });
-            </script>
-        @endsection
+            });
+        </script>
+
+        <style>
+            .table-scrollable {
+                max-height: 500px;
+                overflow-y: auto;
+                display: block;
+            }
+        </style>
+    @endsection

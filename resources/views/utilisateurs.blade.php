@@ -61,27 +61,24 @@
                     <div class="card-body">
                         <form method="GET" action="{{ route('viewusers') }}">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="{{ __('messages.search_user_profile_placeholder') }}"
-                                    name="search" value="{{ request('search') }}">
+                                <input type="text" class="form-control"
+                                    placeholder="{{ __('messages.search_user_profile_placeholder') }}" name="search"
+                                    value="{{ request('search') }}">
                                 <div class="input-group-append">
                                     <button class="btn btn-info" type="submit">
                                         <i class="fa fa-search"></i> {{ __('messages.search_button') }}
                                     </button>
                                     @if (request('search'))
-                                        <a href="{{ route('viewusers') }}" class="btn btn-danger">{{ __('messages.clear_search') }}</a>
+                                        <a href="{{ route('viewusers') }}"
+                                            class="btn btn-danger">{{ __('messages.clear_search') }}</a>
                                     @endif
                                 </div>
                             </div>
                         </form>
 
-                        <div class="table-responsive">
-                            @if ($users->isEmpty())
-                                <div class="alert alert-warning">
-                                    {{ __('messages.no_user_found_search') }}
-                                </div>
-                            @endif
-                            <table id="users-datatable" class="table table-responsive-md table-striped table-bordered" >
-                                <thead>
+                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                            <table class="table table-responsive-md">
+                                <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
                                     <tr>
                                         <th style="width:80px;">{{ __('messages.number') }}</th>
                                         <th>{{ __('messages.last_name') }} & {{ __('messages.first_name') }}</th>
@@ -141,44 +138,18 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center">{{ __('messages.no_user_found') }} "{{ request('search') }}"</td>
+                                            <td colspan="6" class="text-center">{{ __('messages.no_user_found') }}
+                                                "{{ request('search') }}"</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                             </table>
 
-                            </div>
                         </div>
-                        
-
-                        <script>
-                            function confirmDelete(id) {
-                                Swal.fire({
-                                    title: 'Êtes-vous sûr ?',
-                                    text: "Vous ne pourrez pas annuler la suppression de cet utilisateur !",
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#d33',
-                                    cancelButtonColor: '#3085d6',
-                                    confirmButtonText: 'Oui, supprimer !',
-                                    cancelButtonText: 'Annuler',
-                                    reverseButtons: true
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        // Soumission du formulaire correspondant à l'ID
-                                        document.getElementById('delete-form-' + id).submit();
-                                    }
-                                })
-                            }
-                        </script>
                     </div>
                 </div>
             </div>
         </div>
-
-        <small class="copyright" style="text-align:center;">
-            <p>Copyright © Designed &amp; Developed by <a href="/login" target="_blank">Univers Solutions</a> 2026</p>
-        </small>
     </div>
 
     <!--formulaire d'enregistrement-->
@@ -195,7 +166,8 @@
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="nom" class="col-md-4 col-form-label text-md-end">{{ __('messages.name') }}</label>
+                                <label for="nom"
+                                    class="col-md-4 col-form-label text-md-end">{{ __('messages.name') }}</label>
                                 <input id="nom" type="text" class="form-control @error('nom') is-invalid @enderror"
                                     name="nom" value="{{ old('nom') }}" required autofocus>
 
@@ -207,7 +179,8 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="prenom" class="col-md-4 col-form-label text-md-end">{{ __('messages.surname') }}</label>
+                                <label for="prenom"
+                                    class="col-md-4 col-form-label text-md-end">{{ __('messages.surname') }}</label>
                                 <input id="prenom" type="text"
                                     class="form-control @error('prenom') is-invalid @enderror" name="prenom"
                                     value="{{ old('prenom') }}" required>
@@ -392,8 +365,9 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-danger light"
+                                data-dismiss="modal">{{ __('messages.button_close') }}</button>
+                            <button type="submit" class="btn btn-info">{{ __('messages.button_save') }}</button>
                         </div>
                     </form>
                 </div>
@@ -471,31 +445,42 @@
 
             });
         });
-
-        // DataTables init pour tri, recherche et filtres de colonnes
-        $(document).ready(function() {
-            var table = $('#users-datatable').DataTable({
-                paging: true,
-                searching: true,
-                ordering: true,
-                order: [[1, 'asc']],
-                pageLength: 10,
-                language: {
-                    "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json"
-                },
-                initComplete: function() {
-                    this.api().columns([1,2,3,4]).every(function() {
-                        var column = this;
-                        var input = $('<input type="text" placeholder="' + column.header().textContent.trim() + '..." />')
-                            .appendTo($(column.footer()).empty())
-                            .on('keyup change clear', function() {
-                                if (column.search() !== this.value) {
-                                    column.search(this.value).draw();
-                                }
-                            });
-                    });
-                }
-            });
-        });
     </script>
+
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: '{{ __('messages.activity_confirm_delete_title') }}',
+                text: '{{ __('messages.activity_confirm_delete_title') }}',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                cancelButtonText: '{{ __('messages.cancel') }}',
+                confirmButtonText: '{{ __('messages.yes_delete') }}',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Soumission du formulaire correspondant à l'ID
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            })
+        }
+    </script>
+
+    <style>
+        .table-scrollable {
+            max-height: 500px;
+            overflow-y: auto;
+            display: block;
+        }
+    </style>
+
+    <style>
+        .table-scrollable {
+            max-height: 500px;
+            overflow-y: auto;
+            display: block;
+        }
+    </style>
 @endsection

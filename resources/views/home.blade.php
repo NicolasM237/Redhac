@@ -88,12 +88,7 @@
             </div>
         </div>
 
-        <small class="copyright" style="text-align:center;">
-            <p>
-                {{ __('messages.copyright') }}
-                <a href="/login">{{ __('messages.developed_by') }}</a> 2026
-            </p>
-        </small>
+     
     </div>
 
     <script>

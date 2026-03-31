@@ -3,34 +3,48 @@
 namespace App\Http\Controllers;
 
 use App\Models\Collecte;
-use Illuminate\Http\Request;
 use App\Models\Nature;
+use App\Models\Activite; // Import du modèle Activite
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CollecteController extends Controller
 {
+    /**
+     * Méthode interne pour centraliser l'enregistrement des activités
+     */
+    private function logAction($type, $id, $description)
+    {
+        Activite::create([
+            'user_id' => Auth::id(),
+            'action_type' => $type,
+            'table_name' => 'collectes',
+            'entity_id' => $id,
+            'description' => $description,
+        ]);
+    }
+
     // Affiche toutes les collectes et les natures pour le select
- public function viewcollectes(Request $request)
-{
-    $search = $request->input('search');
-    $natures = Nature::all(); 
+    public function viewcollectes(Request $request)
+    {
+        $search = $request->input('search');
+        $natures = Nature::all(); 
 
-    $collectes = Collecte::with('nature')
-        ->when($search, function ($query, $search) {
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%$search%")
-                  ->orWhere('quantite', 'like', "%$search%")
-                  // Recherche optionnelle dans le nom de la nature associée
-                  ->orWhereHas('nature', function($n) use ($search) {
-                      $n->where('nom', 'like', "%$search%");
-                  });
-            });
-        })
-        ->latest()
-        ->paginate(10);
+        $collectes = Collecte::with('nature')
+            ->when($search, function ($query, $search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('nom', 'like', "%$search%")
+                      ->orWhere('quantite', 'like', "%$search%")
+                      ->orWhereHas('nature', function($n) use ($search) {
+                          $n->where('nom', 'like', "%$search%");
+                      });
+                });
+            })
+            ->latest()
+            ->paginate(10);
 
-    return view('collectes', compact('collectes', 'natures', 'search'));
-}
+        return view('collectes', compact('collectes', 'natures', 'search'));
+    }
 
     // Enregistrer une nouvelle collecte
     public function store(Request $request)
@@ -42,12 +56,15 @@ class CollecteController extends Controller
             'date_collecte' => 'required|date',
         ]);
 
-        Collecte::create([
+        $collecte = Collecte::create([
             'nature_id' => $request->nature_id,
             'nom' => $request->nom,
             'quantite' => $request->quantite,
             'date_collecte' => $request->date_collecte,
         ]);
+
+        // LOG DE L'ACTION
+        $this->logAction('création', $collecte->id, "A créé la collecte : {$collecte->nom} (Qté: {$collecte->quantite})");
 
         return redirect()->back()->with('success', 'Mode de collecte enregistré avec succès');
     }
@@ -69,6 +86,9 @@ class CollecteController extends Controller
         $collecte->date_collecte = $request->date_collecte;
         $collecte->save();
 
+        // LOG DE L'ACTION
+        $this->logAction('modification', $collecte->id, "A modifié la collecte : {$collecte->nom}");
+
         return redirect()->back()->with('success', 'Mode de collecte modifié avec succès');
     }
 
@@ -76,7 +96,11 @@ class CollecteController extends Controller
     public function deleteCollecte($id)
     {
         $collecte = Collecte::findOrFail($id);
+        $nom = $collecte->nom; // On garde le nom avant la suppression
         $collecte->delete();
+
+        // LOG DE L'ACTION
+        $this->logAction('suppression', $id, "A supprimé la collecte : {$nom}");
 
         return redirect()->back()->with('success', 'Mode de collecte supprimé avec succès');
     }

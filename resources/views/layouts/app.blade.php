@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>REDHAC</title>
-
+    <title>REDHAC-SOMONE</title>
     <!-- CSS Fournisseurs -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/chartist/css/chartist.min.css') }}">
     <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
@@ -47,18 +46,21 @@
 
                         <div class="header-left">
                             <div class="input-group search-area right d-lg-inline-flex d-none">
-                                <input type="text" class="form-control" placeholder="{{ __('messages.search1') }}...">
+                                <input type="text" class="form-control"
+                                    placeholder="{{ __('messages.search1') }}...">
                             </div>
                         </div>
 
                         <!-- CHANGEMENT DE LANGUE -->
                         <li class="nav-item dropdown">
-                            <a class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" href="#">
+                            <a class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
                                 🌐 {{ __('messages.language') }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="{{ route('lang.switch', 'fr') }}">🇫🇷 {{ __('messages.french') }}</a>
-                                <a class="dropdown-item" href="{{ route('lang.switch', 'en') }}">🇬🇧 {{ __('messages.english') }}</a>
+                                <a class="dropdown-item" href="{{ route('lang.switch', 'fr') }}">🇫🇷
+                                    {{ __('messages.french') }}</a>
+                                <a class="dropdown-item" href="{{ route('lang.switch', 'en') }}">🇬🇧
+                                    {{ __('messages.english') }}</a>
                             </div>
                         </li>
 
@@ -85,14 +87,14 @@
         <script>
             function confirmLogout() {
                 Swal.fire({
-                    title: 'Déconnexion',
-                    text: "Êtes-vous sûr de vouloir quitter votre session ?",
+                    title: '{{ __('messages.confirm_logout_title') }}',
+                    text: '{{ __('messages.confirm_logout_message') }}',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Oui, déconnectez-moi',
-                    cancelButtonText: 'Annuler',
+                    confirmButtonText: '{{ __('messages.confirm_logout_yes') }}',
+                    cancelButtonText: '{{ __('messages.confirm_logout_cancel') }}',
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -167,6 +169,13 @@
 
                     @if (auth()->user()->profil !== 'Utilisateur')
                         <li>
+                            <a href="{{ url('/activites') }}">
+                                <i class="fa fa-tasks"></i>
+                                <span>{{ __('messages.activites') }}</span>
+                            </a>
+                        </li>
+
+                        <li>
                             <a href="{{ url('/historiques') }}">
                                 <i class="fa fa-cog"></i>
                                 <span>{{ __('messages.history_logs') }}</span>
@@ -180,8 +189,13 @@
         <!-- CONTENU DE LA PAGE -->
         <div class="content-body">
             @yield('content')
+            <small class="copyright" style="text-align:center;">
+                <p>
+                    {{ __('messages.copyright') }}
+                    <a href="/login">{{ __('messages.developed_by') }}</a> 2026
+                </p>
+            </small>
         </div>
-
     </div>
 
     <!-- JS Fournisseurs -->
@@ -205,6 +219,7 @@
     <script src="{{ asset('assets/vendor/jquery-smartwizard/dist/js/jquery.smartWizard.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 
 </html>

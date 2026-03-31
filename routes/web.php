@@ -11,7 +11,6 @@ use App\Http\Controllers\UserMobileController;
 use App\Http\Controllers\ViolencesController;
 
 
-
 // Route pour l'affichage de la page de connexion
 Route::get('/', function () {
     return view('auth.login');
@@ -20,7 +19,7 @@ Route::get('/', function () {
 // Routes d'authentification (Login, Register, etc.)
 Auth::routes();
 
-
+//Route utilisateurs 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/utilisateurs', [HomeController::class, 'viewusers'])->name('viewusers');
@@ -61,18 +60,18 @@ Route::post('/violences/{id}/toggle-permis', [ViolencesController::class, 'toggl
 Route::get('/historiques', [HistoriqueController::class, 'viewhistorique'])->name('historique');
 
 // Route pour les activités
-Route::get('/activites', [ActivitesController::class, 'viewactivites'])->name('activites');
-Route::get('/mes-activites', [ActivitesController::class, 'viewactivites'])->name('view.activites');
-Route::delete('/activite/delete/{id}', [ActivitesController::class, 'destroy'])->name('delete.activite');
+Route::get('/activites', [ActivitesController::class, 'viewactivites'])->name('viewactivites');
+Route::delete('/activite/{id}', [ActivitesController::class, 'destroy'])->name('delete.activite');
 Route::delete('/activites/clear', [ActivitesController::class, 'clearMyHistory'])->name('clear.activites');
 
 
+//Route de traduction de la langue
 Route::get('/lang/{locale}', function ($locale) {
     if (!in_array($locale, ['fr', 'en'])) {
         abort(400);
     }
 
-    session(['locale' => $locale]); // stocke la langue dans la session
-    app()->setLocale($locale);      // applique immédiatement la langue
-    return redirect()->back();       // ou redirect()->to('/home');
+    session(['locale' => $locale]); 
+    app()->setLocale($locale);     
+    return redirect()->back();     
 })->name('lang.switch');

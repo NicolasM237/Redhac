@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UserMobileController extends Controller
 {
+    
     public function sendOtp(Request $request)
     {
         $validator = Validator::make($request->all(), [

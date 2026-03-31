@@ -45,8 +45,9 @@
                             </div>
                         </form>
 
-                        <div class="table-responsive">
-                            <table id="natures-datatable" class="table table-responsive-md table-striped table-bordered" style="width:100%">
+                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                            <table id="collectes-datatable" class="table table-responsive-md table-striped table-bordered"
+                                style="width:100%">
                                 <thead>
                                     <tr>
                                         <th style="width:80px;">#</th>
@@ -55,18 +56,12 @@
                                         <th>{{ __('messages.actions') }}</th>
                                     </tr>
                                 </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
                                 <tbody>
-                                    @forelse ($natures as $index => $nature)
+                                    @forelse ($natures as $nature)
                                         <tr>
-                                            <td><strong>{{ $loop->iteration }}</strong></td>
+                                            {{-- Calcul de l'index continu pour la pagination --}}
+                                            <td><strong>{{ ($natures->currentPage() - 1) * $natures->perPage() + $loop->iteration }}</strong>
+                                            </td>
                                             <td>{{ $nature->nom }}</td>
                                             <td>{{ $nature->created_at->format('d/m/Y H:i') }}</td>
                                             <td>
@@ -76,12 +71,14 @@
                                                         {{ __('messages.actions') }}
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right">
+                                                        {{-- Bouton Modifier avec données JSON conservées --}}
                                                         <a class="dropdown-item btnEditNature" href="javascript:void(0)"
                                                             data-toggle="modal" data-target=".bd-example-modal-lgMN"
                                                             data-nature='{{ json_encode($nature) }}'>
                                                             {{ __('messages.edit') ?? 'Modifier' }}
                                                         </a>
 
+                                                        {{-- Bouton Supprimer --}}
                                                         <button type="button" class="dropdown-item text-danger"
                                                             onclick="confirmDeleteNature({{ $nature->id }})">
                                                             {{ __('messages.delete') ?? 'Supprimer' }}
@@ -106,18 +103,10 @@
                                     @endforelse
                                 </tbody>
                             </table>
-
-                            <div class="mt-3">
-                                {{ $natures->appends(['search' => $search])->links() }}
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <small class="copyright" style="text-align:center; width: 100%;">
-                <p>Copyright © Designed &amp; Developed by <a href="/login" target="_blank">Univers Solutions</a> 2026</p>
-            </small>
         </div>
 
         <script>
@@ -172,19 +161,36 @@
                     paging: true,
                     searching: true,
                     ordering: true,
-                    order: [[1, 'asc']],
+                    order: [
+                        [1, 'asc']
+                    ],
                     dom: 'Bfrtip',
-                    buttons: [
-                        { extend: 'copy', text: '{{ __('messages.copy') ?? 'Copy' }}' },
-                        { extend: 'csv', text: '{{ __('messages.csv') ?? 'CSV' }}' },
-                        { extend: 'excel', text: '{{ __('messages.excel') ?? 'Excel' }}' },
-                        { extend: 'pdf', text: '{{ __('messages.pdf') ?? 'PDF' }}' },
-                        { extend: 'print', text: '{{ __('messages.print') ?? 'Print' }}' }
+                    buttons: [{
+                            extend: 'copy',
+                            text: '{{ __('messages.copy') ?? 'Copy' }}'
+                        },
+                        {
+                            extend: 'csv',
+                            text: '{{ __('messages.csv') ?? 'CSV' }}'
+                        },
+                        {
+                            extend: 'excel',
+                            text: '{{ __('messages.excel') ?? 'Excel' }}'
+                        },
+                        {
+                            extend: 'pdf',
+                            text: '{{ __('messages.pdf') ?? 'PDF' }}'
+                        },
+                        {
+                            extend: 'print',
+                            text: '{{ __('messages.print') ?? 'Print' }}'
+                        }
                     ],
                     initComplete: function() {
-                        this.api().columns([1,2]).every(function() {
+                        this.api().columns([1, 2]).every(function() {
                             var column = this;
-                            var input = $('<input type="text" placeholder="' + column.header().textContent.trim() + '..." />')
+                            var input = $('<input type="text" placeholder="' + column.header()
+                                    .textContent.trim() + '..." />')
                                 .appendTo($(column.footer()).empty())
                                 .on('keyup change clear', function() {
                                     if (column.search() !== this.value) {
@@ -262,9 +268,9 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
+                                <button type="button" class="btn btn-danger light"
                                     data-dismiss="modal">{{ __('messages.button_close') }}</button>
-                                <button type="submit" class="btn btn-primary">{{ __('messages.button_save') }}</button>
+                                <button type="submit" class="btn btn-info">{{ __('messages.button_save') }}</button>
                             </div>
                         </form>
                     </div>
@@ -300,4 +306,12 @@
                 });
             });
         </script>
+
+        <style>
+            .table-scrollable {
+                max-height: 500px;
+                overflow-y: auto;
+                display: block;
+            }
+        </style>
     @endsection

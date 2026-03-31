@@ -5,10 +5,8 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>REDHAC</title>
+    <title>REDHAC-SOMONE</title>
     <link rel="stylesheet" href="{{ asset('assets/vendor/chartist/css/chartist.min.css') }}">
     <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/owl-carousel/owl.carousel.css') }}" rel="stylesheet">
@@ -36,7 +34,7 @@
                 <div class="row justify-content-center h-100 align-items-center">
                     <div class="col-md-6">
                         <div class="authentication-content"
-                            style="background-color: #00346b; height: 540px; display: flex; align-items: center; justify-content: center; color: white; padding: 20px; border-radius: 8px;">
+                            style="background-color: #00346b; height: 530px; display: flex; align-items: center; justify-content: center; color: white; padding: 20px; border-radius: 8px;">
                             <div class="text-center">
                                 <img src="{{ asset('assets/images/redhac.png') }}" alt="Logo Redhac" width="150"
                                     height="120" style="border-radius: 10%;">

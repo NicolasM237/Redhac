@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ViolencesExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
+use PgSql\Lob;
 
 class ViolencesController extends Controller
 {
@@ -232,19 +234,20 @@ class ViolencesController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => 'sometimes|string|max:100',
-            'contact' => 'sometimes|string|max:150',
+            'status' => 'nullable|string|max:100',
+            'contact' => 'nullable|string|max:150',
             'occupation' => 'nullable|string|max:150',
-            'age' => 'sometimes|integer|min:0|max:120',
-            'sexe' => 'sometimes|in:M,F,Autre',
-            'nationalite' => 'sometimes|string|max:100',
+            'age' => 'nullable|integer|min:0|max:120',
+            'sexe' => 'nullable|in:M,F,Autre',
+            'nationalite' => 'nullable|string|max:100',
             'coordinates' => 'nullable|string',
             'residence' => 'sometimes|string|max:255',
             'datesurvenue' => 'sometimes|date',
             'lieusurvenue' => 'sometimes|string|max:255',
             'situation' => 'sometimes|string|max:255',
             'auteurs' => 'nullable|string|max:255',
-            'collecte_id' => 'sometimes|exists:collectes,id',
+            'collecte_id' => 'nullable|exists:collectes,id',
+            'nature_id' => 'nullable|exists:natures,id',
             'description_cas' => 'nullable|string',
             'mesure_obc' => 'nullable|string',
             'risque_victime' => 'nullable|string',
@@ -267,7 +270,11 @@ class ViolencesController extends Controller
             $validated['fichie3'] = $request->file('fichie3')->store('violences', 'public');
         }
 
+        $validated['permis'] = 0;
+        Log::info(sprintf("%s: the val : %s", __METHOD__, json_encode($validated)));
+        Log::info(sprintf("%s: the val : %s", __METHOD__, json_encode($request->all())));
         $violence->update($validated);
+        
         $this->logActivity('Modification API', $violence->id, "Mise à jour via API du code : $code");
 
         return response()->json($violence->loadMissing('nature', 'collecte'));

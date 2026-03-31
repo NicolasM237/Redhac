@@ -34,7 +34,7 @@ Route::get('mail', function(Request $request){
 Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('/violence', [ViolencesController::class, 'storeApi']);
     Route::get('/violence-stat', [ViolencesController::class, 'getUserStats']);
-    Route::put('/violence/{code}', [ViolencesController::class, 'updateApi']);
+    Route::post('/violence-up/{code}', [ViolencesController::class, 'updateApi']);
     Route::get('/violence', [ViolencesController::class, 'listApi']);
     
     Route::get('/nature', [NatureController::class, 'listApi']);

@@ -237,4 +237,8 @@ return [
     'activity_confirm_delete_title' => 'Êtes-vous sûr de vouloir supprimer ?',
     'yes_delete' => 'Oui, supprimer',
     'cancel' => 'Annuler',
+    'Export_Excel'=>'Exportation en Fichier Excel',
+    'export_csv' => 'Exportation en Fichier CSV',
+    'export_pdf' => 'Exportation en Fichier PDF',
+    'select_columns' => 'Sélectionner les colonnes'
 ];

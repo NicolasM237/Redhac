@@ -51,11 +51,9 @@ class ViolencesController extends Controller
 
     public function viewviolences(Request $request)
     {
-        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise','Nigeriane','Malienne','Ivorienne','Autre'];
+        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Nigeriane', 'Malienne', 'Ivorienne', 'Autre'];
         $user = auth()->user();
-
         if (!$user) return redirect()->route('login');
-
         $query = Violences::with(['nature', 'collecte', 'user'])
             ->when($user->profil !== 'Administrateur', function ($q) use ($user) {
                 return $q->where('user_id', $user->id);
@@ -172,7 +170,7 @@ class ViolencesController extends Controller
 
         return response()->json(['success' => true, 'permis' => $violence->permis]);
     }
-
+    
     // --- SECTION API ---
 
     public function storeAPI(Request $request)
@@ -206,7 +204,7 @@ class ViolencesController extends Controller
         $validated['user_id'] = Auth::id();
 
         $user = $request->user();
-        if($user->active == 0){
+        if ($user->active == 0) {
             return response()->json("Account not active", 403);
         }
 
@@ -228,7 +226,6 @@ class ViolencesController extends Controller
 
         return response()->json($violence->loadMissing('nature', 'collecte'), 201);
     }
-
     public function updateAPI(Request $request, $code)
     {
         $violence = Violences::where('code', $code)->where('user_id', Auth::id())->firstOrFail();
@@ -279,7 +276,6 @@ class ViolencesController extends Controller
 
         return response()->json($violence);
     }
-
     // --- SECTION EXPORTS ---
 
     public function exportExcel(Request $request)

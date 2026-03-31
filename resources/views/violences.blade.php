@@ -66,28 +66,29 @@
                             <div class="col-md-4 mb-2">
                                 <a href="{{ route('export.violences.excel', request()->query()) }}"
                                     class="btn btn-rounded btn-info btn-block export-link" data-format="excel">
-                                    <span class="btn-icon-left text-info"><i class="fa fa-download"></i></span> <b>Exporter
-                                        en Fichier Excel</b>
+                                    <span class="btn-icon-left text-info"><i class="fa fa-download"></i></span> <b>
+                                        {{ __('messages.Export_Excel') }}
+                                    </b>
                                 </a>
                             </div>
                             <div class="col-md-4 mb-2">
                                 <a href="{{ route('export.violences.csv', request()->query()) }}"
                                     class="btn btn-rounded btn-primary btn-block export-link" data-format="csv">
                                     <span class="btn-icon-left text-primary"><i class="fa fa-download"></i></span>
-                                    <b>Exporter en Fichier CSV</b>
+                                    <b>{{ __('messages.export_csv') }}</b>
                                 </a>
                             </div>
                             <div class="col-md-4 mb-2">
                                 <a href="{{ route('export.violences.pdf', request()->query()) }}"
                                     class="btn btn-rounded btn-secondary btn-block export-link" data-format="pdf">
                                     <span class="btn-icon-left text-secondary"><i class="fa fa-file-pdf-o"></i></span>
-                                    <b>Exporter en Fichier PDF</b>
+                                    <b>{{ __('messages.export_pdf') }}</b>
                                 </a>
                             </div>
                         </div>
 
                         <button type="button" class="btn btn-sm btn-outline-secondary mb-3" id="btnToggleColumns">
-                            <i class="fa fa-columns"></i> Afficher/Masquer les colonnes
+                            <i class="fa fa-columns"></i> {{ __('messages.select_columns') }}
                         </button>
 
                         <!-- Column Selector -->

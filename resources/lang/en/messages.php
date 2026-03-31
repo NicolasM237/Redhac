@@ -240,4 +240,8 @@ return [
     'activity_confirm_delete_title' => 'Are you sure you want to delete this history?',
     'yes_delete' => 'Yes, delete',
     'cancel' => 'Cancel',
+    'Export_Excel' => 'Export to Excel',
+    'export_csv' => 'Export to CSV',
+    'export_pdf' => 'Export to PDF',
+    'select_columns' => 'Select columns'
 ];

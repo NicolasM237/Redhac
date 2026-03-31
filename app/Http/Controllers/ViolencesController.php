@@ -267,7 +267,9 @@ class ViolencesController extends Controller
             $validated['fichie3'] = $request->file('fichie3')->store('violences', 'public');
         }
 
+        $validated['permis'] = 0;
         $violence->update($validated);
+        
         $this->logActivity('Modification API', $violence->id, "Mise à jour via API du code : $code");
 
         return response()->json($violence->loadMissing('nature', 'collecte'));

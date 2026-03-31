@@ -29,9 +29,6 @@ class ViolencesController extends Controller
         ]);
     }
 
-    /**
-     * Helper pour appliquer les filtres de recherche (utilisé par view et exports)
-     */
     private function applyFilters($query, Request $request)
     {
         return $query->when($request->filled('nationalite'), function ($q) use ($request) {
@@ -178,52 +175,53 @@ class ViolencesController extends Controller
     public function storeAPI(Request $request)
     {
         // Validation et Logique identique à Store (simplifiée ici pour l'exemple)
-        if ($request->user()->active == 0) return response()->json("Account not active", 403);
-
-        $data = $request->all();
-        $data['code'] = 'VIO-' . Auth::id() . date('Y') . '-' . strtoupper(Str::random(5));
-        $data['user_id'] = Auth::id();
-
-        $violence = Violences::create($data);
-        $this->logActivity('Création API', $violence->id, "Création mobile : " . $data['code']);
-
+        $validated = $request->validate([
+            'status' => 'required|string|max:100',
+            'contact' => 'required|string|max:150',
+            'occupation' => 'required|string|max:150',
+            'age' => 'required|integer|min:0|max:120',
+            'sexe' => 'required|in:M,F,Autre',
+            'nationalite' => 'required|string|max:100',
+            'residence' => 'required|string|max:255',
+            'datesurvenue' => 'required|date',
+            'lieusurvenue' => 'required|string|max:255',
+            'situation' => 'required|string|max:255',
+            'auteurs' => 'required|string|max:255',
             'collecte_id' => 'required|exists:collectes,id',
             'nature_id' => 'required|exists:natures,id',
-
             'description_cas' => 'nullable|string',
             'mesure_obc' => 'nullable|string',
             'risque_victime' => 'nullable|string',
             'attente_victime' => 'nullable|string',
             'coordinates' => 'sometimes|string',
-
-            'fichie1' => 'nullable|file|max:21120',
-            'fichie2' => 'nullable|file|max:21120',
-            'fichie3' => 'nullable|file|max:21120'
+            'fichier1' => 'nullable|file|max:21120',
+            'fichier2' => 'nullable|file|max:21120',
+            'fichier3' => 'nullable|file|max:21120'
         ]);
 
-        $validated['code'] =  $code = 'VIO-' . Auth::id() . '' . date('Y') . '-' . strtoupper(Str::random(5));
-
+        $validated['code'] = 'VIO-' . Auth::id() . date('Y') . '-' . strtoupper(Str::random(5));
         $validated['user_id'] = Auth::id();
-        $user = $request->user();
 
+        $user = $request->user();
         if($user->active == 0){
-            return response()->json("Account not active", 500);
+            return response()->json("Account not active", 403);
         }
 
         // handle files
-        if ($request->hasFile('fichie1')) {
-            $validated['fichier1'] = $request->file('fichie1')->store('violences', 'public');
+        if ($request->hasFile('fichier1')) {
+            $validated['fichier1'] = $request->file('fichier1')->store('violences', 'public');
         }
 
-        if ($request->hasFile('fichie2')) {
-            $validated['fichier2'] = $request->file('fichie2')->store('violences', 'public');
+        if ($request->hasFile('fichier2')) {
+            $validated['fichier2'] = $request->file('fichier2')->store('violences', 'public');
         }
 
-        if ($request->hasFile('fichie3')) {
-            $validated['fichier3'] = $request->file('fichie3')->store('violences', 'public');
+        if ($request->hasFile('fichier3')) {
+            $validated['fichier3'] = $request->file('fichier3')->store('violences', 'public');
         }
 
         $violence = Violences::create($validated);
+        $this->logActivity('Création API', $violence->id, "Création mobile : " . $validated['code']);
 
         return response()->json($violence->loadMissing('nature', 'collecte'), 201);
     }
@@ -232,9 +230,11 @@ class ViolencesController extends Controller
     {
         $violence = Violences::where('code', $code)->where('user_id', Auth::id())->firstOrFail();
 
-        if ($violence->can_modify != 1) {
+        if (!$violence->permis) {
             $this->logActivity('Echec Modification API', $violence->id, "Tentative API interdite");
             return response()->json(['message' => "Modification interdite"], 400);
+        }
+
         $validated = $request->validate([
             'status' => 'sometimes|string|max:100',
             'contact' => 'sometimes|string|max:150',
@@ -243,32 +243,35 @@ class ViolencesController extends Controller
             'sexe' => 'sometimes|in:M,F,Autre',
             'nationalite' => 'sometimes|string|max:100',
             'coordinates' => 'nullable|string',
-
-
             'residence' => 'sometimes|string|max:255',
             'datesurvenue' => 'sometimes|date',
             'lieusurvenue' => 'sometimes|string|max:255',
             'situation' => 'sometimes|string|max:255',
             'auteurs' => 'nullable|string|max:255',
-
             'collecte_id' => 'sometimes|exists:collectes,id',
-
             'description_cas' => 'nullable|string',
             'mesure_obc' => 'nullable|string',
             'risque_victime' => 'nullable|string',
             'attente_victime' => 'nullable|string',
-
-            'fichie1' => 'nullable|file|max:21120',
-            'fichie2' => 'nullable|file|max:21120',
-            'fichie3' => 'nullable|file|max:21120'
+            'fichier1' => 'nullable|file|max:21120',
+            'fichier2' => 'nullable|file|max:21120',
+            'fichier3' => 'nullable|file|max:21120'
         ]);
 
-        if ($request->hasFile('fichie1')) {
-            $validated['fichie1'] = $request->file('fichie1')->store('violence_files');
->>>>>>> 5cf2f01fedff8a786059dca7bf85405f135fa5c4
+        // handle files
+        if ($request->hasFile('fichier1')) {
+            $validated['fichier1'] = $request->file('fichier1')->store('violences', 'public');
         }
 
-        $violence->update($request->all());
+        if ($request->hasFile('fichier2')) {
+            $validated['fichier2'] = $request->file('fichier2')->store('violences', 'public');
+        }
+
+        if ($request->hasFile('fichier3')) {
+            $validated['fichier3'] = $request->file('fichier3')->store('violences', 'public');
+        }
+
+        $violence->update($validated);
         $this->logActivity('Modification API', $violence->id, "Mise à jour via API du code : $code");
 
         return response()->json($violence);

@@ -15,9 +15,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ViolencesController extends Controller
 {
-    /**
-     * Centralise l'enregistrement des activités dans la table 'activites'
-     */
+ 
     private function logActivity($type, $id = null, $description = null)
     {
         Activite::create([
@@ -29,9 +27,6 @@ class ViolencesController extends Controller
         ]);
     }
 
-    /**
-     * Helper pour appliquer les filtres de recherche (utilisé par view et exports)
-     */
     private function applyFilters($query, Request $request)
     {
         return $query->when($request->filled('nationalite'), function ($q) use ($request) {
@@ -195,9 +190,9 @@ class ViolencesController extends Controller
             'risque_victime' => 'nullable|string',
             'attente_victime' => 'nullable|string',
             'coordinates' => 'sometimes|string',
-            'fichier1' => 'nullable|file|max:21120',
-            'fichier2' => 'nullable|file|max:21120',
-            'fichier3' => 'nullable|file|max:21120'
+            'fichie1' => 'nullable|file|max:21120',
+            'fichie2' => 'nullable|file|max:21120',
+            'fichie3' => 'nullable|file|max:21120'
         ]);
 
         $validated['code'] = 'VIO-' . Auth::id() . date('Y') . '-' . strtoupper(Str::random(5));
@@ -209,16 +204,16 @@ class ViolencesController extends Controller
         }
 
         // handle files
-        if ($request->hasFile('fichier1')) {
-            $validated['fichier1'] = $request->file('fichier1')->store('violences', 'public');
+        if ($request->hasFile('fichie1')) {
+            $validated['fichie1'] = $request->file('fichie1')->store('violences', 'public');
         }
 
-        if ($request->hasFile('fichier2')) {
-            $validated['fichier2'] = $request->file('fichier2')->store('violences', 'public');
+        if ($request->hasFile('fichie2')) {
+            $validated['fichie2'] = $request->file('fichie2')->store('violences', 'public');
         }
 
-        if ($request->hasFile('fichier3')) {
-            $validated['fichier3'] = $request->file('fichier3')->store('violences', 'public');
+        if ($request->hasFile('fichie3')) {
+            $validated['fichie3'] = $request->file('fichie3')->store('violences', 'public');
         }
 
         $violence = Violences::create($validated);
@@ -226,6 +221,7 @@ class ViolencesController extends Controller
 
         return response()->json($violence->loadMissing('nature', 'collecte'), 201);
     }
+    
     public function updateAPI(Request $request, $code)
     {
         $violence = Violences::where('code', $code)->where('user_id', Auth::id())->firstOrFail();
@@ -253,22 +249,22 @@ class ViolencesController extends Controller
             'mesure_obc' => 'nullable|string',
             'risque_victime' => 'nullable|string',
             'attente_victime' => 'nullable|string',
-            'fichier1' => 'nullable|file|max:21120',
-            'fichier2' => 'nullable|file|max:21120',
-            'fichier3' => 'nullable|file|max:21120'
+            'fichie1' => 'nullable|file|max:21120',
+            'fichie2' => 'nullable|file|max:21120',
+            'fichie3' => 'nullable|file|max:21120'
         ]);
 
         // handle files
-        if ($request->hasFile('fichier1')) {
-            $validated['fichier1'] = $request->file('fichier1')->store('violences', 'public');
+        if ($request->hasFile('fichie1')) {
+            $validated['fichie1'] = $request->file('fichie1')->store('violences', 'public');
         }
 
-        if ($request->hasFile('fichier2')) {
-            $validated['fichier2'] = $request->file('fichier2')->store('violences', 'public');
+        if ($request->hasFile('fichie2')) {
+            $validated['fichie2'] = $request->file('fichie2')->store('violences', 'public');
         }
 
-        if ($request->hasFile('fichier3')) {
-            $validated['fichier3'] = $request->file('fichier3')->store('violences', 'public');
+        if ($request->hasFile('fichie3')) {
+            $validated['fichie3'] = $request->file('fichie3')->store('violences', 'public');
         }
 
         $violence->update($validated);
@@ -276,7 +272,41 @@ class ViolencesController extends Controller
 
         return response()->json($violence);
     }
-    // --- SECTION EXPORTS ---
+
+    public function listApi(Request $request)
+    {
+        $validated = $request->validate([
+            'status' => 'sometimes|string|max:100',
+            'code' => 'sometimes|string|max:100',
+        ]);
+        $user = Auth::user();
+        
+        $violences = Violences::with('collecte', 'nature')->where('user_id', $user->id);
+        
+        if(isset($validated['status'])){
+            $violences = $violences->where('status', $validated['status']);
+        }
+
+        if(isset($validated['code'])){
+            $violences = $violences->where('code', $validated['code']);
+        }
+        $violences = $violences->paginate(20);
+
+        return response()->json([
+            'current_page' => $violences->currentPage(),
+            'last_page' => $violences->lastPage(),
+            'per_page' => $violences->perPage(),
+            'total' => $violences->total(),
+            
+            'data' => $violences]);
+    }
+    
+    public function getUserStats(Request $request){
+        $violenceCount = Violences::query()->where('user_id', $request->user()->id)->count();
+        return response()->json(['violence_count' => $violenceCount]);
+    }
+    
+// --- SECTION EXPORTS ---
 
     public function exportExcel(Request $request)
     {

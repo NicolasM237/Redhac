@@ -191,7 +191,7 @@ class ViolencesController extends Controller
             'mesure_obc' => 'nullable|string',
             'risque_victime' => 'nullable|string',
             'attente_victime' => 'nullable|string',
-            'coordinates' => 'sometimes|string',
+            'coordinates' => 'nullable|string',
             'fichie1' => 'nullable|file|max:21120',
             'fichie2' => 'nullable|file|max:21120',
             'fichie3' => 'nullable|file|max:21120'

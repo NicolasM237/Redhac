@@ -22,7 +22,7 @@ class CreateCollectesTable extends Migration
                 ->onDelete('cascade');
 
             $table->string('nom')->unique();
-            $table->integer('quantite');
+            // $table->integer('quantite');
             $table->date('date_collecte');
 
             $table->timestamps();

@@ -54,7 +54,7 @@
                                         <th style="width:80px;">#</th>
                                         <th>{{ __('messages.nature_name') }}</th>
                                         <th>{{ __('messages.collecte_mode') }}</th>
-                                        <th>{{ __('messages.quantity') }}</th>
+                                        {{-- <th>{{ __('messages.quantity') }}</th> --}}
                                         <th>{{ __('messages.created_at') }}</th>
                                         <th>{{ __('messages.actions') }}</th>
                                     </tr>
@@ -76,7 +76,7 @@
                                             </td>
                                             <td>{{ $collecte->nature->nom ?? 'N/A' }}</td>
                                             <td>{{ $collecte->nom }}</td>
-                                            <td><span class="text-nowrap">{{ $collecte->quantite }}</span></td>
+                                            {{-- <td><span class="text-nowrap">{{ $collecte->quantite }}</span></td> --}}
                                             <td>{{ \Carbon\Carbon::parse($collecte->date_collecte)->format('d/m/Y') }}</td>
                                             <td>
                                                 <div class="dropdown">
@@ -190,7 +190,7 @@
                         <form action="{{ route('collectes.store') }}" method="POST" #naturescasForm="ngForm">
                             @csrf
                             <div class="form-row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-12">
                                     <label>{{ __('messages.natures_of_case') }}</label>
                                     <select class="form-control" name="nature_id" required>
                                         <option disabled selected>{{ __('messages.choose_nature') }}</option>
@@ -206,11 +206,11 @@
                                         placeholder="{{ __('messages.enter_name') }}" required>
                                 </div>
 
-                                <div class="form-group col-md-6">
+                                {{-- <div class="form-group col-md-6">
                                     <label>{{ __('messages.quantity_collecte') }}</label>
                                     <input type="number" name="quantite" class="form-control"
                                         placeholder="{{ __('messages.enter_quantity') }}" required min="0">
-                                </div>
+                                </div> --}}
 
                                 <div class="form-group col-md-6">
                                     <label>{{ __('messages.collecte_date') }}</label>
@@ -264,14 +264,16 @@
                                             required>
                                     </div>
                                 </div>
-                                <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
+
+                            {{--     <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for="inputName">{{ __('messages.quantity') }}</label>
                                         <input type="text" class="form-control" id="inputName" name="quantite"
                                             required>
                                     </div>
-                                </div>
-                                <div class="col-xl-6 col-lglg-4 col-md-4 col-sm-4 col-12">
+                                </div> --}}
+
+                                <div class="col-xl-12 col-lglg-4 col-md-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for="inputName">{{ __('messages.collecte_date') }}</label>
                                         <input type="date" class="form-control" id="inputName" name="date_collecte"
@@ -305,8 +307,8 @@
                     let nomInput = document.querySelector('.bd-example-modal-lgMC input[name="nom"]');
                     if (nomInput) nomInput.value = collecteData.nom;
 
-                    let quantiteInput = document.querySelector('.bd-example-modal-lgMC input[name="quantite"]');
-                    if (quantiteInput) quantiteInput.value = collecteData.quantite;
+                   // let quantiteInput = document.querySelector('.bd-example-modal-lgMC input[name="quantite"]');
+                   // if (quantiteInput) quantiteInput.value = collecteData.quantite;
 
                     let dateCollecteInput = document.querySelector(
                         '.bd-example-modal-lgMC input[name="date_collecte"]');

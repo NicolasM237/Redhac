@@ -169,13 +169,14 @@ class HomeController extends Controller
 
         return redirect()->back()->with('success', 'Utilisateur modifié avec succès');
     }
+
     /**supprimer des users */
     public function deleteUser($id)
     {
         $user = User::findOrFail($id);
 
         // Empêcher la suppression d’un administrateur principal si besoin
-        if ($user->profil === 'Administrateur') {
+        if ($user->profil === 'super_admin') {
             return redirect()->back()->with('error', 'Impossible de supprimer un administrateur !');
         }
 

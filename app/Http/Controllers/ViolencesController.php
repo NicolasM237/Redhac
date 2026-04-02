@@ -48,7 +48,7 @@ class ViolencesController extends Controller
 
     public function viewviolences(Request $request)
     {
-        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Nigeriane', 'Malienne', 'Ivorienne', 'Autre'];
+        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Congo Brazzaville', 'Guinée équatoriale'];
         $user = auth()->user();
         if (!$user) return redirect()->route('login');
         $query = Violences::with(['nature', 'collecte', 'user'])
@@ -65,7 +65,7 @@ class ViolencesController extends Controller
     {
         $natures = Nature::all();
         $collectes = Collecte::all();
-        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Nigériane', 'Ghanéenne', 'Ivoirienne', 'Sénégalaise', 'Malienne', 'Burkinabè', 'Béninoise', 'Togolaise', 'Guinéenne'];
+        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Congo Brazzaville', 'Guinée équatoriale'];
 
         $this->logActivity('Consultation', null, "Accès au formulaire d'ajout");
 
@@ -119,7 +119,8 @@ class ViolencesController extends Controller
         $natures = Nature::all();
         $collectes = Collecte::all();
         $statuses = ['Victime', 'Temoin', 'DDH'];
-        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Nigeriane', 'Malienne', 'Ivorienne', 'Autre'];
+        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Congo Brazzaville', 'Guinée équatoriale'];
+
 
         $this->logActivity('Consultation', $violence->id, "Ouverture édition pour ID: " . $violence->code);
 
@@ -274,7 +275,7 @@ class ViolencesController extends Controller
         Log::info(sprintf("%s: the val : %s", __METHOD__, json_encode($validated)));
         Log::info(sprintf("%s: the val : %s", __METHOD__, json_encode($request->all())));
         $violence->update($validated);
-        
+
         $this->logActivity('Modification API', $violence->id, "Mise à jour via API du code : $code");
 
         return response()->json($violence->loadMissing('nature', 'collecte'));

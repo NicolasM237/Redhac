@@ -14,7 +14,7 @@ class Collecte extends Model
     protected $fillable = [
         'nature_id',
         'nom',
-        'quantite',
+        //'quantite',
         'date_collecte'
     ];
 

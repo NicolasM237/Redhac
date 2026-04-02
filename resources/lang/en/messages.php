@@ -61,7 +61,7 @@ return [
     'actions' => 'Actions',
     'edit' => 'Edit',
     'delete' => 'Delete',
-    'nature_name' => 'NATURE NAME',
+    'nature_name' => 'NATURE ',
     'collecte_list_title' => 'Collection methods list',
     'search_collecte_placeholder' => 'Search a collection or a nature...',
     'collecte_mode' => 'Collection method',
@@ -243,5 +243,7 @@ return [
     'Export_Excel' => 'Export to Excel',
     'export_csv' => 'Export to CSV',
     'export_pdf' => 'Export to PDF',
-    'select_columns' => 'Select columns'
+    'select_columns' => 'Select columns',
+    'percentage' => 'percentage',
+    'nom_user'=>'User name',
 ];

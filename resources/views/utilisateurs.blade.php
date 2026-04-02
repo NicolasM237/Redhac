@@ -228,8 +228,8 @@
                                 <select id="profil" class="form-control @error('profil') is-invalid @enderror"
                                     name="profil" required>
                                     <option value="">Choisir un profil</option>
+                                    <option value="Super_admin">Super_Administrateur</option>
                                     <option value="Administrateur">Administrateur</option>
-                                    <option value="Utilisateur">Utilisateur</option>
                                 </select>
 
                                 @error('profil')
@@ -338,8 +338,8 @@
                                     <label for="inputProfil">Profil</label>
                                     <select id="inputProfil" class="form-control" name="profil" required>
                                         <option selected disabled>choisir</option>
+                                        <option value="Super_admin">Super_Administrateur</option>
                                         <option value="Administrateur">Administrateur</option>
-                                        <option value="Utilisateur">Utilisateur</option>
                                     </select>
                                 </div>
                             </div>

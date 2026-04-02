@@ -240,5 +240,7 @@ return [
     'Export_Excel'=>'Exportation en Fichier Excel',
     'export_csv' => 'Exportation en Fichier CSV',
     'export_pdf' => 'Exportation en Fichier PDF',
-    'select_columns' => 'Sélectionner les colonnes'
+    'select_columns' => 'Sélectionner les colonnes',
+    'percentage' => 'pourcentage',
+    'nom_user'=>'Nom User'
 ];

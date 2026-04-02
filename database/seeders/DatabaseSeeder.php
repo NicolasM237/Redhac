@@ -28,20 +28,43 @@ class DatabaseSeeder extends Seeder
                 'prenom' => 'Nicolas',
                 'telephone' => '670000000',
                 'adresse' => 'Douala',
-                'profil' => 'Administrateur',
+                'profil' => 'Super_admin',
                 'password' => Hash::make('Jeanne237.com')
             ]
         );
 
         User::firstOrCreate(
-            ['email' => 'fotso@redhac.com'],
+            ['email' => 'maximillienne@redhac.com'],
             [
-                'nom' => 'Mr Fotso',
-                'prenom' => 'Narcise',
-                'telephone' => '690000000',
+                'nom' => 'Mme NGO MBE',
+                'prenom' => 'Maximillienne',
+                'telephone' => '699000000',
+                'adresse' => 'Douala',
+                'profil' => 'Super_admin',
+                'password' => Hash::make('MBE237.com')
+            ]
+        );
+        User::firstOrCreate(
+            ['email' => 'marcel@redhac.com'],
+            [
+                'nom' => 'Mr MANI Marcel',
+                'prenom' => 'Marcel',
+                'telephone' => '699000000',
                 'adresse' => 'Douala',
                 'profil' => 'Administrateur',
-                'password' => Hash::make('fotso237.com')
+                'password' => Hash::make('marcel237.com')
+            ]
+        );
+        
+        User::firstOrCreate(
+            ['email' => 'jean@redhac.com'],
+            [
+                'nom' => 'Mr YEBGA Jean',
+                'prenom' => 'Jean',
+                'telephone' => '699512606',
+                'adresse' => 'Douala',
+                'profil' => 'Administrateur',
+                'password' => Hash::make('Y0102.Z')
             ]
         );
 
@@ -92,7 +115,7 @@ class DatabaseSeeder extends Seeder
                 ['nom' => $methode],
                 [
                     'nature_id' => $defaultNature->id,
-                    'quantite' => 10, 
+                    //'quantite' => 10, 
                     'date_collecte' => $now->toDateString(),
                     'created_at' => $now,
                     'updated_at' => $now

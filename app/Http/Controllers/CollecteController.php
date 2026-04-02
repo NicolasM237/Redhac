@@ -34,7 +34,7 @@ class CollecteController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where(function($q) use ($search) {
                     $q->where('nom', 'like', "%$search%")
-                      ->orWhere('quantite', 'like', "%$search%")
+                      //->orWhere('quantite', 'like', "%$search%")
                       ->orWhereHas('nature', function($n) use ($search) {
                           $n->where('nom', 'like', "%$search%");
                       });
@@ -52,19 +52,19 @@ class CollecteController extends Controller
         $request->validate([
             'nature_id' => 'required|exists:natures,id',
             'nom' => 'required|string|unique:collectes,nom',
-            'quantite' => 'required|integer|min:0',
+            //'quantite' => 'required|integer|min:0',
             'date_collecte' => 'required|date',
         ]);
 
         $collecte = Collecte::create([
             'nature_id' => $request->nature_id,
             'nom' => $request->nom,
-            'quantite' => $request->quantite,
+            // 'quantite' => $request->quantite,
             'date_collecte' => $request->date_collecte,
         ]);
 
         // LOG DE L'ACTION
-        $this->logAction('création', $collecte->id, "A créé la collecte : {$collecte->nom} (Qté: {$collecte->quantite})");
+        $this->logAction('création', $collecte->id, "A créé la collecte : {$collecte->nom}");
 
         return redirect()->back()->with('success', 'Mode de collecte enregistré avec succès');
     }
@@ -75,14 +75,14 @@ class CollecteController extends Controller
             'id' => 'required|exists:collectes,id',
             'nature_id' => 'required|exists:natures,id',
             'nom' => 'required|string|unique:collectes,nom,' . $request->id,
-            'quantite' => 'required|integer|min:0',
+            //'quantite' => 'required|integer|min:0',
             'date_collecte' => 'required|date',
         ]);
 
         $collecte = Collecte::findOrFail($request->id);
         $collecte->nature_id = $request->nature_id;
         $collecte->nom = $request->nom;
-        $collecte->quantite = $request->quantite;
+        //$collecte->quantite = $request->quantite;
         $collecte->date_collecte = $request->date_collecte;
         $collecte->save();
 

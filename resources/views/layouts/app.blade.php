@@ -132,7 +132,7 @@
                         </a>
                     </li>
 
-                    @if (auth()->user()->profil !== 'Utilisateur')
+                    @if (auth()->user()->profil !== 'Administrateur')
                         <li class="nav-label">{{ __('messages.administration') }}</li>
                         <li>
                             <a href="{{ url('/utilisateurs') }}">
@@ -166,22 +166,19 @@
                             <span>{{ __('messages.violence_reports') }}</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ url('/activites') }}">
+                            <i class="fa fa-tasks"></i>
+                            <span>{{ __('messages.activites') }}</span>
+                        </a>
+                    </li>
 
-                    @if (auth()->user()->profil !== 'Utilisateur')
-                        <li>
-                            <a href="{{ url('/activites') }}">
-                                <i class="fa fa-tasks"></i>
-                                <span>{{ __('messages.activites') }}</span>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="{{ url('/historiques') }}">
-                                <i class="fa fa-cog"></i>
-                                <span>{{ __('messages.history_logs') }}</span>
-                            </a>
-                        </li>
-                    @endif
+                    <li>
+                        <a href="{{ url('/historiques') }}">
+                            <i class="fa fa-cog"></i>
+                            <span>{{ __('messages.history_logs') }}</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

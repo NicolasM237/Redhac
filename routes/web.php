@@ -20,49 +20,50 @@ Route::get('/', function () {
 Auth::routes();
 
 //Route utilisateurs 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/utilisateurs', [HomeController::class, 'viewusers'])->name('viewusers');
-Route::post('/create-user', [HomeController::class, 'createUser'])->name('create.user');
-Route::delete('/delete-user/{id}', [HomeController::class, 'deleteUser'])->name('delete.user');
-Route::post('/updateuser', [HomeController::class, 'updateUser'])->name('updateuser');
-Route::delete('/users/{id}', [HomeController::class, 'destroy'])->name('users.destroy');
-Route::get('/mobiles', [UserMobileController::class, 'viewmobiles'])->name('mobiles');
-Route::post('/users/{id}/activate', [UserMobileController::class, 'activate']);
-Route::post('/users/{id}/deactivate', [UserMobileController::class, 'deactivate']);
+Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('auth');
+Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
+Route::get('/utilisateurs', [HomeController::class, 'viewusers'])->name('viewusers')->middleware('auth');
+Route::post('/create-user', [HomeController::class, 'createUser'])->name('create.user')->middleware('auth');
+Route::delete('/delete-user/{id}', [HomeController::class, 'deleteUser'])->name('delete.user')->middleware('auth');
+Route::post('/updateuser', [HomeController::class, 'updateUser'])->name('updateuser')->middleware('auth');
+Route::delete('/users/{id}', [HomeController::class, 'destroy'])->name('users.destroy')->middleware('auth');
+Route::get('/mobiles', [UserMobileController::class, 'viewmobiles'])->name('mobiles')->middleware('auth');
+Route::post('/users/{id}/activate', [UserMobileController::class, 'activate'])->middleware('auth');
+Route::post('/users/{id}/deactivate', [UserMobileController::class, 'deactivate'])->middleware('auth');
 
 // Route des Natures de cas
-Route::post('/create-natures', [NatureController::class, 'createNatures'])->name('create.natures');
-Route::get('/natures', [NatureController::class, 'viewnatures'])->name('view.natures');
-Route::post('/updatenature', [NatureController::class, 'updateNature'])->name('update.nature');
-Route::delete('/delete-natures/{id}', [NatureController::class, 'deleteNature'])->name('delete.natures');
+Route::post('/create-natures', [NatureController::class, 'createNatures'])->name('create.natures')->middleware('auth');
+Route::get('/natures', [NatureController::class, 'viewnatures'])->name('view.natures')->middleware('auth');
+Route::post('/updatenature', [NatureController::class, 'updateNature'])->name('update.nature')->middleware('auth');
+Route::delete('/delete-natures/{id}', [NatureController::class, 'deleteNature'])->name('delete.natures')->middleware('auth')    ;
 
 // Route des Collecte
 
-Route::post('/collectes', [CollecteController::class, 'store'])->name('collectes.store');
-Route::get('/collectes', [CollecteController::class, 'viewcollectes'])->name('view.collectes');
-Route::post('/update-collecte', [CollecteController::class, 'update'])->name('update.collecte');
-Route::delete('/delete-collecte/{id}', [CollecteController::class, 'deleteCollecte'])->name('delete.collecte');
+Route::post('/collectes', [CollecteController::class, 'store'])->name('collectes.store')->middleware('auth');
+Route::get('/collectes', [CollecteController::class, 'viewcollectes'])->name('view.collectes')->middleware('auth');
+Route::post('/update-collecte', [CollecteController::class, 'update'])->name('update.collecte')->middleware('auth');
+Route::delete('/delete-collecte/{id}', [CollecteController::class, 'deleteCollecte'])->name('delete.collecte')->middleware('auth');
 
 // Groupe de routes pour les Violences
-Route::get('/violences', [ViolencesController::class, 'viewviolences'])->name('view.violences');
-Route::get('/addviolences', [ViolencesController::class, 'addViolences'])->name('add.violences');
-Route::post('/store', [ViolencesController::class, 'store'])->name('create.violences');
-Route::get('/edit/{id}', [ViolencesController::class, 'edit'])->name('edit.violences');
-Route::put('/update/{id}', [ViolencesController::class, 'update'])->name('update.violences');
-Route::delete('/delete/{id}', [ViolencesController::class, 'destroy'])->name('delete.violences');
-Route::get('/export-pdf', [ViolencesController::class, 'exportPDF'])->name('export.violences.pdf');
-Route::get('/export-excel', [ViolencesController::class, 'exportExcel'])->name('export.violences.excel');
-Route::get('/export-csv', [ViolencesController::class, 'exportCSV'])->name('export.violences.csv');
+Route::get('/violences', [ViolencesController::class, 'viewviolences'])->name('view.violences')->middleware('auth');
+Route::get('/addviolences', [ViolencesController::class, 'addViolences'])->name('add.violences')->middleware('auth');
+Route::post('/store', [ViolencesController::class, 'store'])->name('create.violences')->middleware('auth');
+Route::get('/edit/{id}', [ViolencesController::class, 'edit'])->name('edit.violences')->middleware('auth');
+Route::put('/update/{id}', [ViolencesController::class, 'update'])->name('update.violences')->middleware('auth');
+Route::delete('/delete/{id}', [ViolencesController::class, 'destroy'])->name('delete.violences')->middleware('auth');
+Route::get('/export-pdf', [ViolencesController::class, 'exportPDF'])->name('export.violences.pdf')->middleware('auth');
+Route::get('/export-excel', [ViolencesController::class, 'exportExcel'])->name('export.violences.excel')->middleware('auth');
+Route::get('/export-csv', [ViolencesController::class, 'exportCSV'])->name('export.violences.csv')->middleware('auth');
 Route::post('/violences/{id}/toggle-permis', [ViolencesController::class, 'togglePermis'])
-    ->name('violences.togglePermis');
+    ->name('violences.togglePermis')->middleware('auth');
+
 // Route pour l'historique
-Route::get('/historiques', [HistoriqueController::class, 'viewhistorique'])->name('historique');
+Route::get('/historiques', [HistoriqueController::class, 'viewhistorique'])->name('historique')->middleware('auth');
 
 // Route pour les activités
-Route::get('/activites', [ActivitesController::class, 'viewactivites'])->name('viewactivites');
-Route::delete('/activite/{id}', [ActivitesController::class, 'destroy'])->name('delete.activite');
-Route::delete('/activites/clear', [ActivitesController::class, 'clearMyHistory'])->name('clear.activites');
+Route::get('/activites', [ActivitesController::class, 'viewactivites'])->name('viewactivites')->middleware('auth');
+Route::delete('/activite/{id}', [ActivitesController::class, 'destroy'])->name('delete.activite')->middleware('auth');
+Route::delete('/activites/clear', [ActivitesController::class, 'clearMyHistory'])->name('clear.activites')->middleware('auth');
 
 
 //Route de traduction de la langue
@@ -74,4 +75,4 @@ Route::get('/lang/{locale}', function ($locale) {
     session(['locale' => $locale]); 
     app()->setLocale($locale);     
     return redirect()->back();     
-})->name('lang.switch');
+})->name('lang.switch')->middleware('auth');

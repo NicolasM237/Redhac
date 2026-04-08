@@ -55,6 +55,17 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('marcel237.com')
             ]
         );
+        User::firstOrCreate(
+            ['email' => 'fotso@redhac.com'],
+            [
+                'nom' => 'Mr FOTSO',
+                'prenom' => 'Narcisse',
+                'telephone' => '699000000',
+                'adresse' => 'Douala',
+                'profil' => 'Administrateur',
+                'password' => Hash::make('fotso237.com')
+            ]
+        );
         
         User::firstOrCreate(
             ['email' => 'jean@redhac.com'],

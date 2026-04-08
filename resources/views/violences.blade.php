@@ -71,7 +71,7 @@
                                     </b>
                                 </a>
                             </div>
-                      {{--       <div class="col-md-4 mb-2">
+                            {{--       <div class="col-md-4 mb-2">
                                 <a href="{{ route('export.violences.csv', request()->query()) }}"
                                     class="btn btn-rounded btn-primary btn-block export-link" data-format="csv">
                                     <span class="btn-icon-left text-primary"><i class="fa fa-download"></i></span>
@@ -86,9 +86,9 @@
                                 </a>
                             </div>
                             <div class="col-md-4 mb-2">
-                               <button type="button" class="btn btn-sm btn-outline-secondary mb-3" id="btnToggleColumns">
-                            <i class="fa fa-columns"></i> {{ __('messages.select_columns') }}
-                        </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mb-3" id="btnToggleColumns">
+                                    <i class="fa fa-columns"></i> {{ __('messages.select_columns') }}
+                                </button>
                             </div>
                         </div>
 
@@ -247,7 +247,8 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <button class="btn btn-xs toggle-permis {{ $violence->permis ? 'btn-success' : 'btn-danger' }}"
+                                                <button
+                                                    class="btn btn-xs toggle-permis {{ $violence->permis ? 'btn-success' : 'btn-danger' }}"
                                                     data-id="{{ $violence->id }}">
                                                     {{ $violence->permis ? __('messages.yes') : __('messages.no') }}
                                                 </button>
@@ -255,7 +256,7 @@
                                             <td><strong>{{ $loop->iteration + ($violences->currentPage() - 1) * $violences->perPage() }}</strong>
                                             </td>
                                             <td class="text-nowrap">{{ $violence->code }}</td>
-                                            <td >{{ $violence->user->nom }}</td>
+                                            <td>{{ $violence->user->nom }}</td>
                                             <td>{{ $violence->nationalite }}</td>
                                             <td><span class="badge badge-light">{{ $violence->status }}</span></td>
                                             <td>{{ $violence->sexe }}</td>

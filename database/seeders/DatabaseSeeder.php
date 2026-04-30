@@ -93,6 +93,20 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password123'),
             ]
         );
+        User::firstOrCreate(
+            ['email' => 'john.mobile@example.com'],
+            [
+                'nom' => 'Doe',
+                'prenom' => 'John',
+                'telephone' => '0102030405',
+                'adresse' => '123 Rue de la App',
+                'profil' => 'client',
+                'otp' => null,
+                'active' => true,
+                'type' => 'mobile',
+                'password' => Hash::make('password123'),
+            ]
+        );
 
         //Insertion des natures de cas
         $natures = [
@@ -105,7 +119,7 @@ class DatabaseSeeder extends Seeder
             'Violations des droits des minorités',
             'Harcèlement et discrimination institutionnelle',
             'Atteintes aux droits économiques, sociaux et culturels',
-            'Restrictions illégales aux activités des ONG'
+            'Restrictions illégales aux activités des ONG',
         ];
 
         foreach ($natures as $natureNom) {

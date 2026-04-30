@@ -10,16 +10,17 @@ use Illuminate\Support\Facades\Auth;
 
 class NatureController extends Controller
 {
-   public function viewNatures(Request $request)
+
+public function viewNatures(Request $request)
 {
     $search = $request->input('search');
 
     $natures = Nature::when($search, function ($query, $search) {
             return $query->where('nom', 'LIKE', "%{$search}%");
         })
-        ->latest()
-        ->paginate(10)
-        ->appends(['search' => $search]); // Important pour garder le filtre de recherche
+        ->latest() // Optionnel : pour voir les plus récentes en haut
+        ->paginate(5)
+        ->appends(['search' => $search]);
 
     return view('natures', compact('natures', 'search'));
 }

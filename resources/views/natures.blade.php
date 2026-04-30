@@ -46,64 +46,64 @@
                         </form>
 
                         <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                            <table id="collectes-datatable" class="table table-responsive-md table-striped table-bordered"
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th style="width:80px;">#</th>
-                                        <th>{{ __('messages.nature_name') }}</th>
-                                        <th>{{ __('messages.created_at') }}</th>
-                                        <th>{{ __('messages.actions') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($natures as $nature)
-                                        <tr>
-                                            {{-- Calcul de l'index continu pour la pagination --}}
-                                            <td><strong>{{ ($natures->currentPage() - 1) * $natures->perPage() + $loop->iteration }}</strong>
-                                            </td>
-                                            <td>{{ $nature->nom }}</td>
-                                            <td>{{ $nature->created_at->format('d/m/Y H:i') }}</td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <button type="button" class="btn btn-info light btn-xs dropdown-toggle"
-                                                        data-toggle="dropdown">
-                                                        {{ __('messages.actions') }}
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                        {{-- Bouton Modifier avec données JSON conservées --}}
-                                                        <a class="dropdown-item btnEditNature" href="javascript:void(0)"
-                                                            data-toggle="modal" data-target=".bd-example-modal-lgMN"
-                                                            data-nature='{{ json_encode($nature) }}'>
-                                                            {{ __('messages.edit') ?? 'Modifier' }}
-                                                        </a>
+    <table id="collectes-datatable" class="table table-responsive-md table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th style="width:80px;">#</th>
+                <th>{{ __('messages.nature_name') }}</th>
+                <th>{{ __('messages.created_at') }}</th>
+                <th>{{ __('messages.actions') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($natures as $nature)
+                <tr>
+                    {{-- Ton calcul d'index est correct ici --}}
+                    <td><strong>{{ ($natures->currentPage() - 1) * $natures->perPage() + $loop->iteration }}</strong></td>
+                    <td>{{ $nature->nom }}</td>
+                    <td>{{ $nature->created_at->format('d/m/Y H:i') }}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-info light btn-xs dropdown-toggle" data-toggle="dropdown">
+                                {{ __('messages.actions') }}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item btnEditNature" href="javascript:void(0)"
+                                    data-toggle="modal" data-target=".bd-example-modal-lgMN"
+                                    data-nature='{{ json_encode($nature) }}'>
+                                    {{ __('messages.edit') ?? 'Modifier' }}
+                                </a>
 
-                                                        {{-- Bouton Supprimer --}}
-                                                        <button type="button" class="dropdown-item text-danger"
-                                                            onclick="confirmDeleteNature({{ $nature->id }})">
-                                                            {{ __('messages.delete') ?? 'Supprimer' }}
-                                                        </button>
+                                <button type="button" class="dropdown-item text-danger"
+                                    onclick="confirmDeleteNature({{ $nature->id }})">
+                                    {{ __('messages.delete') ?? 'Supprimer' }}
+                                </button>
 
-                                                        <form id="delete-form-nature-{{ $nature->id }}" method="POST"
-                                                            action="{{ route('delete.natures', $nature->id) }}"
-                                                            style="display:none;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center text-danger">
-                                                {{ __('messages.no_nature_found') }}
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                                <form id="delete-form-nature-{{ $nature->id }}" method="POST"
+                                    action="{{ route('delete.natures', $nature->id) }}" style="display:none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </div>
                         </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4" class="text-center text-danger">
+                        {{ __('messages.no_nature_found') }}
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+{{-- AJOUT DES LIENS DE PAGINATION ICI --}}
+<div class="d-flex justify-content-center mt-3">
+    {!! $natures->links() !!}
+</div>
+
                     </div>
                 </div>
             </div>

@@ -8,69 +8,63 @@
         </div>
 
         <div class="row">
-
-           @if (auth()->user()->profil !== "Administrateur")
-            <div class="col-xl-3 col-sm-6 m-t35">
-                <div class="card card-coin">
-                    <div class="card-body text-center">
-                        <i class="fa fa-users" style="font-size:48px;color:#29008a;"></i>
-                        <h2 class="text-black mb-2 font-w600">{{ __('messages.users') }}</h2>
-                        <p class="mb-0 fs-14">
-                            <span class="text-primary mr-1" style="font-size:24px; font-weight:bold;">
-                                {{ $nb_users }}
-                            </span>
-                            {{ __('messages.registered_users') }}
-                        </p>
-                    </div>
+    {{-- On vérifie strictement que l'utilisateur est Super_admin --}}
+    @if (auth()->user()->profil === "Super_admin")
+        
+        <div class="col-xl-3 col-sm-6 m-t35">
+            <div class="card card-coin">
+                <div class="card-body text-center">
+                    <i class="fa fa-users" style="font-size:20px;color:#29008a;"></i>
+                    <h4 class="text-black ">{{ __('messages.users') }}</h4>
+                    <p class="mb-4 fs-13">
+                        <span class="text-primary mr-1" style="font-size:18px; font-weight:bold;">{{ $nb_users }}</span>
+                        {{ __('messages.registered_users') }}
+                    </p>
                 </div>
             </div>
-
-            <div class="col-xl-3 col-sm-6 m-t35">
-                <div class="card card-coin">
-                    <div class="card-body text-center">
-                        <i class="fa fa-file-text" style="font-size:48px;color:#29008a;"></i>
-                        <h2 class="text-black mb-0 font-w600">{{ __('messages.case_types') }}</h2>
-                        <p class="mb-0 fs-13">
-                            <span class="text-success mr-1" style="font-size:24px; font-weight:bold;">
-                                {{ $nb_natures }}
-                            </span>
-                            {{ __('messages.registered_types') }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-sm-6 m-t35">
-                <div class="card card-coin">
-                    <div class="card-body text-center">
-                        <i class="fa fa-database" style="font-size:48px;color:#29008a;"></i>
-                        <h2 class="text-black mb-2 font-w600">{{ __('messages.collection_methods') }}</h2>
-                        <p class="mb-0 fs-14">
-                            <span class="text-info mr-1" style="font-size:24px; font-weight:bold;">
-                                {{ $nb_collectes }}
-                            </span>
-                            {{ __('messages.registered_methods') }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-sm-6 m-t35">
-                <div class="card card-coin">
-                    <div class="card-body text-center">
-                        <i class="fa fa-exclamation-triangle" style="font-size:48px;color:#29008a;"></i>
-                        <h2 class="text-black mb-2 font-w600">{{ __('messages.violence_reports') }}</h2>
-                        <p class="mb-0 fs-14">
-                            <span class="text-danger mr-1" style="font-size:24px; font-weight:bold;">
-                                {{ $nb_violences }}
-                            </span>
-                            {{ __('messages.reported_violence_cases') }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-           @endif
         </div>
+
+        <div class="col-xl-3 col-sm-6 m-t35">
+            <div class="card card-coin">
+                <div class="card-body text-center">
+                    <i class="fa fa-file-text" style="font-size:20px;color:#29008a;"></i>
+                    <h4 class="text-black mb-0 font-w600">{{ __('messages.case_types') }}</h4>
+                    <p class="mb-0 fs-13">
+                        <span class="text-success mr-1" style="font-size:18px; font-weight:bold;">{{ $nb_natures }}</span>
+                        {{ __('messages.registered_types') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6 m-t35">
+            <div class="card card-coin">
+                <div class="card-body text-center">
+                    <i class="fa fa-database" style="font-size:20px;color:#29008a;"></i>
+                    <h4 class="text-black mb-2 font-w600">{{ __('messages.collection_methods') }}</h4>
+                    <p class="mb-0 fs-14">
+                        <span class="text-info mr-1" style="font-size:18px; font-weight:bold;">{{ $nb_collectes }}</span>
+                        {{ __('messages.registered_methods') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6 m-t35">
+            <div class="card card-coin">
+                <div class="card-body text-center">
+                    <i class="fa fa-exclamation-triangle" style="font-size:20px;color:#29008a;"></i>
+                    <h4 class="text-black mb-2 font-w600">{{ __('messages.violence_reports') }}</h4>
+                    <p class="mb-0 fs-14">
+                        <span class="text-danger mr-1" style="font-size:18px; font-weight:bold;">{{ $nb_violences }}</span>
+                        {{ __('messages.reported_violence_cases') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    @endif
+</div>
 
         <!-- GRAPHIQUE -->
         <div class="row">
@@ -80,7 +74,7 @@
                         <h4 class="fs-20 text-black">{{ __('messages.violence_chart_title') }}</h4>
                     </div>
                     <div class="card-body">
-                        <div style="height: 400px;">
+                        <div style="height: 250px;">
                             <canvas id="violenceChart"></canvas>
                         </div>
                     </div>
@@ -92,7 +86,7 @@
                         <h4 class="fs-20 text-black">{{ __('messages.violence_chart_title') }} {{ __('messages.percentage') ?? '%' }}</h4>
                     </div>
                     <div class="card-body">
-                        <div style="height: 400px;">
+                        <div style="height: 250px;">
                             <canvas id="violencePieChart"></canvas>
                         </div>
                     </div>

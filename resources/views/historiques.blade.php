@@ -40,45 +40,50 @@
                                 </div>
                             @endif
 
-                            <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                                <table class="table table-striped table-hover align-middle">
-                                    <thead class="thead-light" style="position: sticky; top: 0; z-index: 1;">
-                                        <tr>
-                                            <th scope="col"><b>{{ __('messages.full_name') }}</b></th>
-                                            <th scope="col"><b>{{ __('messages.email') }}</b></th>
-                                            <th scope="col"><b>{{ __('messages.date_and_time') }}</b></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($historiques as $item)
-                                            <tr>
-                                                <td class="text-nowrap">
-                                                    <strong>
-                                                        {{ $item->user->nom ?? 'N/A' }}
-                                                        {{ $item->user->prenom ?? '' }}
-                                                    </strong>
-                                                </td>
-                                                <td>{{ $item->user->email ?? __('messages.unknown_email') }}</td>
-                                                <td class="text-nowrap">
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="fa fa-calendar-o mr-2 text-primary"></i>
-                                                        <span>{{ $item->created_at->format('d/m/Y') }}</span>
-                                                        <span class="badge badge-xs light badge-primary ml-2">
-                                                            {{ $item->created_at->format('H:i') }}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="3" class="text-center py-4">
-                                                    {{ __('messages.no_history_found') }}
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+                           <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="thead-light" style="position: sticky; top: 0; z-index: 1;">
+            <tr>
+                <th scope="col"><b>{{ __('messages.full_name') }}</b></th>
+                <th scope="col"><b>{{ __('messages.email') }}</b></th>
+                <th scope="col"><b>{{ __('messages.date_and_time') }}</b></th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($historiques as $item)
+                <tr>
+                    <td class="text-nowrap">
+                        <strong>
+                            {{ $item->user->nom ?? 'N/A' }}
+                            {{ $item->user->prenom ?? '' }}
+                        </strong>
+                    </td>
+                    <td>{{ $item->user->email ?? __('messages.unknown_email') }}</td>
+                    <td class="text-nowrap">
+                        <div class="d-flex align-items-center">
+                            <i class="fa fa-calendar-o mr-2 text-primary"></i>
+                            <span>{{ $item->created_at->format('d/m/Y') }}</span>
+                            <span class="badge badge-xs light badge-primary ml-2">
+                                {{ $item->created_at->format('H:i') }}
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="3" class="text-center py-4">
+                        {{ __('messages.no_history_found') }}
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+{{-- Liens de pagination --}}
+<div class="d-flex justify-content-center mt-3">
+    {{ $historiques->links() }}
+</div>
 
                         </div>
                     </div>

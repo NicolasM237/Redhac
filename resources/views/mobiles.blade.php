@@ -57,74 +57,75 @@
                         </div>
 
                         <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                            <table class="table table-responsive-md">
-                                <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
-                                    <tr>
-                                        <th style="width:80px;"><b>#</b></th>
-                                        <th><b>{{ __('messages.last_name') ?? 'NOM' }}</b></th>
-                                        <th><b>{{ __('messages.first_name') ?? 'PRENOM' }}</b></th>
-                                        <th><b>{{ __('messages.phone') ?? 'TELEPHONE' }}</b></th>
-                                        <th><b>{{ __('messages.status') ?? 'STATUS' }}</b></th>
-                                        <th><b>{{ __('messages.actions') }}</b></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($mobiles as $key => $mobile)
-                                        <tr>
-                                            <td><strong>{{ $key + 1 }}</strong></td>
-                                            <td>{{ $mobile->nom }}</td>
-                                            <td>{{ $mobile->prenom }}</td>
-                                            <td>{{ $mobile->telephone }}</td>
-                                            <td>
-                                                @if ($mobile->active)
-                                                    <span class="badge badge-success">{{ __('messages.active') }}</span>
-                                                @else
-                                                    <span class="badge badge-danger">{{ __('messages.inactive') }}</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-info btn-sm dropdown-toggle"
-                                                        data-toggle="dropdown">
-                                                        {{ __('messages.actions') }}
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                        @if (!$mobile->active)
-                                                            <form action="{{ url('/users/' . $mobile->id . '/activate') }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                <button type="button"
-                                                                    class="dropdown-item btn-confirm-action"
-                                                                    data-title="{{ __('messages.confirm_activate_user_title') }}">
-                                                                    <i class="fa fa-check text-success mr-2"></i>
-                                                                    {{ __('messages.active') }}
-                                                                </button>
-                                                            </form>
-                                                        @else
-                                                            <form
-                                                                action="{{ url('/users/' . $mobile->id . '/deactivate') }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                <button type="button"
-                                                                    class="dropdown-item btn-confirm-action"
-                                                                    data-title="{{ __('messages.confirm_deactivate_user_title') }}">
-                                                                    <i class="fa fa-times text-danger mr-2"></i>
-                                                                    {{ __('messages.inactive') }}
-                                                                </button>
-                                                            </form>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center">{{ __('messages.no_user_found') }}</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+    <table class="table table-responsive-md">
+        <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+            <tr>
+                <th style="width:80px;"><b>#</b></th>
+                <th><b>{{ __('messages.last_name') ?? 'NOM' }}</b></th>
+                <th><b>{{ __('messages.first_name') ?? 'PRENOM' }}</b></th>
+                <th><b>{{ __('messages.phone') ?? 'TELEPHONE' }}</b></th>
+                <th><b>{{ __('messages.status') ?? 'STATUS' }}</b></th>
+                <th><b>{{ __('messages.actions') }}</b></th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($mobiles as $key => $mobile)
+                <tr>
+                    {{-- Utilisation de firstItem() pour une numérotation continue sur plusieurs pages --}}
+                    <td><strong>{{ $mobiles->firstItem() + $key }}</strong></td>
+                    <td>{{ $mobile->nom }}</td>
+                    <td>{{ $mobile->prenom }}</td>
+                    <td>{{ $mobile->telephone }}</td>
+                    <td>
+                        @if ($mobile->active)
+                            <span class="badge badge-success">{{ __('messages.active') }}</span>
+                        @else
+                            <span class="badge badge-danger">{{ __('messages.inactive') }}</span>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">
+                                {{ __('messages.actions') }}
+                            </button>
+                            <div class="dropdown-menu">
+                                @if (!$mobile->active)
+                                    <form action="{{ url('/users/' . $mobile->id . '/activate') }}" method="POST">
+                                        @csrf
+                                        <button type="button" class="dropdown-item btn-confirm-action" 
+                                            data-title="{{ __('messages.confirm_activate_user_title') }}">
+                                            <i class="fa fa-check text-success mr-2"></i>
+                                            {{ __('messages.active') }}
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ url('/users/' . $mobile->id . '/deactivate') }}" method="POST">
+                                        @csrf
+                                        <button type="button" class="dropdown-item btn-confirm-action" 
+                                            data-title="{{ __('messages.confirm_deactivate_user_title') }}">
+                                            <i class="fa fa-times text-danger mr-2"></i>
+                                            {{ __('messages.inactive') }}
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
                         </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center">{{ __('messages.no_user_found') }}</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+{{-- Affichage des liens de navigation (Pagination) --}}
+<div class="d-flex justify-content-center mt-3">
+    {{ $mobiles->links() }}
+</div>
+
                     </div>
                 </div>
             </div>

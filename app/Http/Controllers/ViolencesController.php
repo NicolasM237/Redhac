@@ -46,20 +46,26 @@ class ViolencesController extends Controller
             });
     }
 
-    public function viewviolences(Request $request)
-    {
-        $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Congo Brazzaville', 'Guinée équatoriale'];
-        $user = auth()->user();
-        if (!$user) return redirect()->route('login');
-        $query = Violences::with(['nature', 'collecte', 'user'])
-            ->when($user->profil !== 'Administrateur', function ($q) use ($user) {
-                return $q->where('user_id', $user->id);
-            });
+   public function viewviolences(Request $request)
+{
+    $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Congo Brazzaville', 'Guinée équatoriale'];
+    $user = auth()->user();
+    
+    if (!$user) return redirect()->route('login');
 
-        $violences = $this->applyFilters($query, $request)->latest()->paginate(10);
+    $query = Violences::with(['nature', 'collecte', 'user'])
+        ->when($user->profil !== 'Administrateur', function ($q) use ($user) {
+            return $q->where('user_id', $user->id);
+        });
 
-        return view('violences', compact('violences', 'nationalites'));
-    }
+    // Appliquer les filtres, trier par récent, paginer et garder les paramètres d'URL
+    $violences = $this->applyFilters($query, $request)
+        ->latest()
+        ->paginate(15)
+        ->withQueryString(); 
+
+    return view('violences', compact('violences', 'nationalites'));
+}
 
     public function addViolences()
     {
@@ -298,7 +304,7 @@ class ViolencesController extends Controller
         if (isset($validated['code'])) {
             $violences = $violences->where('code', $validated['code']);
         }
-        $violences = $violences->paginate(20);
+        $violences = $violences->paginate(500);
 
         return response()->json([
             'current_page' => $violences->currentPage(),

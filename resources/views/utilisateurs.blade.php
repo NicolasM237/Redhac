@@ -77,75 +77,95 @@
                         </form>
 
                         <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                            <table class="table table-responsive-md">
-                                <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
-                                    <tr>
-                                        <th style="width:80px;">{{ __('messages.number') }}</th>
-                                        <th>{{ __('messages.last_name') }} & {{ __('messages.first_name') }}</th>
-                                        <th>{{ __('messages.phone') }}</th>
-                                        <th>{{ __('messages.email') }}</th>
-                                        <th>{{ __('messages.profile') }}</th>
-                                        <th>{{ __('messages.actions') }}</th>
-                                    </tr>
-                                </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                                <tbody>
-                                    @forelse ($users as $index => $user)
-                                        <tr>
-                                            <td><strong>{{ $index + 1 }}</strong></td>
-                                            <td>{{ $user->nom }} {{ $user->prenom }}</td>
-                                            <td>{{ $user->telephone ?? 'Non renseigné' }}</td>
-                                            <td>{{ $user->email }}</td>
-                                            <td>
-                                                <span class="badge badge-primary">{{ $user->profil }}</span>
-                                            </td>
-                                            <td>
+    <table class="table table-responsive-md">
+        <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+            <tr>
+                <th style="width:80px;">{{ __('messages.number') }}</th>
+                <th>{{ __('messages.last_name') }} & {{ __('messages.first_name') }}</th>
+                <th>{{ __('messages.phone') }}</th>
+                <th>{{ __('messages.email') }}</th>
+                <th>{{ __('messages.profile') }}</th>
+                <th>{{ __('messages.actions') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($users as $index => $user)
+                <tr>
+                    {{-- Calcul pour garder une numérotation continue entre les pages --}}
+                    <td><strong>{{ $users->firstItem() + $index }}</strong></td>
+                    <td>{{ $user->nom }} {{ $user->prenom }}</td>
+                    <td>{{ $user->telephone ?? 'Non renseigné' }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td>
+                        <span class="badge badge-primary">{{ $user->profil }}</span>
+                    </td>
+                    <td>
+
                                                 <div class="dropdown">
+
                                                     <button type="button" class="btn btn-info light btn-xs dropdown-toggle"
+
                                                         data-toggle="dropdown">
+
                                                         {{ __('messages.actions') }}
+
                                                     </button>
+
                                                     <div class="dropdown-menu dropdown-menu-right">
+
                                                         <a class="dropdown-item btnEditUser" href="javascript:void(0)"
+
                                                             data-toggle="modal" data-target=".bd-example-modal-lgMP"
+
                                                             data-user='{{ json_encode($user->makeHidden(['password', 'email_verified_at'])) }}'>
+
                                                             {{ __('messages.edit') }}
+
                                                         </a>
 
+
+
                                                         <button type="button" class="dropdown-item text-danger"
+
                                                             onclick="confirmDelete({{ $user->id }})">
+
                                                             {{ __('messages.delete') }}
+
                                                         </button>
 
-                                                        <form id="delete-form-{{ $user->id }}"
-                                                            action="{{ route('delete.user', $user->id) }}" method="POST"
-                                                            style="display: none;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center">{{ __('messages.no_user_found') }}
-                                                "{{ request('search') }}"</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
 
-                        </div>
+
+                                                        <form id="delete-form-{{ $user->id }}"
+
+                                                            action="{{ route('delete.user', $user->id) }}" method="POST"
+
+                                                            style="display: none;">
+
+                                                            @csrf
+
+                                                            @method('DELETE')
+
+                                                        </form>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center">{{ __('messages.no_user_found') }} "{{ request('search') }}"</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+<!-- AFFICHAGE DES LIENS DE PAGINATION -->
+<div class="d-flex justify-content-center mt-3">
+    {{ $users->links() }}
+</div>
                     </div>
                 </div>
             </div>

@@ -26,25 +26,27 @@ class CollecteController extends Controller
 
     // Affiche toutes les collectes et les natures pour le select
     public function viewcollectes(Request $request)
-    {
-        $search = $request->input('search');
-        $natures = Nature::all(); 
+{
+    $search = $request->input('search');
+    $natures = Nature::all(); 
 
-        $collectes = Collecte::with('nature')
-            ->when($search, function ($query, $search) {
-                $query->where(function($q) use ($search) {
-                    $q->where('nom', 'like', "%$search%")
-                      //->orWhere('quantite', 'like', "%$search%")
-                      ->orWhereHas('nature', function($n) use ($search) {
-                          $n->where('nom', 'like', "%$search%");
-                      });
-                });
-            })
-            ->latest()
-            ->paginate(10);
+    $collectes = Collecte::with('nature')
+        ->when($search, function ($query, $search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nom', 'like', "%$search%")
+                  ->orWhereHas('nature', function($n) use ($search) {
+                      $n->where('nom', 'like', "%$search%");
+                  });
+            });
+        })
+        ->latest() // Trie par date de création décroissante
+        ->paginate(5); // Réduit à 15 pour une meilleure performance
 
-        return view('collectes', compact('collectes', 'natures', 'search'));
-    }
+    // On préserve la recherche dans les liens
+    $collectes->appends(['search' => $search]);
+
+    return view('collectes', compact('collectes', 'natures', 'search'));
+}
 
     // Enregistrer une nouvelle collecte
     public function store(Request $request)

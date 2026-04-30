@@ -46,82 +46,67 @@
                             </div>
                         </form>
 
-                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                            <table id="collectes-datatable" class="table table-responsive-md table-striped table-bordered"
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th style="width:80px;">#</th>
-                                        <th>{{ __('messages.nature_name') }}</th>
-                                        <th>{{ __('messages.collecte_mode') }}</th>
-                                        {{-- <th>{{ __('messages.quantity') }}</th> --}}
-                                        <th>{{ __('messages.created_at') }}</th>
-                                        <th>{{ __('messages.actions') }}</th>
-                                    </tr>
-                                </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                                <tbody>
-                                    @forelse ($collectes as $collecte)
-                                        <tr>
-                                            <td><strong>{{ $loop->iteration + ($collectes->currentPage() - 1) * $collectes->perPage() }}</strong>
-                                            </td>
-                                            <td>{{ $collecte->nature->nom ?? 'N/A' }}</td>
-                                            <td>{{ $collecte->nom }}</td>
-                                            {{-- <td><span class="text-nowrap">{{ $collecte->quantite }}</span></td> --}}
-                                            <td>{{ \Carbon\Carbon::parse($collecte->date_collecte)->format('d/m/Y') }}</td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <button type="button" class="btn btn-info light btn-xs dropdown-toggle"
-                                                        data-toggle="dropdown">
-                                                        {{ __('messages.actions') }}
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item btnEditCollecte" href="javascript:void(0)"
-                                                            data-toggle="modal" data-target=".bd-example-modal-lgMC"
-                                                            data-collecte='{{ json_encode($collecte) }}'>
-                                                            {{ __('messages.edit') }}
-                                                        </a>
-
-                                                        <div class="dropdown-divider"></div>
-
-                                                        <button type="button" class="dropdown-item text-danger"
-                                                            onclick="confirmDeleteCollecte({{ $collecte->id }})">
-                                                            {{ __('messages.delete') }}
-                                                        </button>
-
-                                                        <form id="delete-form-collecte-{{ $collecte->id }}"
-                                                            action="{{ route('delete.collecte', $collecte->id) }}"
-                                                            method="POST" style="display:none;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center text-muted">
-                                                {{ __('messages.no_collecte_found') }}
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-
-                            <div class="mt-3">
-                                {{ $collectes->appends(['search' => $search])->links() }}
+                       <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+    <table id="collectes-datatable" class="table table-responsive-md table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th style="width:80px;">#</th>
+                <th>{{ __('messages.nature_name') }}</th>
+                <th>{{ __('messages.collecte_mode') }}</th>
+                <th>{{ __('messages.created_at') }}</th>
+                <th>{{ __('messages.actions') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($collectes as $collecte)
+                <tr>
+                    {{-- Index continu sur toutes les pages --}}
+                    <td><strong>{{ $loop->iteration + ($collectes->currentPage() - 1) * $collectes->perPage() }}</strong></td>
+                    <td>{{ $collecte->nature->nom ?? 'N/A' }}</td>
+                    <td>{{ $collecte->nom }}</td>
+                    <td>{{ \Carbon\Carbon::parse($collecte->date_collecte)->format('d/m/Y') }}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-info light btn-xs dropdown-toggle" data-toggle="dropdown">
+                                {{ __('messages.actions') }}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item btnEditCollecte" href="javascript:void(0)"
+                                    data-toggle="modal" data-target=".bd-example-modal-lgMC"
+                                    data-collecte='{{ json_encode($collecte) }}'>
+                                    {{ __('messages.edit') }}
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <button type="button" class="dropdown-item text-danger"
+                                    onclick="confirmDeleteCollecte({{ $collecte->id }})">
+                                    {{ __('messages.delete') }}
+                                </button>
+                                <form id="delete-form-collecte-{{ $collecte->id }}"
+                                    action="{{ route('delete.collecte', $collecte->id) }}"
+                                    method="POST" style="display:none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
                             </div>
                         </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        {{ __('messages.no_collecte_found') }}
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+{{-- Liens de pagination centrés --}}
+<div class="d-flex justify-content-center mt-3">
+    {{ $collectes->links() }}
+</div>
+
                     </div>
                 </div>
             </div>

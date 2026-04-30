@@ -9,7 +9,7 @@ class HistoriqueController extends Controller
 {
 
 
-    public function viewhistorique(Request $request)
+   public function viewhistorique(Request $request)
     {
         $search = $request->input('search');
 
@@ -23,7 +23,7 @@ class HistoriqueController extends Controller
                 });
             })
             ->latest()
-            ->paginate(15)
+            ->paginate(5)
             ->appends(['search' => $search]); // Important pour garder la recherche lors du changement de page
 
         return view('historiques', compact('historiques', 'search'));

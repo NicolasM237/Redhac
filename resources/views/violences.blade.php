@@ -199,95 +199,89 @@
                         </form>
 
                         <!-- Table -->
-                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                            <table id="violences-datatable" class="table table-responsive-md table-striped table-bordered"
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th><b>{{ __('messages.actions') }}</b></th>
-                                        <th>{{ __('messages.permitted') }}</th>
-                                        <th>#</th>
-                                        <th>{{ __('messages.code') }}</th>
-                                        <th>{{ __('messages.nom_user') }}</th>
-                                        <th>{{ __('messages.nationality') }}</th>
-                                        <th>{{ __('messages.status') }}</th>
-                                        <th>{{ __('messages.sex') }}</th>
-                                        <th>{{ __('messages.nature_name') }}</th>
-                                        <th>{{ __('messages.collection_mode') }}</th>
-                                        <th class="text-nowrap">{{ __('messages.occurrence_date') }}</th>
-                                        <th>{{ __('messages.files') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($violences as $violence)
-                                        <tr>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-info btn-xs dropdown-toggle"
-                                                        data-toggle="dropdown">{{ __('messages.actions') }}</button>
-                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item view-details" href="javascript:void(0)"
-                                                            data-violences='{{ json_encode($violence) }}'>
-                                                            <i class="fa fa-eye mr-2"></i> {{ __('messages.see') }}
-                                                        </a>
-                                                        <a href="{{ route('edit.violences', $violence->id) }}"
-                                                            class="dropdown-item">
-                                                            <i class="fa fa-edit mr-2"></i> {{ __('messages.edit') }}
-                                                        </a>
-                                                        <button type="button" class="dropdown-item text-danger"
-                                                            onclick="confirmDeleteViolence({{ $violence->id }})">
-                                                            <i class="fa fa-trash mr-2"></i> {{ __('messages.delete') }}
-                                                        </button>
-                                                        <form id="delete-form-violence-{{ $violence->id }}"
-                                                            action="{{ route('delete.violences', $violence->id) }}"
-                                                            method="POST" style="display:none;">
-                                                            @csrf @method('DELETE')
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <button
-                                                    class="btn btn-xs toggle-permis {{ $violence->permis ? 'btn-success' : 'btn-danger' }}"
-                                                    data-id="{{ $violence->id }}">
-                                                    {{ $violence->permis ? __('messages.yes') : __('messages.no') }}
-                                                </button>
-                                            </td>
-                                            <td><strong>{{ $loop->iteration + ($violences->currentPage() - 1) * $violences->perPage() }}</strong>
-                                            </td>
-                                            <td class="text-nowrap">{{ $violence->code }}</td>
-                                            <td>{{ $violence->user->nom }}</td>
-                                            <td>{{ $violence->nationalite }}</td>
-                                            <td><span class="badge badge-light">{{ $violence->status }}</span></td>
-                                            <td>{{ $violence->sexe }}</td>
-                                            <td>{{ $violence->nature->nom ?? 'N/A' }}</td>
-                                            <td>{{ $violence->collecte->nom ?? 'N/A' }}</td>
-                                            <td class="text-nowrap">
-                                                {{ \Carbon\Carbon::parse($violence->datesurvenue)->format('d/m/Y') }}</td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    @for ($i = 1; $i <= 3; $i++)
-                                                        @php $f = "fichier".$i; @endphp
-                                                        @if ($violence->$f)
-                                                            <a href="{{ asset('storage/' . $violence->$f) }}"
-                                                                target="_blank" class="btn btn-xs btn-info mr-1"
-                                                                title="Fichier {{ $i }}">
-                                                                <i class="fa fa-file"></i>
-                                                            </a>
-                                                        @endif
-                                                    @endfor
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="11" class="text-center text-muted">
-                                                {{ __('messages.no_record_found') }}</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                       <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+    <table id="violences-datatable" class="table table-responsive-md table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th><b>{{ __('messages.actions') }}</b></th>
+                <th>{{ __('messages.permitted') }}</th>
+                <th>#</th>
+                <th>{{ __('messages.code') }}</th>
+                <th>{{ __('messages.nom_user') }}</th>
+                <th>{{ __('messages.nationality') }}</th>
+                <th>{{ __('messages.status') }}</th>
+                <th>{{ __('messages.sex') }}</th>
+                <th>{{ __('messages.nature_name') }}</th>
+                <th>{{ __('messages.collection_mode') }}</th>
+                <th class="text-nowrap">{{ __('messages.occurrence_date') }}</th>
+                <th>{{ __('messages.files') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($violences as $violence)
+                <tr>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown">
+                                {{ __('messages.actions') }}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item view-details" href="javascript:void(0)" data-violences='{{ json_encode($violence) }}'>
+                                    <i class="fa fa-eye mr-2"></i> {{ __('messages.see') }}
+                                </a>
+                                <a href="{{ route('edit.violences', $violence->id) }}" class="dropdown-item">
+                                    <i class="fa fa-edit mr-2"></i> {{ __('messages.edit') }}
+                                </a>
+                                <button type="button" class="dropdown-item text-danger" onclick="confirmDeleteViolence({{ $violence->id }})">
+                                    <i class="fa fa-trash mr-2"></i> {{ __('messages.delete') }}
+                                </button>
+                                <form id="delete-form-violence-{{ $violence->id }}" action="{{ route('delete.violences', $violence->id) }}" method="POST" style="display:none;">
+                                    @csrf @method('DELETE')
+                                </form>
+                            </div>
                         </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-xs toggle-permis {{ $violence->permis ? 'btn-success' : 'btn-danger' }}" data-id="{{ $violence->id }}">
+                            {{ $violence->permis ? __('messages.yes') : __('messages.no') }}
+                        </button>
+                    </td>
+                    {{-- Votre calcul d'indexation est correct ici --}}
+                    <td><strong>{{ $loop->iteration + ($violences->currentPage() - 1) * $violences->perPage() }}</strong></td>
+                    <td class="text-nowrap">{{ $violence->code }}</td>
+                    <td>{{ $violence->user->nom ?? 'N/A' }}</td>
+                    <td>{{ $violence->nationalite }}</td>
+                    <td><span class="badge badge-light">{{ $violence->status }}</span></td>
+                    <td>{{ $violence->sexe }}</td>
+                    <td>{{ $violence->nature->nom ?? 'N/A' }}</td>
+                    <td>{{ $violence->collecte->nom ?? 'N/A' }}</td>
+                    <td class="text-nowrap">{{ \Carbon\Carbon::parse($violence->datesurvenue)->format('d/m/Y') }}</td>
+                    <td>
+                        <div class="d-flex">
+                            @for ($i = 1; $i <= 3; $i++)
+                                @php $f = "fichier".$i; @endphp
+                                @if ($violence->$f)
+                                    <a href="{{ asset('storage/' . $violence->$f) }}" target="_blank" class="btn btn-xs btn-info mr-1" title="Fichier {{ $i }}">
+                                        <i class="fa fa-file"></i>
+                                    </a>
+                                @endif
+                            @endfor
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="12" class="text-center text-muted">{{ __('messages.no_record_found') }}</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+{{-- AJOUT : Les liens de pagination --}}
+<div class="d-flex justify-content-center mt-3">
+    {{ $violences->links() }}
+</div>
 
                         <div class="mt-3">
                             {{ $violences->appends(request()->input())->links() }}

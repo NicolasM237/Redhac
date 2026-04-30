@@ -110,7 +110,7 @@ class UserMobileController extends Controller
         ]);
     }
 
-    public function viewmobiles()
+   public function viewmobiles()
     {
         $search = request('search');
         $status = request('status');
@@ -132,7 +132,14 @@ class UserMobileController extends Controller
                     return $query->where('active', 0);
                 }
             })
-            ->get();
+            ->latest() // Optionnel : pour voir les derniers inscrits en premier
+            ->paginate(10); // Remplacement de get() par paginate
+
+        // On conserve les paramètres de filtrage dans les liens de pagination
+        $mobiles->appends([
+            'search' => $search,
+            'status' => $status
+        ]);
 
         return view('mobiles', compact('mobiles'));
     }

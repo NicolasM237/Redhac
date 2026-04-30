@@ -77,73 +77,80 @@
                             </div>
                         </form>
 
-                        <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                            <table class="table table-responsive-md">
-                                <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
-                                    <tr>
-                                        <th style="width:80px;"><b>{{ __('messages.number') }}</b></th>
-                                        <th>{{ __('messages.activity_table_user') }}</th>
-                                        <th>{{ __('messages.activity_table_action') }}</th>
-                                        <th>{{ __('messages.activity_table_table') }}</th>
-                                        <th>{{ __('messages.activity_table_description') }}</th>
-                                        <th>{{ __('messages.activity_table_date') }}</th>
-                                        <th>{{ __('messages.activity_table_actions') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($activites as $activite)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>
-                                                <strong>{{ $activite->user->nom ?? __('messages.activity_unknown_user') }}</strong>
-                                            </td>
-                                            <td>
-                                                @php
-                                                    $badgeClass = match ($activite->action_type) {
-                                                        'Création' => 'badge-success',
-                                                        'Modification' => 'badge-warning',
-                                                        'Suppression' => 'badge-danger',
-                                                        default => 'badge-info',
-                                                    };
-                                                @endphp
-                                                <span class="badge {{ $badgeClass }}">
-                                                    {{ $activite->action_type }}
-                                                </span>
-                                            </td>
-                                            <td><span class="text-muted">{{ $activite->table_name }}</span></td>
-                                            <td style="max-width: 300px;">
-                                                <div class="text-wrap">
-                                                    {{ $activite->description }}
-                                                </div>
-                                            </td>
-                                            <td>{{ $activite->created_at->format('d/m/Y H:i') }}</td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-dark dropdown-toggle"
-                                                        data-toggle="dropdown">
-                                                        {{ __('messages.actions') }}
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                        <form class="delete-activite-form" action="{{ route('delete.activite', $activite->id) }}"
-                                                            method="POST" data-id="{{ $activite->id }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="button"
-                                                                class="dropdown-item text-danger btn-delete-activite">{{ __('messages.delete') }}</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="7" class="text-center">
-                                                {{ __('messages.activity_no_records') }}</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                       <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+    <table class="table table-responsive-md">
+        <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+            <tr>
+                <th style="width:80px;"><b>{{ __('messages.number') }}</b></th>
+                <th>{{ __('messages.activity_table_user') }}</th>
+                <th>{{ __('messages.activity_table_action') }}</th>
+                <th>{{ __('messages.activity_table_table') }}</th>
+                <th>{{ __('messages.activity_table_description') }}</th>
+                <th>{{ __('messages.activity_table_date') }}</th>
+                <th>{{ __('messages.activity_table_actions') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($activites as $activite)
+                <tr>
+                    {{-- Calcul de l'index correct pour la pagination --}}
+                    <td><strong>{{ $loop->iteration + ($activites->currentPage() - 1) * $activites->perPage() }}</strong></td>
+                    <td>
+                        <strong>{{ $activite->user->nom ?? __('messages.activity_unknown_user') }}</strong>
+                    </td>
+                    <td>
+                        @php
+                            $badgeClass = match ($activite->action_type) {
+                                'Création' => 'badge-success',
+                                'Modification' => 'badge-warning',
+                                'Suppression' => 'badge-danger',
+                                default => 'badge-info',
+                            };
+                        @endphp
+                        <span class="badge {{ $badgeClass }}">
+                            {{ $activite->action_type }}
+                        </span>
+                    </td>
+                    <td><span class="text-muted">{{ $activite->table_name }}</span></td>
+                    <td style="max-width: 300px;">
+                        <div class="text-wrap">
+                            {{ $activite->description }}
                         </div>
+                    </td>
+                    <td>{{ $activite->created_at->format('d/m/Y H:i') }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                                {{ __('messages.actions') }}
+                            </button>
+                            <div class="dropdown-menu">
+                                <form class="delete-activite-form" action="{{ route('delete.activite', $activite->id) }}"
+                                    method="POST" data-id="{{ $activite->id }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="dropdown-item text-danger btn-delete-activite">
+                                        {{ __('messages.delete') }}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" class="text-center">
+                        {{ __('messages.activity_no_records') }}
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+{{-- AJOUT : Liens de pagination --}}
+<div class="d-flex justify-content-center mt-3">
+    {{ $activites->links() }}
+</div>
 
                         <!-- Pagination -->
                         @if ($activites->hasPages())

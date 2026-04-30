@@ -11,24 +11,25 @@ class ActivitesController extends Controller
     /**
      * Affiche uniquement les activités de l'utilisateur connecté
      */
+    
     public function viewactivites(Request $request)
-    {
-        $search = $request->input('search');
+{
+    $search = $request->input('search');
 
-        $activites = Activite::where('user_id', Auth::id()) // Filtre par l'utilisateur connecté
-            ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('action_type', 'like', "%$search%")
-                      ->orWhere('table_name', 'like', "%$search%")
-                      ->orWhere('description', 'like', "%$search%");
-                });
-            })
-            ->latest() // Les plus récentes en premier
-            ->paginate(15)
-            ->appends(['search' => $search]);
+    $activites = Activite::where('user_id', Auth::id())
+        ->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('action_type', 'like', "%$search%")
+                  ->orWhere('table_name', 'like', "%$search%")
+                  ->orWhere('description', 'like', "%$search%");
+            });
+        })
+        ->latest()
+        ->paginate(15)
+        ->withQueryString(); // Remplace appends pour plus de simplicité
 
-        return view('activites', compact('activites', 'search'));
-    }
+    return view('activites', compact('activites', 'search'));
+}
 
     /**
      * Supprime une activité spécifique (avec vérification de sécurité)

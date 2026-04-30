@@ -36,7 +36,7 @@ class Violences extends Model
         'fichier3'
     ];
 
-    // Relation avec la Nature
+    // Relation avec la model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

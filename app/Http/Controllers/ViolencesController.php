@@ -214,15 +214,15 @@ class ViolencesController extends Controller
 
         // handle files
         if ($request->hasFile('fichie1')) {
-            $validated['fichie1'] = $request->file('fichie1')->store('violences', 'public');
+            $validated['fichier1'] = $request->file('fichie1')->store('violences', 'public');
         }
 
         if ($request->hasFile('fichie2')) {
-            $validated['fichie2'] = $request->file('fichie2')->store('violences', 'public');
+            $validated['fichier2'] = $request->file('fichie2')->store('violences', 'public');
         }
 
         if ($request->hasFile('fichie3')) {
-            $validated['fichie3'] = $request->file('fichie3')->store('violences', 'public');
+            $validated['fichier3'] = $request->file('fichie3')->store('violences', 'public');
         }
 
         $violence = Violences::create($validated);

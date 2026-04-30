@@ -46,22 +46,26 @@ class ViolencesController extends Controller
             });
     }
 
-   public function viewviolences(Request $request)
+    public function viewviolences(Request $request)
 {
     $nationalites = ['Camerounaise', 'Gabonaise', 'Tchadienne', 'Centrafricaine', 'Congolaise', 'Congo Brazzaville', 'Guinée équatoriale'];
     $user = auth()->user();
     
     if (!$user) return redirect()->route('login');
 
-    $query = Violences::with(['nature', 'collecte', 'user'])
-        ->when($user->profil !== 'Administrateur', function ($q) use ($user) {
-            return $q->where('user_id', $user->id);
-        });
+    // 1. On prépare la requête de base avec les relations
+    $query = Violences::with(['nature', 'collecte', 'user']);
 
-    // Appliquer les filtres, trier par récent, paginer et garder les paramètres d'URL
+    // 2. Logique de restriction :
+    // Si l'utilisateur N'EST PAS Super_Admin, on restreint à son user_id
+    if ($user->profil !== 'Super_Admin') {
+        $query->where('user_id', $user->id);
+    }
+
+    // 3. Application des filtres de recherche, tri et pagination
     $violences = $this->applyFilters($query, $request)
         ->latest()
-        ->paginate(15)
+        ->paginate(5)
         ->withQueryString(); 
 
     return view('violences', compact('violences', 'nationalites'));

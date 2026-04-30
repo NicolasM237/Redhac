@@ -283,9 +283,6 @@
     {{ $violences->links() }}
 </div>
 
-                        <div class="mt-3">
-                            {{ $violences->appends(request()->input())->links() }}
-                        </div>
                     </div>
                 </div>
             </div>

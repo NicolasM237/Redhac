@@ -58,7 +58,7 @@ class ViolencesController extends Controller
 
     // 2. Logique de restriction :
     // Si l'utilisateur N'EST PAS Super_Admin, on restreint à son user_id
-    if ($user->profil !== 'Super_Admin') {
+    if ($user->profil !== 'Super_admin') {
         $query->where('user_id', $user->id);
     }
 
